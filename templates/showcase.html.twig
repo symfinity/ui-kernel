@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="{{ themeId }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UI Kernel showcase — {{ themeLabel }}</title>
+    <style id="ui-kernel-theme-css">{{ inlineCss|raw }}</style>
+    <style>
+        body {
+            margin: 0;
+            font-family: var(--ui-font-family-sans);
+            background: var(--ui-color-surface);
+            color: var(--ui-color-text);
+            padding: var(--ui-space-xl);
+        }
+        .ui-kernel-showcase-header {
+            margin-bottom: var(--ui-space-lg);
+        }
+        .ui-kernel-showcase-header p {
+            color: var(--ui-color-text-muted);
+            font-size: var(--ui-font-size-sm);
+            max-width: 48rem;
+        }
+        #ui-kernel-showcase {
+            display: flex;
+            flex-direction: column;
+            gap: var(--ui-space-md);
+            max-width: 40rem;
+        }
+        #ui-kernel-theme-label {
+            font-size: var(--ui-font-size-lg);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <header class="ui-kernel-showcase-header">
+        <p id="ui-kernel-theme-label" aria-live="polite">Current flavour: {{ themeLabel }}</p>
+        <p>{{ disclaimer }}</p>
+    </header>
+    <div id="ui-kernel-showcase"
+         data-carousel="{{ carousel ? '1' : '0' }}"
+         data-flavour-order="{{ carouselOrder|json_encode|e('html_attr') }}"
+         data-initial-theme="{{ themeId }}">
+        {{ pageHtml|raw }}
+    </div>
+    <script src="{{ path('ui_kernel_showcase_js') }}" defer></script>
+</body>
+</html>

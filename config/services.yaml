@@ -1,0 +1,31 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Symfinity\UiKernel\:
+    resource: '../src/'
+    exclude:
+      - '../src/DependencyInjection/'
+      - '../src/UiKernelBundle.php'
+      - '../src/Page/'
+      - '../src/Component/'
+      - '../src/Token/'
+      - '../src/Flavour/Flavour.php'
+      - '../src/Flavour/FlavourCatalog.php'
+      - '../src/Flavour/DefinedFlavour.php'
+      - '../src/Flavour/LayoutProfile.php'
+
+  Symfinity\UiKernel\Renderer\HtmlRenderer: ~
+
+  Symfinity\UiKernel\Css\CssGenerator: ~
+
+  Symfinity\UiKernel\Showcase\ShowcasePageFactory: ~
+
+  Symfinity\UiKernel\Flavour\FlavourRegistry: ~
+
+  Symfinity\UiKernel\Twig\UiKernelExtension:
+    tags: ['twig.extension']
+
+  Symfinity\UiKernel\Controller\ShowcaseController:
+    tags: ['controller.service_arguments']
