@@ -11,17 +11,24 @@ final readonly class DesignTokenSet
     /**
      * @param array<string, string> $tokens
      */
-    public function __construct(private array $tokens)
-    {
-        self::assertComplete($tokens);
+    public function __construct(
+        private array $tokens,
+        private string $schemaVersion = ThemeTokenSchema::V1_0,
+    ) {
+        self::assertComplete($tokens, $schemaVersion);
     }
 
     /**
      * @param array<string, string> $tokens
      */
-    public static function fromArray(array $tokens): self
+    public static function fromArray(array $tokens, string $schemaVersion = ThemeTokenSchema::V1_0): self
     {
-        return new self($tokens);
+        return new self($tokens, $schemaVersion);
+    }
+
+    public function schemaVersion(): string
+    {
+        return $this->schemaVersion;
     }
 
     /**
@@ -35,11 +42,11 @@ final readonly class DesignTokenSet
     /**
      * @param array<string, string> $tokens
      */
-    public static function assertComplete(array $tokens): void
+    public static function assertComplete(array $tokens, string $schemaVersion = ThemeTokenSchema::V1_0): void
     {
-        foreach (ThemeTokenSchema::REQUIRED_KEYS as $key) {
+        foreach (ThemeTokenSchema::requiredKeys($schemaVersion) as $key) {
             if (!isset($tokens[$key]) || $tokens[$key] === '') {
-                throw new InvalidArgumentException(sprintf('Missing required theme token "%s".', $key));
+                throw new InvalidArgumentException(sprintf('Missing required theme token "%s" for schema %s.', $key, $schemaVersion));
             }
         }
     }

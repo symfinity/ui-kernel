@@ -21,11 +21,47 @@ final class CssGeneratorTest extends TestCase
 
         self::assertStringContainsString('[data-theme="dark"]', $dark);
         self::assertStringContainsString('[data-theme="semantic"]', $semantic);
+        self::assertStringContainsString('schema:2.0', $dark);
 
-        foreach (ThemeTokenSchema::REQUIRED_KEYS as $key) {
+        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
             self::assertStringContainsString($key, $dark);
             self::assertStringContainsString($key, $semantic);
         }
+    }
+
+    #[Test]
+    public function allSixFlavoursEmitSchemaTwoKeys(): void
+    {
+        $generator = new CssGenerator();
+
+        foreach (['default', 'dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
+            $css = $generator->forFlavour(FlavourCatalog::get($id));
+            foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
+                self::assertStringContainsString($key, $css, $id . ' missing ' . $key);
+            }
+        }
+    }
+
+    #[Test]
+    public function schemaVersionOneOmitsFocusRingRules(): void
+    {
+        $flavour = FlavourCatalog::get('semantic');
+        $cssV1 = (new CssGenerator())->forFlavour($flavour, ThemeTokenSchema::V1_0);
+        $cssV2 = (new CssGenerator())->forFlavour($flavour, ThemeTokenSchema::V2_0);
+
+        self::assertStringContainsString('schema:1.0', $cssV1);
+        self::assertStringNotContainsString(':focus-visible', $cssV1);
+        self::assertStringContainsString(':focus-visible', $cssV2);
+    }
+
+    #[Test]
+    public function itIncludesShadowAndMotionTokensInOutput(): void
+    {
+        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'));
+
+        self::assertStringContainsString('--ui-shadow-md:', $css);
+        self::assertStringContainsString('--ui-motion-duration-normal:', $css);
+        self::assertStringContainsString('--ui-grid-gap:', $css);
     }
 
     #[Test]

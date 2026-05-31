@@ -6,18 +6,26 @@ namespace Symfinity\UiKernel\Css;
 
 use Symfinity\UiKernel\Flavour\Flavour;
 use Symfinity\UiKernel\Token\DesignTokenSet;
+use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class CssGenerator
 {
-    public function forFlavour(Flavour $flavour): string
+    public function forFlavour(Flavour $flavour, ?string $schemaVersion = null): string
     {
-        return $this->forResolvedTokens($flavour->id(), $flavour->tokens());
+        $schemaVersion ??= $flavour->schemaVersion();
+
+        return $this->forResolvedTokens($flavour->id(), $flavour->tokens(), $schemaVersion);
     }
 
-    public function forResolvedTokens(string $flavourId, DesignTokenSet $tokens): string
-    {
+    public function forResolvedTokens(
+        string $flavourId,
+        DesignTokenSet $tokens,
+        ?string $schemaVersion = null,
+    ): string {
+        $schemaVersion ??= $tokens->schemaVersion();
         $lines = [];
         $selector = sprintf('[data-theme="%s"]', $flavourId);
+        $lines[] = sprintf('/* ui-kernel schema:%s */', $schemaVersion);
         $lines[] = $selector . ' {';
 
         foreach ($tokens->all() as $key => $value) {
@@ -34,14 +42,14 @@ final class CssGenerator
             $lines[] = '}';
         }
 
-        $lines[] = $this->roleRules();
+        $lines[] = $this->roleRules($schemaVersion);
 
         return implode("\n", $lines);
     }
 
-    private function roleRules(): string
+    private function roleRules(string $schemaVersion): string
     {
-        return <<<'CSS'
+        $base = <<<'CSS'
 [data-ui-fragment="page-root"] > [data-ui-role] {
   margin-block-end: var(--ui-space-md);
 }
@@ -246,5 +254,20 @@ final class CssGenerator
   transition: opacity var(--ui-transition-duration) ease;
 }
 CSS;
+
+        if ($schemaVersion === ThemeTokenSchema::V2_0) {
+            $base .= <<<'CSS'
+
+[data-ui-role="button"]:focus-visible,
+[data-ui-role="input"]:focus-visible,
+[data-ui-role="textarea"]:focus-visible,
+[data-ui-role="select"]:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 var(--ui-focus-ring-blur) var(--ui-focus-ring-width) color-mix(in srgb, var(--ui-color-focus) calc(var(--ui-focus-ring-opacity) * 100%), transparent);
+}
+CSS;
+        }
+
+        return $base;
     }
 }

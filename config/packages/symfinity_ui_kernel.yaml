@@ -1,0 +1,4 @@
+symfinity_ui_kernel:
+  default_flavour: default
+  schema_version: '2.0'
+  user_tokens: {}

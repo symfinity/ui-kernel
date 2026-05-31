@@ -4,39 +4,30 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Flavour;
 
-use InvalidArgumentException;
 use Symfinity\UiKernel\Token\DesignTokenSet;
-use Symfinity\UiKernel\Token\ThemeTokenSchema;
+use Symfinity\UiKernel\Token\FlavourThemeConfig;
+use Symfinity\UiKernel\Token\ThemeTokenResolver;
+use Symfinity\UiKernel\Token\UserTokenSet;
 
 final readonly class DefinedFlavour implements Flavour
 {
-    private DesignTokenSet $tokenSet;
-
-    /**
-     * @param array<string, string> $colors Map of ThemeTokenSchema::COLOR_KEYS only
-     */
     public function __construct(
         private string $id,
         private string $label,
-        LayoutProfile $layout,
-        array $colors,
+        private string $schemaVersion,
+        private DesignTokenSet $tokenSet,
     ) {
-        foreach (ThemeTokenSchema::COLOR_KEYS as $key) {
-            if (!isset($colors[$key]) || $colors[$key] === '') {
-                throw new InvalidArgumentException(sprintf('Flavour "%s" is missing color token "%s".', $id, $key));
-            }
-        }
+    }
 
-        $unknown = array_diff(array_keys($colors), ThemeTokenSchema::COLOR_KEYS);
-        if ($unknown !== []) {
-            throw new InvalidArgumentException(sprintf(
-                'Flavour "%s" has unknown color keys: %s',
-                $id,
-                implode(', ', $unknown),
-            ));
-        }
+    public static function fromConfig(
+        FlavourThemeConfig $config,
+        ?ThemeTokenResolver $resolver = null,
+        ?UserTokenSet $userTokens = null,
+    ): self {
+        $resolver ??= new ThemeTokenResolver();
+        $tokenSet = $resolver->resolve($config, $userTokens);
 
-        $this->tokenSet = DesignTokenSet::fromArray([...$layout->layout(), ...$colors]);
+        return new self($config->id(), $config->label(), $config->schemaVersion(), $tokenSet);
     }
 
     public function id(): string
@@ -47,6 +38,11 @@ final readonly class DefinedFlavour implements Flavour
     public function label(): string
     {
         return $this->label;
+    }
+
+    public function schemaVersion(): string
+    {
+        return $this->schemaVersion;
     }
 
     public function tokens(): DesignTokenSet

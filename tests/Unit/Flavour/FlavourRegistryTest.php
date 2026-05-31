@@ -47,14 +47,24 @@ final class FlavourRegistryTest extends TestCase
     }
 
     #[Test]
-    public function catalogRejectsIncompleteColorMaps(): void
+    public function catalogRejectsIncompleteTokenMaps(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         new \Symfinity\UiKernel\Flavour\DefinedFlavour(
             'broken',
             'Broken',
-            \Symfinity\UiKernel\Flavour\LayoutProfile::Kiroshi,
-            ['--ui-color-primary' => '#000'],
+            \Symfinity\UiKernel\Token\ThemeTokenSchema::V1_0,
+            \Symfinity\UiKernel\Token\DesignTokenSet::fromArray(['--ui-color-primary' => '#000']),
         );
+    }
+
+    #[Test]
+    public function defaultFlavourPreservesShowcaseColors(): void
+    {
+        $tokens = FlavourCatalog::get('default')->tokens()->all();
+
+        self::assertSame('#0a0a0a', $tokens['--ui-color-primary']);
+        self::assertSame('#00e5ff', $tokens['--ui-color-secondary']);
+        self::assertSame('#fcee0a', $tokens['--ui-color-surface']);
     }
 }

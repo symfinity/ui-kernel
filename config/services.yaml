@@ -22,5 +22,7 @@ services:
 
   Symfinity\UiKernel\Flavour\FlavourRegistry: ~
 
+  Symfinity\UiKernel\Token\ThemeTokenResolver: ~
+
   Symfinity\UiKernel\Twig\UiKernelExtension:
     tags: ['twig.extension']

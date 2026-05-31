@@ -12,5 +12,7 @@ interface Flavour
 
     public function label(): string;
 
+    public function schemaVersion(): string;
+
     public function tokens(): DesignTokenSet;
 }

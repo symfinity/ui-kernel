@@ -5,15 +5,24 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Flavour;
 
 use InvalidArgumentException;
+use Symfinity\UiKernel\Token\ThemeTokenResolver;
+use Symfinity\UiKernel\Token\UserTokenSet;
 
 final class FlavourRegistry
 {
     /** @var array<string, Flavour> */
     private array $flavours = [];
 
-    public function __construct()
+    private ThemeTokenResolver $resolver;
+
+    private UserTokenSet $userTokens;
+
+    public function __construct(?ThemeTokenResolver $resolver = null, ?UserTokenSet $userTokens = null)
     {
-        foreach (FlavourCatalog::all() as $flavour) {
+        $this->resolver = $resolver ?? new ThemeTokenResolver();
+        $this->userTokens = $userTokens ?? new UserTokenSet();
+
+        foreach (FlavourCatalog::all($this->resolver, $this->userTokens) as $flavour) {
             $this->register($flavour);
         }
     }
