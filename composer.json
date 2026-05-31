@@ -1,6 +1,6 @@
 {
     "name": "symfinity/ui-kernel",
-    "description": "Chameleon UI kernel — typed UI tree, flavours, showcase",
+    "description": "Chameleon UI kernel — design tokens, flavours, and role CSS generation",
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
@@ -9,14 +9,11 @@
         "symfony/dependency-injection": "^6.4|^7.0",
         "symfony/framework-bundle": "^6.4|^7.0",
         "symfony/http-kernel": "^6.4|^7.0",
-        "symfony/routing": "^6.4|^7.0",
         "symfony/twig-bundle": "^6.4|^7.0",
         "twig/twig": "^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5 || ^11.0",
-        "symfony/browser-kit": "^6.4|^7.0",
-        "symfony/css-selector": "^6.4|^7.0",
         "symfony/yaml": "^6.4|^7.0"
     },
     "autoload": {
@@ -39,6 +36,6 @@
         }
     },
     "suggest": {
-        "symfinity/omnia-ipsum": "Placeholder copy for showcase gallery demos"
+        "symfinity/ux-blocks-demo": "Integration demo hub — index and per-pack pages combining ui-kernel with ux-blocks"
     }
 }

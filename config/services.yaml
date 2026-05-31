@@ -9,7 +9,7 @@ services:
       - '../src/DependencyInjection/'
       - '../src/UiKernelBundle.php'
       - '../src/Page/'
-      - '../src/Component/'
+      - '../src/Component/UiComponent.php'
       - '../src/Token/'
       - '../src/Flavour/Flavour.php'
       - '../src/Flavour/FlavourCatalog.php'
@@ -20,12 +20,7 @@ services:
 
   Symfinity\UiKernel\Css\CssGenerator: ~
 
-  Symfinity\UiKernel\Showcase\ShowcasePageFactory: ~
-
   Symfinity\UiKernel\Flavour\FlavourRegistry: ~
 
   Symfinity\UiKernel\Twig\UiKernelExtension:
     tags: ['twig.extension']
-
-  Symfinity\UiKernel\Controller\ShowcaseController:
-    tags: ['controller.service_arguments']

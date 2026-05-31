@@ -4,7 +4,7 @@
 
 ## Showcase (dev)
 
-With the bundle registered in a Symfony app:
+With **UiKernelBundle** and **SymfinityUxBlocksCoreBundle** registered (Chameleon default):
 
 ```text
 GET /ui-kernel/showcase
@@ -12,6 +12,8 @@ GET /ui-kernel/showcase?theme=dark
 GET /ui-kernel/showcase?carousel=0
 GET /_ui/theme.css?theme=bootstrap-like
 ```
+
+Gallery slots render **symfinity/ux-blocks-core** Twig components (`blocks.*` fragments). Theme rotation exercises kernel token CSS only — gallery markup stays fixed.
 
 Themes are **Symfinity token packs inspired by** common systems — not official Bootstrap or Tailwind. Baseline labels: **Kiroshi** (`default`), **Kiroshi dark** (`dark`).
 
@@ -33,10 +35,10 @@ cd packages/ui-kernel && composer install && composer test
 ## Optional copy
 
 ```bash
-composer require symfinity/omnia-ipsum
+composer require symfinity/ux-blocks-core symfinity/omnia-ipsum
 ```
 
-Suggested for placeholder lorem in demos — not required by the kernel.
+Showcase gallery requires **symfinity/ux-blocks-core** (+ Symfony UX twig-component / stimulus-bundle). Dogfood preset `ui-kernel-showcase` wires this via [symfinity-ui-kernel overlay](../../../../bin/dogfood/overlays/symfinity-ui-kernel.json).
 
 ## Port reference
 

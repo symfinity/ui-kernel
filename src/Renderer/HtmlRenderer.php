@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Renderer;
 
-use Symfinity\UiKernel\Component\Alert;
-use Symfinity\UiKernel\Component\Button;
-use Symfinity\UiKernel\Component\Card;
-use Symfinity\UiKernel\Component\FormRow;
+use Symfinity\UiKernel\Component\GenericUiComponent;
 use Symfinity\UiKernel\Component\UiComponent;
 use Symfinity\UiKernel\Page\UiPage;
 
@@ -29,59 +26,63 @@ final class HtmlRenderer
 
     private function renderComponent(UiComponent $component): string
     {
-        return match (true) {
-            $component instanceof Button => $this->renderButton($component),
-            $component instanceof Card => $this->renderCard($component),
-            $component instanceof Alert => $this->renderAlert($component),
-            $component instanceof FormRow => $this->renderFormRow($component),
+        if (!$component instanceof GenericUiComponent) {
+            return $this->renderGeneric($component);
+        }
+
+        return match ($component->role()) {
+            'button' => $this->renderButton($component),
+            'card' => $this->renderCard($component),
+            'alert' => $this->renderAlert($component),
+            'form-row' => $this->renderFormRow($component),
             default => $this->renderGeneric($component),
         };
     }
 
-    private function renderButton(Button $button): string
+    private function renderButton(GenericUiComponent $component): string
     {
-        $attrs = $this->baseAttributes($button);
+        $attrs = $this->baseAttributes($component);
 
         return sprintf(
             '<button type="button" %s>%s</button>',
             $attrs,
-            htmlspecialchars($button->label(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($component->slot('label'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
         );
     }
 
-    private function renderCard(Card $card): string
+    private function renderCard(GenericUiComponent $component): string
     {
-        $attrs = $this->baseAttributes($card);
+        $attrs = $this->baseAttributes($component);
 
         return sprintf(
             '<section %s><h2>%s</h2><p>%s</p></section>',
             $attrs,
-            htmlspecialchars($card->title(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
-            htmlspecialchars($card->body(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($component->slot('title'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($component->slot('body'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
         );
     }
 
-    private function renderAlert(Alert $alert): string
+    private function renderAlert(GenericUiComponent $component): string
     {
-        $attrs = $this->baseAttributes($alert);
+        $attrs = $this->baseAttributes($component);
 
         return sprintf(
             '<div %s>%s</div>',
             $attrs,
-            htmlspecialchars($alert->message(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($component->slot('message'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
         );
     }
 
-    private function renderFormRow(FormRow $row): string
+    private function renderFormRow(GenericUiComponent $component): string
     {
-        $attrs = $this->baseAttributes($row);
-        $disabled = isset($row->state()['disabled']) ? ' disabled' : '';
+        $attrs = $this->baseAttributes($component);
+        $disabled = isset($component->state()['disabled']) ? ' disabled' : '';
 
         return sprintf(
             '<div %s><label>%s</label><input type="%s"%s /></div>',
             $attrs,
-            htmlspecialchars($row->label(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
-            htmlspecialchars($row->inputType(), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($component->slot('label'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            htmlspecialchars($component->slot('inputType', 'text'), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
             $disabled,
         );
     }

@@ -6,9 +6,8 @@ namespace Symfinity\UiKernel\Tests\Unit\Page;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Component\Alert;
-use Symfinity\UiKernel\Component\Button;
-use Symfinity\UiKernel\Component\Card;
+use Symfinity\UiKernel\Component\GenericUiComponent;
+use Symfinity\UiKernel\Page\UiFragment;
 use Symfinity\UiKernel\Page\UiPage;
 
 final class UiPageTest extends TestCase
@@ -18,9 +17,15 @@ final class UiPageTest extends TestCase
     {
         $page = new UiPage('Gallery');
         $page
-            ->add(new Button('primary', 'Go'))
-            ->add(new Card('Title', 'Body'))
-            ->add(new Alert('info', 'Note'));
+            ->add(new GenericUiComponent('button', 'primary', [], null, ['label' => 'Go']))
+            ->add(new GenericUiComponent(
+                'card',
+                'default',
+                [],
+                new UiFragment('card-gallery'),
+                ['title' => 'Title', 'body' => 'Body'],
+            ))
+            ->add(new GenericUiComponent('alert', 'info', [], null, ['message' => 'Note']));
 
         self::assertSame('Gallery', $page->title());
         self::assertCount(3, $page->children());

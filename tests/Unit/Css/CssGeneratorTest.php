@@ -38,4 +38,29 @@ final class CssGeneratorTest extends TestCase
         self::assertStringContainsString('background: var(--ui-color-danger)', $css);
         self::assertStringContainsString('background: var(--ui-color-success)', $css);
     }
+
+    #[Test]
+    public function itIncludesAllV0UxPrimitiveRoles(): void
+    {
+        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('default'));
+
+        foreach ([
+            'separator',
+            'typography',
+            'label',
+            'input',
+            'textarea',
+            'select',
+            'field',
+            'checkbox',
+            'radio-group',
+            'empty',
+            'table',
+        ] as $role) {
+            self::assertStringContainsString('[data-ui-role="' . $role . '"]', $css, $role);
+        }
+
+        self::assertStringContainsString('[data-ui-role="button"][data-ui-variant="outline"]', $css);
+        self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="warning"]', $css);
+    }
 }
