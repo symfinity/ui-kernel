@@ -16,8 +16,27 @@ Normative contracts: [theme-flavours](../../../../specs/symfinity/symfinity/2-ui
 | `src/Flavour/DefinedFlavour.php` | Resolved flavour + schema version |
 | `src/Flavour/FlavourRegistry.php` | Runtime registry (optional `UserTokenSet` merge) |
 | `src/Token/ThemeTokenSchema.php` | Required keys for schema `1.0` / `2.0` |
+| `src/Profile/SystemProfile.php` | Structural breakpoints, columns, container widths (default `chameleon-default`) |
+| `src/Profile/SystemProfileRegistry.php` | Resolves profile from `symfinity.ui_kernel.system_profile` config |
+| `src/Css/CssGenerator.php` | Theme vars + profile z-index/keyframes + layout roles at schema `2.0` |
 
 Add or change a flavour in **`FlavourThemeConfig` only** — use palette refs, not raw hex. Hex lives in `PaletteAnchors` / generator only.
+
+## System profile (structural layout)
+
+Appearance tokens stay under **`LayoutProfile`** / theme resolver (**009**). Breakpoints, z-index ladder, global keyframes, and schema `2.0` layout roles (`grid`, `stack`, `skeleton`) come from **`SystemProfile`** — normative contract [system-profile](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/system-profile.md).
+
+Override breakpoint px or container max-widths via config (not `user_tokens`):
+
+```yaml
+symfinity:
+    ui_kernel:
+        system_profile:
+            breakpoints:
+                md: 800
+```
+
+When a Symfony cache pool keys generated CSS, include `systemProfileId` and `profileHash` from `CssGenerator::cacheKeyParts()`.
 
 Light/dark pairs share one `LayoutProfile`; **semantic colour refs** differ between e.g. `semantic` and `semantic-dark`.
 

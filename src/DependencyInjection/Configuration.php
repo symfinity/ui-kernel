@@ -22,6 +22,23 @@ final class Configuration implements ConfigurationInterface
                     ->scalarPrototype()->end()
                     ->defaultValue([])
                 ->end()
+                ->arrayNode('system_profile')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('id')->defaultValue('chameleon-default')->end()
+                        ->integerNode('columns')->defaultValue(12)->min(1)->max(24)->end()
+                        ->arrayNode('breakpoints')
+                            ->normalizeKeys(false)
+                            ->integerPrototype()->min(1)->end()
+                            ->defaultValue([])
+                        ->end()
+                        ->arrayNode('container_max_widths')
+                            ->normalizeKeys(false)
+                            ->integerPrototype()->min(1)->end()
+                            ->defaultValue([])
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

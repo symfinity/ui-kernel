@@ -18,6 +18,8 @@ services:
 
   Symfinity\UiKernel\Renderer\HtmlRenderer: ~
 
+  Symfinity\UiKernel\Profile\SystemProfileRegistry: ~
+
   Symfinity\UiKernel\Css\CssGenerator: ~
 
   Symfinity\UiKernel\Flavour\FlavourRegistry: ~

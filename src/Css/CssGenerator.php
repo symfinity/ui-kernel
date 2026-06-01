@@ -5,27 +5,41 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Css;
 
 use Symfinity\UiKernel\Flavour\Flavour;
+use Symfinity\UiKernel\Profile\SystemProfile;
+use Symfinity\UiKernel\Profile\SystemProfileRegistry;
 use Symfinity\UiKernel\Token\DesignTokenSet;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class CssGenerator
 {
+    public function __construct(
+        private readonly ?SystemProfileRegistry $profileRegistry = null,
+    ) {
+    }
+
     public function forFlavour(Flavour $flavour, ?string $schemaVersion = null): string
     {
         $schemaVersion ??= $flavour->schemaVersion();
 
-        return $this->forResolvedTokens($flavour->id(), $flavour->tokens(), $schemaVersion);
+        return $this->forResolvedTokens(
+            $flavour->id(),
+            $flavour->tokens(),
+            $schemaVersion,
+            $this->resolveProfile(),
+        );
     }
 
     public function forResolvedTokens(
         string $flavourId,
         DesignTokenSet $tokens,
         ?string $schemaVersion = null,
+        ?SystemProfile $profile = null,
     ): string {
         $schemaVersion ??= $tokens->schemaVersion();
+        $profile ??= $this->resolveProfile();
         $lines = [];
         $selector = sprintf('[data-theme="%s"]', $flavourId);
-        $lines[] = sprintf('/* ui-kernel schema:%s */', $schemaVersion);
+        $lines[] = sprintf('/* ui-kernel schema:%s profile:%s */', $schemaVersion, $profile->id);
         $lines[] = $selector . ' {';
 
         foreach ($tokens->all() as $key => $value) {
@@ -42,12 +56,63 @@ final class CssGenerator
             $lines[] = '}';
         }
 
-        $lines[] = $this->roleRules($schemaVersion);
+        if ($schemaVersion === ThemeTokenSchema::V2_0) {
+            $lines[] = $this->profileGlobals($profile);
+        }
+
+        $lines[] = $this->roleRules($schemaVersion, $profile);
 
         return implode("\n", $lines);
     }
 
-    private function roleRules(string $schemaVersion): string
+    /**
+     * Cache pool key fragment when Symfony cache is enabled (css-generation contract).
+     *
+     * @return array{flavourId: string, userTokenHash: string, schemaVersion: string, systemProfileId: string, profileHash: string}
+     */
+    public static function cacheKeyParts(
+        string $flavourId,
+        string $userTokenHash,
+        string $schemaVersion,
+        SystemProfile $profile,
+    ): array {
+        return [
+            'flavourId' => $flavourId,
+            'userTokenHash' => $userTokenHash,
+            'schemaVersion' => $schemaVersion,
+            'systemProfileId' => $profile->id,
+            'profileHash' => $profile->hash(),
+        ];
+    }
+
+    private function resolveProfile(): SystemProfile
+    {
+        return $this->profileRegistry?->resolve() ?? SystemProfile::chameleonDefault();
+    }
+
+    private function profileGlobals(SystemProfile $profile): string
+    {
+        $lines = [':root {'];
+        foreach ($profile->zIndexLayers() as $layer => $value) {
+            $lines[] = sprintf('  --ui-z-%s: %d;', $layer, $value);
+        }
+        $lines[] = '}';
+
+        $lines[] = <<<'CSS'
+@keyframes ui-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes ui-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+CSS;
+
+        return implode("\n", $lines);
+    }
+
+    private function roleRules(string $schemaVersion, SystemProfile $profile): string
     {
         $base = <<<'CSS'
 [data-ui-fragment="page-root"] > [data-ui-role] {
@@ -266,8 +331,116 @@ CSS;
   box-shadow: 0 0 var(--ui-focus-ring-blur) var(--ui-focus-ring-width) color-mix(in srgb, var(--ui-color-focus) calc(var(--ui-focus-ring-opacity) * 100%), transparent);
 }
 CSS;
+            $base .= $this->layoutRoleRules($profile);
         }
 
         return $base;
+    }
+
+    private function layoutRoleRules(SystemProfile $profile): string
+    {
+        $lines = [];
+        $columns = $profile->columns;
+
+        $lines[] = '[data-ui-role="grid"] {';
+        $lines[] = '  display: grid;';
+        $lines[] = '  gap: var(--ui-grid-gap);';
+        $lines[] = sprintf('  grid-template-columns: repeat(%d, minmax(0, 1fr));', $columns);
+        $lines[] = '}';
+
+        for ($n = 1; $n <= $columns; ++$n) {
+            $lines[] = sprintf('[data-ui-role="grid"][data-ui-columns="%d"] {', $n);
+            $lines[] = sprintf('  grid-template-columns: repeat(%d, minmax(0, 1fr));', $n);
+            $lines[] = '}';
+        }
+
+        $mdPx = $profile->breakpointPx('md') ?? 768;
+        $belowMd = $mdPx - 1;
+        $lines[] = sprintf('@media (max-width: %dpx) {', $belowMd);
+        $lines[] = '  [data-ui-role="grid"]:not([data-ui-columns]) {';
+        $lines[] = '    grid-template-columns: 1fr;';
+        $lines[] = '  }';
+        $lines[] = '  [data-ui-role="grid"]:not([data-ui-columns]) > [data-ui-role="grid-cell"] {';
+        $lines[] = '    grid-column: 1 / -1;';
+        $lines[] = '  }';
+        $lines[] = '}';
+
+        for ($span = 1; $span <= $columns; ++$span) {
+            $lines[] = sprintf('[data-ui-role="grid-cell"][data-ui-span="%d"] {', $span);
+            $lines[] = sprintf('  grid-column: span %d;', $span);
+            $lines[] = '}';
+        }
+
+        foreach ($profile->breakpoints as $name => $px) {
+            for ($span = 1; $span <= $columns; ++$span) {
+                $lines[] = sprintf('@media (min-width: %dpx) {', $px);
+                $lines[] = sprintf('  [data-ui-role="grid-cell"][data-ui-span-%s="%d"] {', $name, $span);
+                $lines[] = sprintf('    grid-column: span %d;', $span);
+                $lines[] = '  }';
+                $lines[] = '}';
+            }
+        }
+
+        foreach ($profile->containerMaxWidths as $name => $maxWidth) {
+            $bp = $profile->breakpointPx($name);
+            if ($bp === null) {
+                continue;
+            }
+            $lines[] = sprintf('@media (min-width: %dpx) {', $bp);
+            $lines[] = '  [data-ui-role="grid-container"] {';
+            $lines[] = sprintf('    max-width: %dpx;', $maxWidth);
+            $lines[] = '    margin-inline: auto;';
+            $lines[] = '    width: 100%;';
+            $lines[] = '  }';
+            $lines[] = '}';
+        }
+
+        $lines[] = <<<'CSS'
+[data-ui-role="stack"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-md);
+}
+[data-ui-role="stack"][data-ui-direction="horizontal"] {
+  flex-direction: row;
+}
+[data-ui-role="stack"][data-ui-gap="xs"] { gap: var(--ui-space-xs); }
+[data-ui-role="stack"][data-ui-gap="sm"] { gap: var(--ui-space-sm); }
+[data-ui-role="stack"][data-ui-gap="md"] { gap: var(--ui-space-md); }
+[data-ui-role="stack"][data-ui-gap="lg"] { gap: var(--ui-space-lg); }
+[data-ui-role="stack"][data-ui-gap="xl"] { gap: var(--ui-space-xl); }
+[data-ui-role="skeleton"] {
+  background: linear-gradient(
+    90deg,
+    var(--ui-color-skeleton-base) 0%,
+    var(--ui-color-skeleton-shine) 50%,
+    var(--ui-color-skeleton-base) 100%
+  );
+  background-size: 200% 100%;
+  animation: ui-shimmer var(--ui-motion-duration-skeleton) var(--ui-motion-easing-linear) infinite;
+  border-radius: var(--ui-radius-sm);
+}
+[data-ui-role="skeleton"][data-ui-variant="text"] {
+  min-height: var(--ui-line-height-normal, 1.5rem);
+  width: 100%;
+}
+[data-ui-role="skeleton"][data-ui-variant="rect"] {
+  min-height: 4rem;
+  width: 100%;
+}
+[data-ui-role="skeleton"][data-ui-variant="circle"] {
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--ui-radius-full);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-ui-role="skeleton"] {
+    animation: none;
+    background: var(--ui-color-skeleton-base);
+  }
+}
+CSS;
+
+        return implode("\n", $lines);
     }
 }

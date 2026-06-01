@@ -99,4 +99,16 @@ final class CssGeneratorTest extends TestCase
         self::assertStringContainsString('[data-ui-role="button"][data-ui-variant="outline"]', $css);
         self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="warning"]', $css);
     }
+
+    #[Test]
+    public function schemaTwoIncludesSystemProfileOutput(): void
+    {
+        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'), ThemeTokenSchema::V2_0);
+
+        self::assertStringContainsString('profile:chameleon-default', $css);
+        self::assertStringContainsString('--ui-z-dropdown:', $css);
+        self::assertStringContainsString('@keyframes ui-shimmer', $css);
+        self::assertStringContainsString('[data-ui-role="grid"]', $css);
+        self::assertStringNotContainsString('var(--ui-breakpoint', $css);
+    }
 }

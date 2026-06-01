@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\DependencyInjection;
 
+use Symfinity\UiKernel\Profile\SystemProfileRegistry;
 use Symfinity\UiKernel\Token\UserTokenSet;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -27,6 +28,11 @@ final class UiKernelExtension extends Extension
             ->setAutowired(false)
             ->setAutoconfigured(false)
             ->setArgument('$tokens', $config['user_tokens']);
+
+        $container->register(SystemProfileRegistry::class)
+            ->setAutowired(false)
+            ->setAutoconfigured(false)
+            ->setArgument('$config', $config['system_profile']);
     }
 
     public function getAlias(): string
