@@ -15,7 +15,7 @@ Normative contracts: [theme-flavours](../../../../specs/symfinity/symfinity/2-ui
 | `src/Flavour/LayoutProfile.php` | Lineage enum; delegates layout tokens to registry |
 | `src/Flavour/DefinedFlavour.php` | Resolved flavour + schema version |
 | `src/Flavour/FlavourRegistry.php` | Runtime registry (optional `UserTokenSet` merge) |
-| `src/Token/ThemeTokenSchema.php` | Required keys for schema `1.0` / `2.0` |
+| `src/Token/ThemeTokenSchema.php` | Required keys for schema `1.0` / `2.0` (incl. `--ui-overlay-*`, `--ui-backdrop-*` at **2.0**) |
 | `src/Profile/SystemProfile.php` | Structural breakpoints, columns, container widths (default `chameleon-default`) |
 | `src/Profile/SystemProfileRegistry.php` | Resolves profile from `symfinity.ui_kernel.system_profile` config |
 | `src/Css/CssGenerator.php` | Theme vars + profile z-index/keyframes + layout roles at schema `2.0` |
@@ -43,6 +43,29 @@ Light/dark pairs share one `LayoutProfile`; **semantic colour refs** differ betw
 ## Schema
 
 Built-in flavours target **schema `2.0`** (tertiary, warning, info, focus, overlay, skeleton, shadows, motion, focus-ring tokens). `CssGenerator` accepts `schemaVersion` for compatibility snapshots.
+
+### Overlay tokens (**016**)
+
+Resolved per flavour (not palette refs) — see [native-overlay-css](../../../../specs/symfinity/symfinity/16-ui-kernel-final-css/contracts/native-overlay-css.md):
+
+| Token | Source |
+|-------|--------|
+| `--ui-overlay-surface` | `--ui-color-surface-elevated` |
+| `--ui-overlay-border` | `--ui-color-border` |
+| `--ui-overlay-shadow` | `--ui-shadow-lg` |
+| `--ui-backdrop-color` | `--ui-color-overlay` |
+| `--ui-backdrop-blur` | Flavour default (`0`; `6px` on semantic pair for marketing) |
+
+Z-index for modals/popovers uses profile `--ui-z-*` only — never literals in flavour PHP.
+
+### Scroll motion flag
+
+| Flavour | `scrollMotion` |
+|---------|----------------|
+| `semantic`, `semantic-dark` | `true` — emits `[data-ui-scroll-reveal]` scroll-timeline rules |
+| All others | `false` |
+
+Disabled under `prefers-reduced-motion: reduce`. Normative: [scroll-and-loading-css](../../../../specs/symfinity/symfinity/16-ui-kernel-final-css/contracts/scroll-and-loading-css.md).
 
 ## User overrides
 

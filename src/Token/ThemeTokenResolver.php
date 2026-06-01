@@ -28,6 +28,26 @@ final class ThemeTokenResolver
             $merged = $userTokens->merge($merged, $schemaVersion);
         }
 
+        if ($schemaVersion === ThemeTokenSchema::V2_0) {
+            $merged = [...$merged, ...self::overlayTokens($merged, $config)];
+        }
+
         return DesignTokenSet::fromArray($merged, $schemaVersion);
+    }
+
+    /**
+     * @param array<string, string> $merged
+     *
+     * @return array<string, string>
+     */
+    private static function overlayTokens(array $merged, FlavourThemeConfig $config): array
+    {
+        return [
+            '--ui-overlay-surface' => $merged['--ui-color-surface-elevated'],
+            '--ui-overlay-border' => $merged['--ui-color-border'],
+            '--ui-overlay-shadow' => $merged['--ui-shadow-lg'],
+            '--ui-backdrop-color' => $merged['--ui-color-overlay'],
+            '--ui-backdrop-blur' => $config->backdropBlur(),
+        ];
     }
 }

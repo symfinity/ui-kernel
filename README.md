@@ -44,7 +44,23 @@ Showcase gallery requires **symfinity/ux-blocks-core** (+ Symfony UX twig-compon
 
 Read-only legacy source may be staged under `_archive/import-packages/kiroshi-ui/` per [agent-local-staging](../../../../docs-classified/guidelines/agent-local-staging.md). Do not treat archive paths as product canon.
 
+## Native overlay hooks (**016**)
+
+Kernel-generated CSS (schema `2.0`) styles native top-layer UI without Stimulus in this package:
+
+| Pattern | Markup hooks | Contract |
+|---------|--------------|----------|
+| Modal | `<dialog data-ui-role="modal" class="ui-dialog">` | [native-overlay-css](../../../../specs/symfinity/symfinity/16-ui-kernel-final-css/contracts/native-overlay-css.md) |
+| Popover | `[popover][data-ui-role="popover"].ui-popover` | same |
+| Anchored menu | Trigger `data-ui-anchor="trigger"`; panel `data-ui-role="menu"` | `@supports` anchor + absolute fallback |
+| Skeleton / defer / `:has()` | `data-ui-role="skeleton"`, `data-ui-defer="cv"`, `data-ui-role="field-group"` | [scroll-and-loading-css](../../../../specs/symfinity/symfinity/16-ui-kernel-final-css/contracts/scroll-and-loading-css.md) |
+
+Twig macros and `commandfor` live in **ux-blocks** — do not duplicate overlay colours in blocks CSS; consume `/_ui/theme.css`.
+
+Browsers without `popover` / anchor support still get fallback layout from generated `@supports` blocks; no kernel polyfill scripts.
+
 ## Planning
 
 - [symfinity 002 — ui-kernel](../../../../specs/symfinity/symfinity/2-ui-kernel/spec.md)
+- [symfinity 016 — ui-kernel-final-css](../../../../specs/symfinity/symfinity/16-ui-kernel-final-css/spec.md)
 - [Symfony UI Kernel RFC](../../../../docs-classified/rfc/symfony_ui_kernel_rfc.md)

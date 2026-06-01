@@ -15,4 +15,6 @@ interface Flavour
     public function schemaVersion(): string;
 
     public function tokens(): DesignTokenSet;
+
+    public function scrollMotion(): bool;
 }

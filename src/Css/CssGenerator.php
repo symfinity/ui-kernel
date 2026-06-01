@@ -26,6 +26,7 @@ final class CssGenerator
             $flavour->tokens(),
             $schemaVersion,
             $this->resolveProfile(),
+            $flavour->scrollMotion(),
         );
     }
 
@@ -34,6 +35,7 @@ final class CssGenerator
         DesignTokenSet $tokens,
         ?string $schemaVersion = null,
         ?SystemProfile $profile = null,
+        bool $scrollMotion = false,
     ): string {
         $schemaVersion ??= $tokens->schemaVersion();
         $profile ??= $this->resolveProfile();
@@ -60,7 +62,7 @@ final class CssGenerator
             $lines[] = $this->profileGlobals($profile);
         }
 
-        $lines[] = $this->roleRules($schemaVersion, $profile);
+        $lines[] = $this->roleRules($schemaVersion, $profile, $scrollMotion);
 
         return implode("\n", $lines);
     }
@@ -107,12 +109,16 @@ final class CssGenerator
   0%, 100% { opacity: 1; }
   50% { opacity: 0.55; }
 }
+@keyframes ui-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 CSS;
 
         return implode("\n", $lines);
     }
 
-    private function roleRules(string $schemaVersion, SystemProfile $profile): string
+    private function roleRules(string $schemaVersion, SystemProfile $profile, bool $scrollMotion = false): string
     {
         $base = <<<'CSS'
 [data-ui-fragment="page-root"] > [data-ui-role] {
@@ -332,6 +338,9 @@ CSS;
 }
 CSS;
             $base .= $this->layoutRoleRules($profile);
+            $base .= $this->nativeOverlayRules();
+            $base .= $this->anchorMenuRules();
+            $base .= $this->scrollAndLoadingRules($scrollMotion);
         }
 
         return $base;
@@ -417,14 +426,19 @@ CSS;
     var(--ui-color-skeleton-base) 100%
   );
   background-size: 200% 100%;
-  animation: ui-shimmer var(--ui-motion-duration-skeleton) var(--ui-motion-easing-linear) infinite;
-  border-radius: var(--ui-radius-sm);
+  animation: ui-shimmer var(--ui-motion-duration-slow) var(--ui-motion-easing-linear) infinite;
+  border-radius: var(--ui-radius-md);
+  min-height: 1em;
 }
 [data-ui-role="skeleton"][data-ui-variant="text"] {
-  min-height: var(--ui-line-height-normal, 1.5rem);
+  min-height: 1em;
   width: 100%;
 }
 [data-ui-role="skeleton"][data-ui-variant="rect"] {
+  min-height: 4rem;
+  width: 100%;
+}
+[data-ui-role="skeleton"][data-ui-variant="card"] {
   min-height: 4rem;
   width: 100%;
 }
@@ -442,5 +456,123 @@ CSS;
 CSS;
 
         return implode("\n", $lines);
+    }
+
+    private function nativeOverlayRules(): string
+    {
+        return <<<'CSS'
+dialog.ui-dialog,
+[data-ui-role="modal"] {
+  background: var(--ui-overlay-surface);
+  color: var(--ui-color-text);
+  border: 1px solid var(--ui-overlay-border);
+  border-radius: var(--ui-radius-lg);
+  box-shadow: var(--ui-overlay-shadow);
+  padding: var(--ui-space-lg);
+  font-family: var(--ui-font-family-sans);
+  max-width: min(32rem, calc(100vw - 2 * var(--ui-space-lg)));
+}
+dialog[open],
+[data-ui-role="modal"][open] {
+  z-index: var(--ui-z-modal);
+}
+dialog::backdrop {
+  background: var(--ui-backdrop-color);
+  backdrop-filter: blur(var(--ui-backdrop-blur));
+}
+[popover].ui-popover,
+[data-ui-role="popover"] {
+  background: var(--ui-overlay-surface);
+  color: var(--ui-color-text);
+  border: 1px solid var(--ui-overlay-border);
+  border-radius: var(--ui-radius-md);
+  box-shadow: var(--ui-overlay-shadow);
+  padding: var(--ui-space-md);
+  font-family: var(--ui-font-family-sans);
+  z-index: var(--ui-z-popover);
+  margin: 0;
+}
+:popover-open.ui-popover,
+:popover-open[data-ui-role="popover"] {
+  border-color: var(--ui-color-primary);
+}
+CSS;
+    }
+
+    private function anchorMenuRules(): string
+    {
+        return <<<'CSS'
+[data-ui-anchor="trigger"] {
+  anchor-name: --ui-menu-trigger;
+}
+[data-ui-role="menu"] {
+  position: absolute;
+  z-index: var(--ui-z-popover);
+  background: var(--ui-overlay-surface);
+  border: 1px solid var(--ui-overlay-border);
+  border-radius: var(--ui-radius-md);
+  box-shadow: var(--ui-overlay-shadow);
+  padding: var(--ui-space-sm);
+  min-width: 12rem;
+}
+@supports (anchor-name: --ui-menu-trigger) {
+  [data-ui-role="menu"] {
+    position: absolute;
+    position-anchor: --ui-menu-trigger;
+    position-area: block-end inline-end;
+    position-try-fallbacks: flip-block, flip-inline;
+  }
+}
+@supports not (anchor-name: --ui-menu-trigger) {
+  [data-ui-role="menu"] {
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+  }
+}
+CSS;
+    }
+
+    private function scrollAndLoadingRules(bool $scrollMotion): string
+    {
+        $css = <<<'CSS'
+[data-ui-defer="cv"] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+[data-ui-role="field-group"]:has(:invalid) {
+  border-color: var(--ui-color-danger);
+}
+[data-ui-role="field-group"]:has(:focus-visible) {
+  outline: 0;
+  box-shadow: 0 0 var(--ui-focus-ring-blur) var(--ui-focus-ring-width) color-mix(in srgb, var(--ui-color-focus) calc(var(--ui-focus-ring-opacity) * 100%), transparent);
+}
+[data-ui-role="card"]:has(input:checked) {
+  background: var(--ui-color-surface-elevated);
+  border-color: var(--ui-color-primary);
+}
+[data-ui-role="nav"]:has([aria-current="page"]) [aria-current="page"] {
+  font-weight: var(--ui-font-weight-semibold);
+  color: var(--ui-color-primary);
+}
+CSS;
+
+        if ($scrollMotion) {
+            $css .= <<<'CSS'
+
+[data-ui-scroll-reveal] {
+  animation: ui-fade-in linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 40%;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-ui-scroll-reveal] {
+    animation: none;
+    opacity: 1;
+  }
+}
+CSS;
+        }
+
+        return $css;
     }
 }

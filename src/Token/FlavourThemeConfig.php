@@ -21,6 +21,8 @@ final class FlavourThemeConfig
         private readonly MonoSpice $spice,
         private readonly array $colorRefs,
         private readonly string $schemaVersion = ThemeTokenSchema::V2_0,
+        private readonly bool $scrollMotion = false,
+        private readonly string $backdropBlur = '0',
     ) {
     }
 
@@ -57,6 +59,16 @@ final class FlavourThemeConfig
         return $this->colorRefs;
     }
 
+    public function scrollMotion(): bool
+    {
+        return $this->scrollMotion;
+    }
+
+    public function backdropBlur(): string
+    {
+        return $this->backdropBlur;
+    }
+
     /**
      * @return list<self>
      */
@@ -70,6 +82,8 @@ final class FlavourThemeConfig
                 $definition['spice'],
                 $definition['colors'],
                 $definition['schemaVersion'] ?? ThemeTokenSchema::V2_0,
+                $definition['scrollMotion'] ?? false,
+                $definition['backdropBlur'] ?? '0',
             ),
             self::definitions(),
         );
@@ -112,6 +126,8 @@ final class FlavourThemeConfig
                 'layout' => LayoutProfile::Semantic,
                 'spice' => MonoSpice::Cool,
                 'colors' => self::semanticLight(),
+                'scrollMotion' => true,
+                'backdropBlur' => '6px',
             ],
             [
                 'id' => 'semantic-dark',
@@ -119,6 +135,8 @@ final class FlavourThemeConfig
                 'layout' => LayoutProfile::Semantic,
                 'spice' => MonoSpice::Cool,
                 'colors' => self::semanticDark(),
+                'scrollMotion' => true,
+                'backdropBlur' => '6px',
             ],
             [
                 'id' => 'utility',

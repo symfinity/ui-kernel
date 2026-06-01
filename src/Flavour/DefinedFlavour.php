@@ -16,6 +16,7 @@ final readonly class DefinedFlavour implements Flavour
         private string $label,
         private string $schemaVersion,
         private DesignTokenSet $tokenSet,
+        private bool $scrollMotion = false,
     ) {
     }
 
@@ -27,7 +28,13 @@ final readonly class DefinedFlavour implements Flavour
         $resolver ??= new ThemeTokenResolver();
         $tokenSet = $resolver->resolve($config, $userTokens);
 
-        return new self($config->id(), $config->label(), $config->schemaVersion(), $tokenSet);
+        return new self(
+            $config->id(),
+            $config->label(),
+            $config->schemaVersion(),
+            $tokenSet,
+            $config->scrollMotion(),
+        );
     }
 
     public function id(): string
@@ -48,5 +55,10 @@ final readonly class DefinedFlavour implements Flavour
     public function tokens(): DesignTokenSet
     {
         return $this->tokenSet;
+    }
+
+    public function scrollMotion(): bool
+    {
+        return $this->scrollMotion;
     }
 }

@@ -52,6 +52,15 @@ final class ThemeTokenSchema
     ];
 
     /** @var list<string> */
+    public const OVERLAY_KEYS_V2_ADDITIVE = [
+        '--ui-overlay-surface',
+        '--ui-overlay-border',
+        '--ui-overlay-shadow',
+        '--ui-backdrop-color',
+        '--ui-backdrop-blur',
+    ];
+
+    /** @var list<string> */
     public const LAYOUT_KEYS_V2_ADDITIVE = [
         '--ui-space-2xl',
         '--ui-grid-gap',
@@ -101,6 +110,7 @@ final class ThemeTokenSchema
         ...self::REQUIRED_KEYS_V1,
         ...self::COLOR_KEYS_V2_ADDITIVE,
         ...self::LAYOUT_KEYS_V2_ADDITIVE,
+        ...self::OVERLAY_KEYS_V2_ADDITIVE,
     ];
 
     /** @var list<string> */
