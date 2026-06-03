@@ -11,10 +11,10 @@ services:
       - '../src/Page/'
       - '../src/Component/UiComponent.php'
       - '../src/Token/'
-      - '../src/Flavour/Flavour.php'
-      - '../src/Flavour/FlavourCatalog.php'
-      - '../src/Flavour/DefinedFlavour.php'
-      - '../src/Flavour/LayoutProfile.php'
+      - '../src/Theme/Theme.php'
+      - '../src/Theme/ThemeCatalog.php'
+      - '../src/Theme/DefinedTheme.php'
+      - '../src/Theme/LayoutProfile.php'
 
   Symfinity\UiKernel\Renderer\HtmlRenderer: ~
 
@@ -22,9 +22,11 @@ services:
 
   Symfinity\UiKernel\Css\CssGenerator: ~
 
-  Symfinity\UiKernel\Flavour\FlavourRegistry: ~
+  Symfinity\UiKernel\Theme\ThemeRegistry: ~
 
   Symfinity\UiKernel\Token\ThemeTokenResolver: ~
+
+  Symfinity\UiKernel\Palette\PalettePageViewModelBuilder: ~
 
   Symfinity\UiKernel\Twig\UiKernelExtension:
     tags: ['twig.extension']

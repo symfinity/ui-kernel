@@ -1,6 +1,6 @@
 # symfinity/ui-kernel
 
-**Chameleon UI** (marketing) · **UI Kernel** (technical) — typed UI tree, token flavours, and theme showcase for Symfony apps.
+**Chameleon UI** (marketing) · **UI Kernel** (technical) — typed UI tree, token themes, and theme showcase for Symfony apps.
 
 ## Showcase (dev)
 
@@ -39,6 +39,15 @@ composer require symfinity/ux-blocks-core symfinity/omnia-ipsum
 ```
 
 Showcase gallery requires **symfinity/ux-blocks-core** (+ Symfony UX twig-component / stimulus-bundle). Dogfood preset `ui-kernel-showcase` wires this via [symfinity-ui-kernel overlay](../../../../bin/dogfood/overlays/symfinity-ui-kernel.json).
+
+## Primal lab reference (WoWi)
+
+Source: [`var/primal/td-cc-wowi`](../../../../var/primal/td-cc-wowi) (reference only).
+
+| WoWi pattern | Notes for UI Kernel |
+|--------------|---------------------|
+| `scaleMagic` — viewport-height sections minus fixed header/subnav | Layout tokens + scroll-offset hooks for full-bleed heroes |
+| Scroll-spy section tracking (Tealium) | Host analytics only — kernel supplies stable section markup hooks |
 
 ## Port reference
 

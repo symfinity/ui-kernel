@@ -39,14 +39,17 @@ final class SemanticColorMap
      *
      * @return array<string, string> --ui-color-* => value
      */
-    public function resolve(array $roleRefs): array
+    /**
+     * @param array<string, string> $roleRefs
+     */
+    public function resolve(array $roleRefs, ThemePaletteRecipe $recipe): array
     {
         $colors = [];
         foreach ($roleRefs as $role => $ref) {
             if (!isset(self::ROLE_TO_CSS[$role])) {
                 throw new \InvalidArgumentException(sprintf('Unknown semantic colour role "%s".', $role));
             }
-            $colors[self::ROLE_TO_CSS[$role]] = $this->palette->resolve($ref);
+            $colors[self::ROLE_TO_CSS[$role]] = $this->palette->resolve($ref, $recipe);
         }
 
         return $colors;

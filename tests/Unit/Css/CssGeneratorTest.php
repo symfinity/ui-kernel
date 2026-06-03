@@ -7,17 +7,17 @@ namespace Symfinity\UiKernel\Tests\Unit\Css;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Css\CssGenerator;
-use Symfinity\UiKernel\Flavour\FlavourCatalog;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class CssGeneratorTest extends TestCase
 {
     #[Test]
-    public function itSnapshotsTokenVariablesForTwoFlavours(): void
+    public function itSnapshotsTokenVariablesForTwoThemes(): void
     {
         $generator = new CssGenerator();
-        $dark = $generator->forFlavour(FlavourCatalog::get('dark'));
-        $semantic = $generator->forFlavour(FlavourCatalog::get('semantic'));
+        $dark = $generator->forTheme(ThemeCatalog::get('dark'));
+        $semantic = $generator->forTheme(ThemeCatalog::get('semantic'));
 
         self::assertStringContainsString('[data-theme="dark"]', $dark);
         self::assertStringContainsString('[data-theme="semantic"]', $semantic);
@@ -30,12 +30,12 @@ final class CssGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function allSixFlavoursEmitSchemaTwoKeys(): void
+    public function allSixThemesEmitSchemaTwoKeys(): void
     {
         $generator = new CssGenerator();
 
         foreach (['default', 'dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
-            $css = $generator->forFlavour(FlavourCatalog::get($id));
+            $css = $generator->forTheme(ThemeCatalog::get($id));
             foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
                 self::assertStringContainsString($key, $css, $id . ' missing ' . $key);
             }
@@ -45,9 +45,9 @@ final class CssGeneratorTest extends TestCase
     #[Test]
     public function schemaVersionOneOmitsFocusRingRules(): void
     {
-        $flavour = FlavourCatalog::get('semantic');
-        $cssV1 = (new CssGenerator())->forFlavour($flavour, ThemeTokenSchema::V1_0);
-        $cssV2 = (new CssGenerator())->forFlavour($flavour, ThemeTokenSchema::V2_0);
+        $theme = ThemeCatalog::get('semantic');
+        $cssV1 = (new CssGenerator())->forTheme($theme, ThemeTokenSchema::V1_0);
+        $cssV2 = (new CssGenerator())->forTheme($theme, ThemeTokenSchema::V2_0);
 
         self::assertStringContainsString('schema:1.0', $cssV1);
         self::assertStringNotContainsString(':focus-visible', $cssV1);
@@ -57,7 +57,7 @@ final class CssGeneratorTest extends TestCase
     #[Test]
     public function itIncludesShadowAndMotionTokensInOutput(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
         self::assertStringContainsString('--ui-shadow-md:', $css);
         self::assertStringContainsString('--ui-motion-duration-normal:', $css);
@@ -65,20 +65,55 @@ final class CssGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function itIncludesDangerAndSuccessButtonVariants(): void
+    public function itIncludesSemanticFilledButtonVariants(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('default'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
 
-        self::assertStringContainsString('[data-ui-role="button"][data-ui-variant="danger"]', $css);
-        self::assertStringContainsString('[data-ui-role="button"][data-ui-variant="success"]', $css);
+        foreach (['tertiary', 'danger', 'success', 'info', 'warning'] as $variant) {
+            self::assertStringContainsString(
+                '[data-ui-role="button"][data-ui-variant="'.$variant.'"]',
+                $css,
+            );
+        }
+        self::assertStringContainsString('background: var(--ui-color-tertiary)', $css);
         self::assertStringContainsString('background: var(--ui-color-danger)', $css);
         self::assertStringContainsString('background: var(--ui-color-success)', $css);
+        self::assertStringContainsString('background: var(--ui-color-info)', $css);
+        self::assertStringContainsString('background: var(--ui-color-warning)', $css);
+    }
+
+    #[Test]
+    public function filledButtonVariantsUseWhiteLabelText(): void
+    {
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
+
+        foreach (['primary', 'secondary', 'tertiary', 'danger', 'success', 'info', 'warning'] as $variant) {
+            self::assertMatchesRegularExpression(
+                '/\[data-ui-role="button"\]\[data-ui-variant="'.$variant.'"\][^{]*\{[^}]*color: #fff;/s',
+                $css,
+            );
+        }
+    }
+
+    #[Test]
+    public function secondaryButtonUsesSecondaryColorToken(): void
+    {
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
+
+        self::assertStringContainsString(
+            '[data-ui-role="button"][data-ui-variant="secondary"]',
+            $css,
+        );
+        self::assertMatchesRegularExpression(
+            '/\[data-ui-role="button"\]\[data-ui-variant="secondary"\][^{]*\{[^}]*background: var\(--ui-color-secondary\)/s',
+            $css,
+        );
     }
 
     #[Test]
     public function itIncludesAllV0UxPrimitiveRoles(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('default'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
 
         foreach ([
             'separator',
@@ -103,12 +138,20 @@ final class CssGeneratorTest extends TestCase
     #[Test]
     public function schemaTwoIncludesSystemProfileOutput(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'), ThemeTokenSchema::V2_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
 
         self::assertStringContainsString('profile:chameleon-default', $css);
         self::assertStringContainsString('--ui-z-dropdown:', $css);
         self::assertStringContainsString('@keyframes ui-shimmer', $css);
         self::assertStringContainsString('[data-ui-role="grid"]', $css);
+        self::assertStringContainsString('[data-ui-role="button"][data-ui-size="sm"]', $css);
+        self::assertStringContainsString('[data-ui-role] {', $css);
+        self::assertStringContainsString('margin-block-end: var(--ui-space-md)', $css);
+        self::assertStringContainsString('[data-ui-role="button"][data-ui-layout="block"]', $css);
+        self::assertStringContainsString('[data-ui-role="grid"] > [data-ui-role="button"]', $css);
+        self::assertStringContainsString('[data-ui-role="nav"]', $css);
+        self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="info"]', $css);
+        self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="info"] [data-ui-role="button"]', $css);
         self::assertStringNotContainsString('var(--ui-breakpoint', $css);
     }
 }

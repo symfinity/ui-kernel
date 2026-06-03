@@ -9,7 +9,7 @@ Normative contract: [font-manager-pairing](../../../../specs/symfinity/symfinity
 - `--ui-font-family-sans`
 - `--ui-font-family-mono`
 
-Values come from [LineagePresetRegistry](../src/Token/LineagePresetRegistry.php) — **system stacks only** (see [typography contract](../../../../specs/symfinity/symfinity/9-ui-kernel-theme-tokens/contracts/typography.md)).
+Values come from [PresetRegistry](../src/Token/PresetRegistry.php) — **system stacks only** (see [typography contract](../../../../specs/symfinity/symfinity/9-ui-kernel-theme-tokens/contracts/typography.md)).
 
 ## When font-manager is installed
 

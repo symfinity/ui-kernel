@@ -6,16 +6,16 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Flavour\LayoutProfile;
-use Symfinity\UiKernel\Token\LineagePresetRegistry;
+use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Token\PresetRegistry;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
-final class LineagePresetRegistryTest extends TestCase
+final class PresetRegistryTest extends TestCase
 {
     #[Test]
-    public function lineagesUseDistinctRhythms(): void
+    public function presetsUseDistinctRhythms(): void
     {
-        $registry = new LineagePresetRegistry();
+        $registry = new PresetRegistry();
 
         $kiroshi = $registry->tokensFor(LayoutProfile::Kiroshi, ThemeTokenSchema::V2_0);
         $semantic = $registry->tokensFor(LayoutProfile::Semantic, ThemeTokenSchema::V2_0);
@@ -32,12 +32,12 @@ final class LineagePresetRegistryTest extends TestCase
     #[Test]
     public function schemaTwoIncludesMotionAndFocusRingTokens(): void
     {
-        $registry = new LineagePresetRegistry();
+        $registry = new PresetRegistry();
         $tokens = $registry->tokensFor(LayoutProfile::Semantic, ThemeTokenSchema::V2_0);
 
         self::assertArrayHasKey('--ui-motion-duration-normal', $tokens);
         self::assertArrayHasKey('--ui-shadow-md', $tokens);
         self::assertArrayHasKey('--ui-focus-ring-width', $tokens);
-        self::assertSame($tokens['--ui-motion-duration-normal'], $tokens['--ui-transition-duration']);
+        self::assertArrayNotHasKey('--ui-transition-duration', $tokens);
     }
 }

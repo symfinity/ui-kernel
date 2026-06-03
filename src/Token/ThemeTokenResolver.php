@@ -8,20 +8,20 @@ final class ThemeTokenResolver
 {
     public function __construct(
         private readonly SemanticColorMap $semanticColorMap = new SemanticColorMap(),
-        private readonly LineagePresetRegistry $lineagePresets = new LineagePresetRegistry(),
+        private readonly PresetRegistry $presetRegistry = new PresetRegistry(),
     ) {
     }
 
-    public function resolve(FlavourThemeConfig $config, ?UserTokenSet $userTokens = null): DesignTokenSet
+    public function resolve(ThemeConfig $config, ?UserTokenSet $userTokens = null): DesignTokenSet
     {
         $schemaVersion = $config->schemaVersion();
-        $colors = $this->semanticColorMap->resolve($config->colorRefs());
+        $colors = $this->semanticColorMap->resolve($config->colorRefs(), $config->paletteRecipe());
 
         if ($schemaVersion === ThemeTokenSchema::V1_0) {
             $colors = array_intersect_key($colors, array_flip(ThemeTokenSchema::COLOR_KEYS_V1));
         }
 
-        $layout = $this->lineagePresets->tokensFor($config->layout(), $schemaVersion);
+        $layout = $this->presetRegistry->tokensFor($config->layout(), $schemaVersion);
         $merged = [...$layout, ...$colors];
 
         if ($userTokens !== null && !$userTokens->isEmpty()) {
@@ -40,7 +40,7 @@ final class ThemeTokenResolver
      *
      * @return array<string, string>
      */
-    private static function overlayTokens(array $merged, FlavourThemeConfig $config): array
+    private static function overlayTokens(array $merged, ThemeConfig $config): array
     {
         return [
             '--ui-overlay-surface' => $merged['--ui-color-surface-elevated'],

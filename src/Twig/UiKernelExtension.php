@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Twig;
 
 use Symfinity\UiKernel\Css\CssGenerator;
-use Symfinity\UiKernel\Flavour\FlavourRegistry;
+use Symfinity\UiKernel\Theme\ThemeRegistry;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -13,7 +13,7 @@ final class UiKernelExtension extends AbstractExtension
 {
     public function __construct(
         private readonly CssGenerator $cssGenerator,
-        private readonly FlavourRegistry $flavourRegistry,
+        private readonly ThemeRegistry $themeRegistry,
     ) {
     }
 
@@ -26,11 +26,11 @@ final class UiKernelExtension extends AbstractExtension
 
     public function renderCss(?string $themeId = null): string
     {
-        $flavour = $this->flavourRegistry->resolve($themeId);
+        $theme = $this->themeRegistry->resolve($themeId);
 
         return sprintf(
             "<style id=\"ui-kernel-theme-css\">\n%s\n</style>",
-            $this->cssGenerator->forFlavour($flavour),
+            $this->cssGenerator->forTheme($theme),
         );
     }
 }

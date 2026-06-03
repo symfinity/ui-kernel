@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Symfinity\UiKernel\Flavour;
+namespace Symfinity\UiKernel\Theme;
 
-use Symfinity\UiKernel\Token\LineagePresetRegistry;
+use Symfinity\UiKernel\Token\PresetRegistry;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 /**
- * Design lineage identifier — spacing, radius, type, motion presets.
+ * Design preset identifier — spacing, radius, type, motion presets.
  */
 enum LayoutProfile
 {
@@ -21,6 +21,6 @@ enum LayoutProfile
      */
     public function layout(string $schemaVersion = ThemeTokenSchema::V1_0): array
     {
-        return (new LineagePresetRegistry())->tokensFor($this, $schemaVersion);
+        return (new PresetRegistry())->tokensFor($this, $schemaVersion);
     }
 }

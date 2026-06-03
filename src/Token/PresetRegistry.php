@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
-use Symfinity\UiKernel\Flavour\LayoutProfile;
+use Symfinity\UiKernel\Theme\LayoutProfile;
 
 /**
- * Lineage presets — typography, rhythm, motion (009).
+ * Presets — typography, rhythm, motion (009).
  */
-final class LineagePresetRegistry
+final class PresetRegistry
 {
     /**
      * @return array<string, string>
      */
-    public function tokensFor(LayoutProfile $lineage, string $schemaVersion = ThemeTokenSchema::V2_0): array
+    public function tokensFor(LayoutProfile $preset, string $schemaVersion = ThemeTokenSchema::V2_0): array
     {
-        $base = match ($lineage) {
+        $base = match ($preset) {
             LayoutProfile::Kiroshi => [
                 '--ui-space-xs' => '0.125rem',
                 '--ui-space-sm' => '0.375rem',
@@ -30,7 +30,7 @@ final class LineagePresetRegistry
                 '--ui-font-size-sm' => '0.8125rem',
                 '--ui-font-size-md' => '0.9375rem',
                 '--ui-font-size-lg' => '1.125rem',
-                '--ui-transition-duration' => '150ms',
+                '--ui-motion-duration-normal' => '150ms',
             ],
             LayoutProfile::Semantic => [
                 '--ui-space-xs' => '0.25rem',
@@ -45,7 +45,7 @@ final class LineagePresetRegistry
                 '--ui-font-size-sm' => '0.875rem',
                 '--ui-font-size-md' => '1rem',
                 '--ui-font-size-lg' => '1.25rem',
-                '--ui-transition-duration' => '200ms',
+                '--ui-motion-duration-normal' => '200ms',
             ],
             LayoutProfile::Utility => [
                 '--ui-space-xs' => '0.25rem',
@@ -60,7 +60,7 @@ final class LineagePresetRegistry
                 '--ui-font-size-sm' => '0.875rem',
                 '--ui-font-size-md' => '0.875rem',
                 '--ui-font-size-lg' => '1.125rem',
-                '--ui-transition-duration' => '150ms',
+                '--ui-motion-duration-normal' => '150ms',
             ],
         };
 
@@ -68,7 +68,7 @@ final class LineagePresetRegistry
             return $base;
         }
 
-        $v2 = match ($lineage) {
+        $v2 = match ($preset) {
             LayoutProfile::Kiroshi => [
                 '--ui-space-2xl' => '2.75rem',
                 '--ui-radius-xs' => '0',
@@ -146,9 +146,6 @@ final class LineagePresetRegistry
             ],
         };
 
-        $merged = [...$base, ...$v2];
-        $merged['--ui-transition-duration'] = $merged['--ui-motion-duration-normal'];
-
-        return $merged;
+        return [...$base, ...$v2];
     }
 }

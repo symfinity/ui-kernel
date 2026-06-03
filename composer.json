@@ -1,6 +1,6 @@
 {
     "name": "symfinity/ui-kernel",
-    "description": "Chameleon UI kernel — design tokens, flavours, and role CSS generation",
+    "description": "Chameleon UI kernel — design tokens, themes, and role CSS generation",
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
@@ -9,12 +9,12 @@
         "symfony/dependency-injection": "^6.4||^7.0||^8.0",
         "symfony/framework-bundle": "^6.4||^7.0||^8.0",
         "symfony/http-kernel": "^6.4||^7.0||^8.0",
+        "symfony/yaml": "^6.4||^7.0||^8.0",
         "symfony/twig-bundle": "^6.4||^7.0||^8.0",
         "twig/twig": "^3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.5 || ^11.0",
-        "symfony/yaml": "^6.4||^7.0||^8.0"
+        "phpunit/phpunit": "^10.5 || ^11.0"
     },
     "autoload": {
         "psr-4": {

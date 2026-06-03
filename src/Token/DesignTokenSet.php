@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
-use InvalidArgumentException;
-
 final readonly class DesignTokenSet
 {
     /**
@@ -46,8 +44,16 @@ final readonly class DesignTokenSet
     {
         foreach (ThemeTokenSchema::requiredKeys($schemaVersion) as $key) {
             if (!isset($tokens[$key]) || $tokens[$key] === '') {
-                throw new InvalidArgumentException(sprintf('Missing required theme token "%s" for schema %s.', $key, $schemaVersion));
+                ThemeErrorCatalog::throw(
+                    ThemeErrorCatalog::MISSING_REQUIRED_TOKEN,
+                    sprintf('Missing required theme token "%s" for schema %s.', $key, $schemaVersion),
+                );
             }
+        }
+
+        foreach ($tokens as $key => $value) {
+            CanonicalTokenPolicy::assertCanonicalKey($key);
+            TokenValueValidator::assertValid($key, $value);
         }
     }
 }

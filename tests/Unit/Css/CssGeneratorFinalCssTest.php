@@ -11,8 +11,8 @@ use RecursiveIteratorIterator;
 use RegexIterator;
 use SplFileInfo;
 use Symfinity\UiKernel\Css\CssGenerator;
-use Symfinity\UiKernel\Flavour\FlavourCatalog;
-use Symfinity\UiKernel\Token\FlavourThemeConfig;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
+use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class CssGeneratorFinalCssTest extends TestCase
@@ -22,21 +22,21 @@ final class CssGeneratorFinalCssTest extends TestCase
     #[Test]
     public function overlaySnapshotMatchesSemanticFixture(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
         $this->assertMatchesSnapshotFixture('css-016-overlay-semantic.css', $css);
     }
 
     #[Test]
     public function overlaySnapshotMatchesUtilityFixture(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('utility'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('utility'));
         $this->assertMatchesSnapshotFixture('css-016-overlay-utility.css', $css);
     }
 
     #[Test]
     public function semanticOverlayTokensAndNativeSelectorsPresent(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
         self::assertStringContainsString('--ui-overlay-surface:', $css);
         self::assertStringContainsString('--ui-backdrop-color:', $css);
@@ -48,7 +48,7 @@ final class CssGeneratorFinalCssTest extends TestCase
     #[Test]
     public function overlayRulesUseProfileZIndexVariablesNotLiterals(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
         self::assertStringContainsString('z-index: var(--ui-z-modal)', $css);
         self::assertStringContainsString('z-index: var(--ui-z-popover)', $css);
@@ -57,35 +57,35 @@ final class CssGeneratorFinalCssTest extends TestCase
     }
 
     #[Test]
-    public function utilityFlavourOmitsScrollTimeline(): void
+    public function utilityThemeOmitsScrollTimeline(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('utility'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('utility'));
 
         self::assertStringNotContainsString('animation-timeline', $css);
     }
 
     #[Test]
-    public function semanticFlavourWithScrollMotionIncludesViewTimeline(): void
+    public function semanticThemeWithScrollMotionIncludesViewTimeline(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
         self::assertStringContainsString('animation-timeline: view()', $css);
         self::assertStringContainsString('[data-ui-scroll-reveal]', $css);
     }
 
     #[Test]
-    public function scrollMotionFlagOnlyOnSemanticFlavours(): void
+    public function scrollMotionFlagOnlyOnSemanticThemes(): void
     {
-        self::assertTrue(FlavourCatalog::get('semantic')->scrollMotion());
-        self::assertTrue(FlavourCatalog::get('semantic-dark')->scrollMotion());
-        self::assertFalse(FlavourCatalog::get('utility')->scrollMotion());
-        self::assertFalse(FlavourCatalog::get('default')->scrollMotion());
+        self::assertTrue(ThemeCatalog::get('semantic')->scrollMotion());
+        self::assertTrue(ThemeCatalog::get('semantic-dark')->scrollMotion());
+        self::assertFalse(ThemeCatalog::get('utility')->scrollMotion());
+        self::assertFalse(ThemeCatalog::get('default')->scrollMotion());
     }
 
     #[Test]
     public function hasPatternsAndContentVisibilityPresent(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('utility'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('utility'));
 
         self::assertStringContainsString('[data-ui-role="field-group"]:has(:invalid)', $css);
         self::assertStringContainsString('[data-ui-defer="cv"]', $css);
@@ -95,7 +95,7 @@ final class CssGeneratorFinalCssTest extends TestCase
     #[Test]
     public function anchorMenuRulesIncludeSupportsFallback(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('semantic'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
         self::assertStringContainsString('anchor-name: --ui-menu-trigger', $css);
         self::assertStringContainsString('position-anchor: --ui-menu-trigger', $css);
@@ -103,9 +103,50 @@ final class CssGeneratorFinalCssTest extends TestCase
     }
 
     #[Test]
+    public function adaptiveThemePairEmitsPrefersColorSchemeBlock(): void
+    {
+        $css = (new CssGenerator())->forAdaptiveThemePair(
+            ThemeCatalog::get('default'),
+            ThemeCatalog::get('dark'),
+        );
+
+        self::assertStringContainsString('ui-kernel adaptive:default+dark', $css);
+        self::assertStringContainsString('html[data-theme="default"]', $css);
+        self::assertStringContainsString('@media (prefers-color-scheme: dark)', $css);
+        self::assertStringContainsString('color-scheme: light dark', $css);
+        self::assertStringContainsString('dialog::backdrop', $css);
+        self::assertStringNotContainsString('[data-theme="dark"] {', $css);
+    }
+
+    #[Test]
+    public function skeletonUsesSkeletonMotionToken(): void
+    {
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
+
+        self::assertStringContainsString(
+            'animation: ui-shimmer var(--ui-motion-duration-skeleton)',
+            $css,
+        );
+        self::assertStringNotContainsString(
+            'animation: ui-shimmer var(--ui-motion-duration-slow)',
+            $css,
+        );
+    }
+
+    #[Test]
+    public function popoverAnchorRulesTargetOpenStateOnly(): void
+    {
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
+
+        self::assertStringContainsString(':popover-open[data-ui-role="popover"]', $css);
+        self::assertStringContainsString('position-anchor: --ui-menu-trigger', $css);
+        self::assertStringContainsString('[data-ui-role="menu"]:not([popover])', $css);
+    }
+
+    #[Test]
     public function reducedMotionDisablesSkeletonAnimation(): void
     {
-        $css = (new CssGenerator())->forFlavour(FlavourCatalog::get('default'));
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
 
         self::assertStringContainsString('@media (prefers-reduced-motion: reduce)', $css);
         self::assertMatchesRegularExpression(
@@ -115,9 +156,9 @@ final class CssGeneratorFinalCssTest extends TestCase
     }
 
     #[Test]
-    public function flavourPhpDefinitionsDoNotEmbedZIndexLiterals(): void
+    public function themePhpDefinitionsDoNotEmbedZIndexLiterals(): void
     {
-        $configPath = dirname(__DIR__, 3) . '/src/Token/FlavourThemeConfig.php';
+        $configPath = dirname(__DIR__, 3) . '/src/Token/ThemeConfig.php';
         $source = file_get_contents($configPath);
         self::assertIsString($source);
         self::assertDoesNotMatchRegularExpression('/z-index:\s*\d+/', $source);
@@ -152,10 +193,10 @@ final class CssGeneratorFinalCssTest extends TestCase
     }
 
     #[Test]
-    public function allFlavoursIncludeOverlayTokens(): void
+    public function allThemesIncludeOverlayTokens(): void
     {
         foreach (['default', 'dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
-            $config = FlavourThemeConfig::get($id);
+            $config = ThemeConfig::get($id);
             $tokens = (new \Symfinity\UiKernel\Token\ThemeTokenResolver())->resolve($config)->all();
             foreach (ThemeTokenSchema::OVERLAY_KEYS_V2_ADDITIVE as $key) {
                 self::assertArrayHasKey($key, $tokens, $id . ' missing ' . $key);

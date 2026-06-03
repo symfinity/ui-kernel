@@ -7,8 +7,9 @@ namespace Symfinity\UiKernel\Tests\Unit\Css;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Css\CssGenerator;
-use Symfinity\UiKernel\Flavour\FlavourCatalog;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Profile\SystemProfile;
+use Symfinity\UiKernel\Token\ButtonStateDerivation;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class SystemProfileCssTest extends TestCase
@@ -16,8 +17,8 @@ final class SystemProfileCssTest extends TestCase
     #[Test]
     public function schemaTwoIncludesProfileGlobalsAndLayoutRoles(): void
     {
-        $css = (new CssGenerator())->forFlavour(
-            FlavourCatalog::get('semantic'),
+        $css = (new CssGenerator())->forTheme(
+            ThemeCatalog::get('semantic'),
             ThemeTokenSchema::V2_0,
         );
 
@@ -40,8 +41,8 @@ final class SystemProfileCssTest extends TestCase
     #[Test]
     public function schemaOneOmitsProfileGlobalsAndLayoutRoles(): void
     {
-        $css = (new CssGenerator())->forFlavour(
-            FlavourCatalog::get('semantic'),
+        $css = (new CssGenerator())->forTheme(
+            ThemeCatalog::get('semantic'),
             ThemeTokenSchema::V1_0,
         );
 
@@ -55,10 +56,10 @@ final class SystemProfileCssTest extends TestCase
     public function customProfileUsesLiteralPxInMediaQueries(): void
     {
         $profile = SystemProfile::fromConfig(['breakpoints' => ['md' => 800]]);
-        $flavour = FlavourCatalog::get('default');
+        $theme = ThemeCatalog::get('default');
         $css = (new CssGenerator())->forResolvedTokens(
-            $flavour->id(),
-            $flavour->tokens(),
+            $theme->id(),
+            $theme->tokens(),
             ThemeTokenSchema::V2_0,
             $profile,
         );
@@ -70,8 +71,8 @@ final class SystemProfileCssTest extends TestCase
     #[Test]
     public function reducedMotionDisablesSkeletonShimmer(): void
     {
-        $css = (new CssGenerator())->forFlavour(
-            FlavourCatalog::get('default'),
+        $css = (new CssGenerator())->forTheme(
+            ThemeCatalog::get('default'),
             ThemeTokenSchema::V2_0,
         );
 
@@ -84,10 +85,13 @@ final class SystemProfileCssTest extends TestCase
     public function cacheKeyPartsIncludeProfileIdAndHash(): void
     {
         $profile = SystemProfile::chameleonDefault();
-        $parts = CssGenerator::cacheKeyParts('semantic', 'abc', ThemeTokenSchema::V2_0, $profile);
+        $preset = \Symfinity\UiKernel\Token\ThemeConfig::get('semantic')->presetHash();
+        $parts = CssGenerator::cacheKeyParts('semantic', 'abc', ThemeTokenSchema::V2_0, $profile, $preset);
 
-        self::assertSame('semantic', $parts['flavourId']);
+        self::assertSame('semantic', $parts['themeId']);
         self::assertSame('chameleon-default', $parts['systemProfileId']);
         self::assertSame($profile->hash(), $parts['profileHash']);
+        self::assertSame($preset, $parts['presetHash']);
+        self::assertSame(ButtonStateDerivation::ALGORITHM_VERSION, $parts['roleRulesVersion']);
     }
 }

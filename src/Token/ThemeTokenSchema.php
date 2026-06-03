@@ -37,7 +37,7 @@ final class ThemeTokenSchema
         '--ui-font-size-sm',
         '--ui-font-size-md',
         '--ui-font-size-lg',
-        '--ui-transition-duration',
+        '--ui-motion-duration-normal',
     ];
 
     /** @var list<string> */
@@ -77,7 +77,6 @@ final class ThemeTokenSchema
         '--ui-line-height-normal',
         '--ui-line-height-relaxed',
         '--ui-motion-duration-fast',
-        '--ui-motion-duration-normal',
         '--ui-motion-duration-slow',
         '--ui-motion-duration-skeleton',
         '--ui-motion-easing-standard',

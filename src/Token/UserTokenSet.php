@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
-use InvalidArgumentException;
-
 /**
- * Partial integrator overrides merged after flavour resolution.
+ * Partial integrator overrides merged after theme resolution.
  */
 final class UserTokenSet
 {
@@ -18,11 +16,13 @@ final class UserTokenSet
     {
         foreach ($tokens as $key => $value) {
             if (!is_string($key) || !str_starts_with($key, '--ui-')) {
-                throw new InvalidArgumentException(sprintf('Invalid user token key "%s".', $key));
+                ThemeErrorCatalog::throw(
+                    ThemeErrorCatalog::UNKNOWN_TOKEN_KEY,
+                    sprintf('Invalid user token key "%s".', $key),
+                );
             }
-            if ($value === '') {
-                throw new InvalidArgumentException(sprintf('User token "%s" must not be empty.', $key));
-            }
+            CanonicalTokenPolicy::assertCanonicalKey($key);
+            TokenValueValidator::assertValid($key, $value);
         }
     }
 
@@ -50,11 +50,10 @@ final class UserTokenSet
 
         foreach (array_keys($this->tokens) as $key) {
             if (!isset($allowed[$key])) {
-                throw new InvalidArgumentException(sprintf(
-                    'Unknown user token "%s" for schema %s.',
-                    $key,
-                    $schemaVersion,
-                ));
+                ThemeErrorCatalog::throw(
+                    ThemeErrorCatalog::UNKNOWN_TOKEN_KEY,
+                    sprintf('Unknown user token "%s" for schema %s.', $key, $schemaVersion),
+                );
             }
         }
 

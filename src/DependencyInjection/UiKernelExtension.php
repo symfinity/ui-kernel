@@ -21,7 +21,7 @@ final class UiKernelExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');
 
-        $container->setParameter('symfinity.ui_kernel.default_flavour', $config['default_flavour']);
+        $container->setParameter('symfinity.ui_kernel.default_theme', $config['default_theme']);
         $container->setParameter('symfinity.ui_kernel.schema_version', $config['schema_version']);
 
         $container->register(UserTokenSet::class)

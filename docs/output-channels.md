@@ -11,4 +11,4 @@ Normative contract: [output-channels.md](../../../../specs/symfinity/symfinity/2
 | Email | `EmailRenderer` | Horizon |
 | PDF / print | `PrintRenderer` | Horizon |
 
-`UiPage` stays transport-agnostic; add renderers without forking flavour logic.
+`UiPage` stays transport-agnostic; add renderers without forking theme logic.

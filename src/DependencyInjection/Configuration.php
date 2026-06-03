@@ -15,7 +15,7 @@ final class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
             ->children()
-                ->scalarNode('default_flavour')->defaultValue('default')->end()
+                ->scalarNode('default_theme')->defaultValue('default')->end()
                 ->scalarNode('schema_version')->defaultValue('2.0')->end()
                 ->arrayNode('user_tokens')
                     ->normalizeKeys(false)

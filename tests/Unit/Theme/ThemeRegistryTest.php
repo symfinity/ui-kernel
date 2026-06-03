@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Symfinity\UiKernel\Tests\Unit\Flavour;
+namespace Symfinity\UiKernel\Tests\Unit\Theme;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Flavour\FlavourCatalog;
-use Symfinity\UiKernel\Flavour\FlavourRegistry;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
+use Symfinity\UiKernel\Theme\ThemeRegistry;
 use Symfinity\UiKernel\Token\DesignTokenSet;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
-final class FlavourRegistryTest extends TestCase
+final class ThemeRegistryTest extends TestCase
 {
     #[Test]
     public function itRejectsIncompleteTokenMaps(): void
@@ -21,11 +21,11 @@ final class FlavourRegistryTest extends TestCase
     }
 
     #[Test]
-    public function itRegistersSixFlavoursIncludingForeignDarkVariants(): void
+    public function itRegistersSixThemesIncludingForeignDarkVariants(): void
     {
-        $registry = new FlavourRegistry();
-        self::assertCount(6, $registry->all());
-        self::assertSame('Kiroshi', $registry->get('default')->label());
+        $registry = new ThemeRegistry();
+        self::assertCount(8, $registry->all());
+        self::assertSame('Balanced', $registry->get('default')->label());
         self::assertSame('semantic-dark', $registry->get('semantic-dark')->id());
         self::assertSame('utility-dark', $registry->get('utility-dark')->id());
     }
@@ -33,14 +33,14 @@ final class FlavourRegistryTest extends TestCase
     #[Test]
     public function unknownThemeFallsBackToDefault(): void
     {
-        $registry = new FlavourRegistry();
+        $registry = new ThemeRegistry();
         self::assertSame('default', $registry->resolve('not-a-theme')->id());
     }
 
     #[Test]
-    public function defaultFlavourHasAllSchemaKeys(): void
+    public function defaultThemeHasAllSchemaKeys(): void
     {
-        $tokens = FlavourCatalog::get('default')->tokens()->all();
+        $tokens = ThemeCatalog::get('default')->tokens()->all();
         foreach (ThemeTokenSchema::REQUIRED_KEYS as $key) {
             self::assertArrayHasKey($key, $tokens);
         }
@@ -50,7 +50,7 @@ final class FlavourRegistryTest extends TestCase
     public function catalogRejectsIncompleteTokenMaps(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        new \Symfinity\UiKernel\Flavour\DefinedFlavour(
+        new \Symfinity\UiKernel\Theme\DefinedTheme(
             'broken',
             'Broken',
             \Symfinity\UiKernel\Token\ThemeTokenSchema::V1_0,
@@ -59,12 +59,13 @@ final class FlavourRegistryTest extends TestCase
     }
 
     #[Test]
-    public function defaultFlavourPreservesShowcaseColors(): void
+    public function defaultThemeResolvesGeneratedPaletteRefs(): void
     {
-        $tokens = FlavourCatalog::get('default')->tokens()->all();
+        $tokens = ThemeCatalog::get('default')->tokens()->all();
 
-        self::assertSame('#0a0a0a', $tokens['--ui-color-primary']);
-        self::assertSame('#00e5ff', $tokens['--ui-color-secondary']);
-        self::assertSame('#fcee0a', $tokens['--ui-color-surface']);
+        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $tokens['--ui-color-primary']);
+        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $tokens['--ui-color-secondary']);
+        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $tokens['--ui-color-surface']);
+        self::assertNotSame($tokens['--ui-color-primary'], $tokens['--ui-color-secondary']);
     }
 }

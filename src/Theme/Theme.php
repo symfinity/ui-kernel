@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Symfinity\UiKernel\Flavour;
+namespace Symfinity\UiKernel\Theme;
 
 use Symfinity\UiKernel\Token\DesignTokenSet;
 
-interface Flavour
+interface Theme
 {
     public function id(): string;
 

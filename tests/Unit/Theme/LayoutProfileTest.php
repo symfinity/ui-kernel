@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Symfinity\UiKernel\Tests\Unit\Flavour;
+namespace Symfinity\UiKernel\Tests\Unit\Theme;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Flavour\LayoutProfile;
+use Symfinity\UiKernel\Theme\LayoutProfile;
 
 final class LayoutProfileTest extends TestCase
 {
     #[Test]
-    public function lineagesUseDistinctLayoutRhythms(): void
+    public function presetsUseDistinctLayoutRhythms(): void
     {
         $kiroshi = LayoutProfile::Kiroshi->layout();
         $semantic = LayoutProfile::Semantic->layout();

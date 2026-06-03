@@ -27,7 +27,7 @@ final class HtmlRendererTest extends TestCase
                 'default',
                 [],
                 new UiFragment('card-gallery'),
-                ['title' => 'Gallery card', 'body' => 'Fixed component tree — only tokens and data-theme change between flavours.'],
+                ['title' => 'Gallery card', 'body' => 'Fixed component tree — only tokens and data-theme change between themes.'],
             ))
             ->add(new GenericUiComponent('alert', 'danger', [], null, [
                 'message' => 'Themes are Symfinity token packs inspired by common systems, not official Bootstrap or Tailwind.',

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Symfinity\UiKernel\Flavour;
+namespace Symfinity\UiKernel\Theme;
 
 use Symfinity\UiKernel\Token\DesignTokenSet;
-use Symfinity\UiKernel\Token\FlavourThemeConfig;
+use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemeTokenResolver;
 use Symfinity\UiKernel\Token\UserTokenSet;
 
-final readonly class DefinedFlavour implements Flavour
+final readonly class DefinedTheme implements Theme
 {
     public function __construct(
         private string $id,
@@ -21,7 +21,7 @@ final readonly class DefinedFlavour implements Flavour
     }
 
     public static function fromConfig(
-        FlavourThemeConfig $config,
+        ThemeConfig $config,
         ?ThemeTokenResolver $resolver = null,
         ?UserTokenSet $userTokens = null,
     ): self {

@@ -6,7 +6,7 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Token\FlavourThemeConfig;
+use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemeTokenResolver;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 use Symfinity\UiKernel\Token\UserTokenSet;
@@ -14,9 +14,9 @@ use Symfinity\UiKernel\Token\UserTokenSet;
 final class ThemeTokenResolverTest extends TestCase
 {
     #[Test]
-    public function itResolvesAllSchemaTwoKeysForSemanticFlavour(): void
+    public function itResolvesAllSchemaTwoKeysForSemanticTheme(): void
     {
-        $tokens = (new ThemeTokenResolver())->resolve(FlavourThemeConfig::get('semantic'))->all();
+        $tokens = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
 
         foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
             self::assertArrayHasKey($key, $tokens, $key);
@@ -25,11 +25,11 @@ final class ThemeTokenResolverTest extends TestCase
     }
 
     #[Test]
-    public function userTokenOverrideMergesOverFlavour(): void
+    public function userTokenOverrideMergesOverTheme(): void
     {
         $override = new UserTokenSet(['--ui-color-primary' => '#112233']);
         $tokens = (new ThemeTokenResolver())->resolve(
-            FlavourThemeConfig::get('semantic'),
+            ThemeConfig::get('semantic'),
             $override,
         )->all();
 
@@ -50,7 +50,7 @@ final class ThemeTokenResolverTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $override = new UserTokenSet(['--ui-color-warning' => '#112233']);
-        $base = (new ThemeTokenResolver())->resolve(FlavourThemeConfig::get('semantic'))->all();
+        $base = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
         $override->merge($base, ThemeTokenSchema::V1_0);
     }
 }
