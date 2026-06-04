@@ -12,7 +12,8 @@ use Symfinity\UiKernel\Theme\LayoutProfile;
 final class ThemeConfig
 {
     /**
-     * @param array<string, string> $colorRefs semantic role => palette ref
+     * @param array<string, string>              $colorRefs        semantic role => palette ref
+     * @param array<string, string>              $appearanceTokens CSS var => value (from YAML tokens)
      */
     public function __construct(
         private readonly string $id,
@@ -21,7 +22,8 @@ final class ThemeConfig
         private readonly MonoTone $tone,
         private readonly ThemePaletteRecipe $paletteRecipe,
         private readonly array $colorRefs,
-        private readonly string $schemaVersion = ThemeTokenSchema::V2_0,
+        private readonly array $appearanceTokens,
+        private readonly string $schemaVersion = ThemeTokenSchema::V1_0,
         private readonly bool $scrollMotion = false,
         private readonly string $backdropBlur = '0',
     ) {
@@ -65,6 +67,14 @@ final class ThemeConfig
         return $this->colorRefs;
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function appearanceTokens(): array
+    {
+        return $this->appearanceTokens;
+    }
+
     public function scrollMotion(): bool
     {
         return $this->scrollMotion;
@@ -85,6 +95,7 @@ final class ThemeConfig
             'hueBase' => $recipe->hueBase(),
             'monoTones' => $recipe->monoTones(),
             'colorRefs' => $this->colorRefs,
+            'appearanceTokens' => $this->appearanceTokens,
         ], JSON_THROW_ON_ERROR));
     }
 
@@ -101,7 +112,8 @@ final class ThemeConfig
                 $definition['tone'],
                 $definition['paletteRecipe'],
                 $definition['colors'],
-                $definition['schemaVersion'] ?? ThemeTokenSchema::V2_0,
+                $definition['appearanceTokens'],
+                $definition['schemaVersion'] ?? ThemeTokenSchema::V1_0,
                 $definition['scrollMotion'] ?? false,
                 $definition['backdropBlur'] ?? '0',
             ),
@@ -125,24 +137,18 @@ final class ThemeConfig
      */
     private static function definitions(): array
     {
-        $presets = PaletteCatalog::presets();
-        $recipes = [];
         $definitions = [];
 
-        foreach (PaletteCatalog::themes() as $theme) {
-            $preset = $theme['preset'];
-            if (!isset($recipes[$preset])) {
-                $recipes[$preset] = self::recipeForPreset($preset, $presets, $recipes);
-            }
-
+        foreach (BuiltinThemeCatalog::themes() as $theme) {
             $definitions[] = [
                 'id' => $theme['id'],
                 'label' => $theme['label'],
                 'layout' => self::layoutProfile($theme['layout']),
                 'tone' => MonoTone::from($theme['tone']),
-                'paletteRecipe' => $recipes[$preset],
+                'paletteRecipe' => self::recipeFromTheme($theme),
                 'colors' => $theme['colors'],
-                'schemaVersion' => ThemeTokenSchema::V2_0,
+                'appearanceTokens' => ThemeTokenMap::toCssVariables($theme['tokens']),
+                'schemaVersion' => ThemeTokenSchema::V1_0,
                 'scrollMotion' => $theme['scroll_motion'] ?? false,
                 'backdropBlur' => $theme['backdrop_blur'] ?? '0',
             ];
@@ -152,48 +158,11 @@ final class ThemeConfig
     }
 
     /**
-     * @param array<string, array{extends?: string, hue_base?: array<string, float>, mono_tones?: array<string, array{hue: float, saturation: float}>, hue_overrides?: array<string, float>, mono_overrides?: array<string, array{hue?: float, saturation?: float}>}> $presets
-     * @param array<string, ThemePaletteRecipe> $resolved
+     * @param array{hue_base: array<string, float>, mono_tones: array<string, array{hue: float, saturation: float}>} $theme
      */
-    private static function recipeForPreset(string $preset, array $presets, array &$resolved): ThemePaletteRecipe
+    private static function recipeFromTheme(array $theme): ThemePaletteRecipe
     {
-        if (isset($resolved[$preset])) {
-            return $resolved[$preset];
-        }
-
-        $definition = $presets[$preset] ?? null;
-        if ($definition === null) {
-            throw new \InvalidArgumentException(sprintf('Unknown preset "%s".', $preset));
-        }
-
-        if (isset($definition['hue_base'], $definition['mono_tones'])) {
-            $resolved[$preset] = new ThemePaletteRecipe($definition['hue_base'], $definition['mono_tones']);
-
-            return $resolved[$preset];
-        }
-
-        $parent = $definition['extends'] ?? null;
-        if (!is_string($parent) || $parent === '') {
-            throw new \InvalidArgumentException(sprintf('Preset "%s" must define extends or baseline values.', $preset));
-        }
-
-        $parentRecipe = self::recipeForPreset($parent, $presets, $resolved);
-        $hueBase = $parentRecipe->hueBase();
-        foreach (($definition['hue_overrides'] ?? []) as $hue => $degrees) {
-            $hueBase[$hue] = $degrees;
-        }
-
-        $monoTones = $parentRecipe->monoTones();
-        foreach (($definition['mono_overrides'] ?? []) as $tone => $params) {
-            $monoTones[$tone] = [
-                'hue' => $params['hue'] ?? $monoTones[$tone]['hue'],
-                'saturation' => $params['saturation'] ?? $monoTones[$tone]['saturation'],
-            ];
-        }
-
-        $resolved[$preset] = new ThemePaletteRecipe($hueBase, $monoTones);
-
-        return $resolved[$preset];
+        return new ThemePaletteRecipe($theme['hue_base'], $theme['mono_tones']);
     }
 
     private static function layoutProfile(string $value): LayoutProfile

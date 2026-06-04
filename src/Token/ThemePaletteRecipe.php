@@ -70,41 +70,27 @@ final class ThemePaletteRecipe
     }
 
     /**
-     * Shared baseline — used as template for built-in themes.
+     * Shared baseline recipe from the balanced lineage (default variant).
      */
     public static function baseline(): self
     {
-        $baseline = PaletteCatalog::presets()['baseline'] ?? null;
-        if (!is_array($baseline)) {
-            throw new InvalidArgumentException('Missing baseline preset in palette catalog.');
-        }
-
-        return new self(
-            hueBase: $baseline['hue_base'] ?? [],
-            monoTones: $baseline['mono_tones'] ?? [],
-        );
+        return ThemeConfig::get('default')->paletteRecipe();
     }
 
     /**
-     * @param array<string, float> $hueOverrides
-     * @param array<string, array{hue?: float, saturation?: float}> $monoOverrides
+     * @param array<string, float> $hueBase full hue_base map (replaces baseline entirely)
+     * @param array<string, array{hue?: float, saturation?: float}> $monoTones full mono_tones map
      */
-    public static function fromBaseline(array $hueOverrides = [], array $monoOverrides = []): self
+    public static function fromPaletteDefinition(array $hueBase, array $monoTones): self
     {
-        $base = self::baseline();
-        $hueBase = $base->hueBase;
-        foreach ($hueOverrides as $hue => $degrees) {
-            $hueBase[$hue] = $degrees;
-        }
-
-        $monoTones = $base->monoTones;
-        foreach ($monoOverrides as $spice => $params) {
-            $monoTones[$spice] = [
-                'hue' => $params['hue'] ?? $monoTones[$spice]['hue'],
-                'saturation' => $params['saturation'] ?? $monoTones[$spice]['saturation'],
+        $normalized = [];
+        foreach ($monoTones as $tone => $params) {
+            $normalized[$tone] = [
+                'hue' => (float) ($params['hue'] ?? 0.0),
+                'saturation' => (float) ($params['saturation'] ?? 0.0),
             ];
         }
 
-        return new self($hueBase, $monoTones);
+        return new self($hueBase, $normalized);
     }
 }

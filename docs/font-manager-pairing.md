@@ -1,6 +1,6 @@
 # Font-manager pairing (optional)
 
-Normative contract: [font-manager-pairing](../../../../specs/symfinity/symfinity/9-ui-kernel-theme-tokens/contracts/font-manager-pairing.md).
+Normative contract: font-manager-pairing.
 
 ## Kernel default
 
@@ -9,7 +9,7 @@ Normative contract: [font-manager-pairing](../../../../specs/symfinity/symfinity
 - `--ui-font-family-sans`
 - `--ui-font-family-mono`
 
-Values come from [PresetRegistry](../src/Token/PresetRegistry.php) — **system stacks only** (see [typography contract](../../../../specs/symfinity/symfinity/9-ui-kernel-theme-tokens/contracts/typography.md)).
+Values come from [PresetRegistry](../src/Token/PresetRegistry.php) — **system stacks only** (see typography contract).
 
 ## When font-manager is installed
 
@@ -27,4 +27,4 @@ Dogfood `/kernel` and consumer apps **MUST** remain legible with system stacks �
 
 - Runtime auto-detect of font-manager
 - Flex recipe requiring font-manager
-- font-manager port (see [font-manager-intake](../../../../specs/symfinity/symfinity/intake/font-manager-intake.md))
+- font-manager port (see font-manager-intake)

@@ -1,6 +1,6 @@
 # Output channels (package index)
 
-Normative contract: [output-channels.md](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/output-channels.md).
+Normative contract: output-channels.md.
 
 | Channel | Renderer | 002 |
 |---------|----------|-----|

@@ -15,11 +15,11 @@ use Symfinity\UiKernel\Token\ThemeTokenSchema;
 final class SystemProfileCssTest extends TestCase
 {
     #[Test]
-    public function schemaTwoIncludesProfileGlobalsAndLayoutRoles(): void
+    public function schemaOneIncludesProfileGlobalsAndLayoutRoles(): void
     {
         $css = (new CssGenerator())->forTheme(
             ThemeCatalog::get('semantic'),
-            ThemeTokenSchema::V2_0,
+            ThemeTokenSchema::V1_0,
         );
 
         self::assertStringContainsString('--ui-z-dropdown: 1000', $css);
@@ -39,20 +39,6 @@ final class SystemProfileCssTest extends TestCase
     }
 
     #[Test]
-    public function schemaOneOmitsProfileGlobalsAndLayoutRoles(): void
-    {
-        $css = (new CssGenerator())->forTheme(
-            ThemeCatalog::get('semantic'),
-            ThemeTokenSchema::V1_0,
-        );
-
-        self::assertStringNotContainsString('--ui-z-modal:', $css);
-        self::assertStringNotContainsString('@keyframes ui-shimmer', $css);
-        self::assertStringNotContainsString('[data-ui-role="grid"]', $css);
-        self::assertStringNotContainsString('[data-ui-role="skeleton"]', $css);
-    }
-
-    #[Test]
     public function customProfileUsesLiteralPxInMediaQueries(): void
     {
         $profile = SystemProfile::fromConfig(['breakpoints' => ['md' => 800]]);
@@ -60,7 +46,7 @@ final class SystemProfileCssTest extends TestCase
         $css = (new CssGenerator())->forResolvedTokens(
             $theme->id(),
             $theme->tokens(),
-            ThemeTokenSchema::V2_0,
+            ThemeTokenSchema::V1_0,
             $profile,
         );
 
@@ -73,7 +59,7 @@ final class SystemProfileCssTest extends TestCase
     {
         $css = (new CssGenerator())->forTheme(
             ThemeCatalog::get('default'),
-            ThemeTokenSchema::V2_0,
+            ThemeTokenSchema::V1_0,
         );
 
         self::assertStringContainsString('@media (prefers-reduced-motion: reduce)', $css);
@@ -86,7 +72,7 @@ final class SystemProfileCssTest extends TestCase
     {
         $profile = SystemProfile::chameleonDefault();
         $preset = \Symfinity\UiKernel\Token\ThemeConfig::get('semantic')->presetHash();
-        $parts = CssGenerator::cacheKeyParts('semantic', 'abc', ThemeTokenSchema::V2_0, $profile, $preset);
+        $parts = CssGenerator::cacheKeyParts('semantic', 'abc', ThemeTokenSchema::V1_0, $profile, $preset);
 
         self::assertSame('semantic', $parts['themeId']);
         self::assertSame('chameleon-default', $parts['systemProfileId']);

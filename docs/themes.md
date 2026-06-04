@@ -2,33 +2,46 @@
 
 Symfony **Twig theme** (template paths, `twig.theme` in FrameworkBundle) is unrelated to Chameleon **UI Kernel themes** (`data-theme`, `ThemeRegistry`). See [Symfony Twig theming](https://symfony.com/doc/current/templates.html#twig-theme-configuration).
 
-Normative contracts: [themes](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/themes.md), [baseline-themes](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/baseline-themes.md), [theme-token-engine](../../../../specs/symfinity/symfinity/9-ui-kernel-theme-tokens/contracts/theme-token-engine.md).
+Normative contracts: [theme-vocabulary](../../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/theme-vocabulary.md), themes, baseline-themes, theme-token-engine.
+
+## Config SSOT (YAML)
+
+| File | Role |
+|------|------|
+| `config/packages/symfinity_ui_kernel.yaml` | `contract.palette`, `generator.palette` |
+| `config/themes/*.yaml` | `symfinity_ui_kernel.themes` — eight built-ins across four files |
+| App `config/packages/symfinity_ui_kernel.yaml` | `default_theme`, `user_tokens`, `system_profile` only |
+
+See [configuration.md](configuration.md).
 
 ## SSOT (code)
 
 | File | Role |
 |------|------|
-| `src/Token/ThemeConfig.php` | Built-in theme ids, labels, preset, tone, **palette refs** + **`ThemePaletteRecipe`** per theme |
+| `src/Token/BuiltinThemeCatalog.php` | Loads `symfinity_ui_kernel.themes` from `config/themes/*.yaml` via `ThemeYamlNormalizer` |
+| `src/Token/PaletteCatalog.php` | Palette contract + `lineages()` donors |
+| `src/Token/ThemeConfig.php` | Built-in theme ids, labels, tone, **palette refs** + **`ThemePaletteRecipe`** per variant |
 | `src/Token/ThemePaletteRecipe.php` | Per-theme hue bases + mono tone tints (light/dark differ per theme id) |
 | `src/Token/PaletteScaleAnchors.php` | Optional sparse hex overrides (empty by default) |
 | `src/Token/PaletteRefGrammar.php` | Validates contract refs (018) |
 | `src/Token/PaletteGenerator.php` | Resolves refs using the active theme recipe (shared lightness curve) |
-| `src/Token/ThemeTokenResolver.php` | Merge preset presets + semantic colours → `DesignTokenSet` |
-| `src/Token/PresetRegistry.php` | Kiroshi / Semantic / Utility — space, radius, type, shadow, motion |
+| `src/Token/ThemeTokenMap.php` | Short YAML keys ↔ `--ui-*`; validates lineage `tokens` |
+| `src/Token/ThemeTokenResolver.php` | Merge YAML appearance tokens + semantic colours → `DesignTokenSet` |
+| `src/Token/PresetRegistry.php` | Fallback layout tokens when appearance map is empty (tests / legacy) |
 | `src/Theme/ThemeCatalog.php` | Loads configs through resolver → `DefinedTheme` |
 | `src/Theme/LayoutProfile.php` | Layout preset enum; delegates layout tokens to registry |
 | `src/Theme/DefinedTheme.php` | Resolved theme + schema version |
 | `src/Theme/ThemeRegistry.php` | Runtime registry (optional `UserTokenSet` merge) |
-| `src/Token/ThemeTokenSchema.php` | Required keys for schema `1.0` / `2.0` (incl. `--ui-overlay-*`, `--ui-backdrop-*` at **2.0**) |
+| `src/Token/ThemeTokenSchema.php` | Required keys for schema `1.0` only |
 | `src/Profile/SystemProfile.php` | Structural breakpoints, columns, container widths (default `chameleon-default`) |
 | `src/Profile/SystemProfileRegistry.php` | Resolves profile from `symfinity.ui_kernel.system_profile` config |
-| `src/Css/CssGenerator.php` | Theme vars + profile z-index/keyframes + layout roles at schema `2.0` |
+| `src/Css/CssGenerator.php` | Theme vars + profile z-index/keyframes + layout roles |
 
-Add or change a theme in **`ThemeConfig` only** — palette refs, **`paletteRecipe()`** (hue bases + mono tone params), not raw hex. The same ref (e.g. `blue.600`) resolves differently per theme. Optional sparse overrides: `PaletteScaleAnchors`. Inspired-by preset lives in this doc only.
+Add or change a **built-in** in `config/themes/{lineage}.yaml`: shared **`palette`** (`hues`, `mono`), grouped lineage **`tokens`**, and per-variant **`variants.*`** (`label`, `tone`, nested `colors`, optional `extends`, `scroll_motion`, `backdrop_blur`). Values in `colors` are palette refs only — no raw hex. See `config/themes/README.md`.
 
 ## System profile (structural layout)
 
-Appearance tokens stay under **`LayoutProfile`** / theme resolver (**009**). Breakpoints, z-index ladder, global keyframes, and schema `2.0` layout roles (`grid`, `stack`, `skeleton`) come from **`SystemProfile`** — normative contract [system-profile](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/system-profile.md).
+Appearance tokens stay under theme YAML / **`LayoutProfile`** fallback (**009**). Breakpoints, z-index ladder, global keyframes, and layout roles (`grid`, `stack`, `skeleton`) come from **`SystemProfile`** — normative contract system-profile.
 
 Override breakpoint px or container max-widths via config (not `user_tokens`):
 
@@ -46,11 +59,11 @@ Light/dark pairs share one `LayoutProfile`; **semantic colour refs** differ betw
 
 ## Schema
 
-Built-in themes target **schema `2.0`** (tertiary, warning, info, focus, overlay, skeleton, shadows, motion, focus-ring tokens). `CssGenerator` accepts `schemaVersion` for compatibility snapshots.
+Built-in themes target **schema `1.0`** (full colour, layout, overlay, motion, focus-ring tokens). `CssGenerator` rejects unknown schema versions.
 
 ### Overlay tokens (**016**)
 
-Resolved per theme (not palette refs) — see [native-overlay-css](../../../../specs/symfinity/symfinity/16-ui-kernel-final-css/contracts/native-overlay-css.md):
+Resolved per theme (not palette refs) — see native-overlay-css:
 
 | Token | Source |
 |-------|--------|
@@ -69,7 +82,7 @@ Z-index for modals/popovers uses profile `--ui-z-*` only — never literals in t
 | `semantic`, `semantic-dark` | `true` — emits `[data-ui-scroll-reveal]` scroll-timeline rules |
 | All others | `false` |
 
-Disabled under `prefers-reduced-motion: reduce`. Normative: [scroll-and-loading-css](../../../../specs/symfinity/symfinity/16-ui-kernel-final-css/contracts/scroll-and-loading-css.md).
+Disabled under `prefers-reduced-motion: reduce`. Normative: scroll-and-loading-css.
 
 ## User overrides
 
@@ -86,7 +99,7 @@ symfinity:
             '--ui-color-secondary': '#6c757d'
 ```
 
-Quickstart: [018 palette SSOT quickstart](../../../../specs/symfinity/symfinity/18-ui-kernel-palette-ssot/quickstart.md).
+Quickstart: 018 palette SSOT quickstart.
 
 ## Layout profiles (lineage)
 
@@ -141,7 +154,7 @@ Kiroshi (`default` / `dark`) keeps the neon Night City palette; `tertiary` uses 
 
 ## Demo page choreography (layout roles)
 
-Normative selectors: [role-rules](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/role-rules.md) schema **2.0** · token `--ui-grid-gap` in [theme-token-schema](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/theme-token-schema.md).
+Normative selectors: role-rules schema **2.0** · token `--ui-grid-gap` in theme-token-schema.
 
 | Role | CSS in `CssGenerator` | Twig in `ux-blocks-core` | Demo usage |
 |------|-------------------------|--------------------------|------------|
@@ -153,7 +166,7 @@ Normative selectors: [role-rules](../../../../specs/symfinity/symfinity/2-ui-ker
 
 **MUST NOT** duplicate grid/stack/nav spacing in demo `extra_styles` when a layout role covers it. Acceptable demo-only CSS: theme-jump pill chrome (`.demo-theme-jump`), kernel overlay fixture helpers (menu shell, scroll spacer).
 
-**Component block rhythm:** every `[data-ui-role]` root defaults to `margin-block-end: var(--ui-space-md)` (Kiroshi `0.625rem`) — see [rhythm contract](../../../../specs/symfinity/symfinity/9-ui-kernel-theme-tokens/contracts/rhythm.md) § Component block rhythm. Stacks/grids use `gap` for children; nested roles inside `field`/`alert`/`card` are exempt.
+**Component block rhythm:** every `[data-ui-role]` root defaults to `margin-block-end: var(--ui-space-md)` (Kiroshi `0.625rem`) — see rhythm contract § Component block rhythm. Stacks/grids use `gap` for children; nested roles inside `field`/`alert`/`card` are exempt.
 
 **Still planned (registry):** `skeleton` Twig component — CSS exists; loading demo uses raw hooks.
 

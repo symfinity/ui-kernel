@@ -9,7 +9,7 @@ use Symfony\Component\Yaml\Yaml;
 final class PaletteCatalog
 {
     /** @var array<string, mixed>|null */
-    private static ?array $config = null;
+    private static ?array $referenceConfig = null;
 
     /**
      * @return list<int>
@@ -17,7 +17,7 @@ final class PaletteCatalog
     public static function levels(): array
     {
         /** @var list<int> $levels */
-        $levels = self::config()['palette_contract']['levels'];
+        $levels = self::contract()['levels'];
 
         return $levels;
     }
@@ -28,7 +28,7 @@ final class PaletteCatalog
     public static function alphaPercent(): array
     {
         /** @var list<int> $alpha */
-        $alpha = self::config()['palette_contract']['alpha_percent'];
+        $alpha = self::contract()['alpha'];
 
         return $alpha;
     }
@@ -38,10 +38,7 @@ final class PaletteCatalog
      */
     public static function hueFamilies(): array
     {
-        /** @var list<string> $hues */
-        $hues = self::config()['palette_contract']['hue_families'];
-
-        return $hues;
+        return self::hues();
     }
 
     /**
@@ -50,7 +47,7 @@ final class PaletteCatalog
     public static function hues(): array
     {
         /** @var list<string> $hues */
-        $hues = self::config()['palette_contract']['hues'];
+        $hues = self::contract()['hues'];
 
         return $hues;
     }
@@ -61,7 +58,7 @@ final class PaletteCatalog
     public static function forbiddenHues(): array
     {
         /** @var list<string> $hues */
-        $hues = self::config()['palette_contract']['forbidden_hues'];
+        $hues = self::contract()['forbidden_hues'];
 
         return $hues;
     }
@@ -71,10 +68,10 @@ final class PaletteCatalog
      */
     public static function monoTones(): array
     {
-        /** @var list<string> $spices */
-        $spices = self::config()['palette_contract']['mono_tones'];
+        /** @var list<string> $tones */
+        $tones = self::contract()['mono_tones'];
 
-        return $spices;
+        return $tones;
     }
 
     /**
@@ -82,8 +79,9 @@ final class PaletteCatalog
      */
     public static function rampLevels(): array
     {
+        $generator = self::generator();
         /** @var list<int> $levels */
-        $levels = self::config()['palette_generator']['ramp_levels'];
+        $levels = $generator['ramp_levels'] ?? self::levels();
 
         return $levels;
     }
@@ -93,10 +91,7 @@ final class PaletteCatalog
      */
     public static function levelLightness(): array
     {
-        /** @var array<int, float> $levels */
-        $levels = self::config()['palette_generator']['level_lightness'];
-
-        return $levels;
+        return self::levelLightnessCurve('default');
     }
 
     /**
@@ -104,48 +99,133 @@ final class PaletteCatalog
      */
     public static function levelLightnessPure(): array
     {
-        /** @var array<int, float> $levels */
-        $levels = self::config()['palette_generator']['level_lightness_pure'];
-
-        return $levels;
+        return self::levelLightnessCurve('pure');
     }
 
     /**
-     * @return array<string, array{extends?: string, hue_base?: array<string, float>, mono_tones?: array<string, array{hue: float, saturation: float}>, hue_overrides?: array<string, float>, mono_overrides?: array<string, array{hue?: float, saturation?: float}>}>
+     * @return array<int, float>
      */
-    public static function presets(): array
+    private static function levelLightnessCurve(string $key): array
     {
-        /** @var array<string, array{extends?: string, hue_base?: array<string, float>, mono_tones?: array<string, array{hue: float, saturation: float}>, hue_overrides?: array<string, float>, mono_overrides?: array<string, array{hue?: float, saturation?: float}>}> $lineages */
-        $lineages = self::config()['presets'];
+        $lightness = self::generator()['lightness'] ?? null;
+        if (!is_array($lightness)) {
+            throw new \RuntimeException('generator.palette.lightness must be a mapping.');
+        }
 
-        return $lineages;
+        $raw = $lightness[$key] ?? null;
+        if (!is_array($raw) || $raw === []) {
+            throw new \RuntimeException(sprintf('generator.palette.lightness.%s must be a non-empty list.', $key));
+        }
+
+        if (!array_is_list($raw)) {
+            /** @var array<int, float> $raw */
+            return $raw;
+        }
+
+        $rampLevels = self::rampLevels();
+        if (count($raw) !== count($rampLevels)) {
+            throw new \RuntimeException(sprintf(
+                'generator.palette.lightness.%s length (%d) must match ramp_levels (%d).',
+                $key,
+                count($raw),
+                count($rampLevels),
+            ));
+        }
+
+        $curve = [];
+        foreach ($rampLevels as $index => $level) {
+            $curve[$level] = (float) $raw[$index];
+        }
+
+        return $curve;
     }
 
     /**
-     * @return list<array{id: string, label: string, layout: string, tone: string, preset: string, colors: array<string, string>, scroll_motion?: bool, backdrop_blur?: string}>
+     * @return array<string, string>
+     */
+    public static function lineages(): array
+    {
+        return BuiltinThemeCatalog::lineageDonors();
+    }
+
+    /**
+     * @return list<array{id: string, label: string, layout: string, tone: string, colors: array<string, string>, hue_base: array<string, float>, mono_tones: array<string, array{hue: float, saturation: float}>, lineage?: string, scroll_motion?: bool, backdrop_blur?: string}>
      */
     public static function themes(): array
     {
-        /** @var list<array{id: string, label: string, layout: string, tone: string, preset: string, colors: array<string, string>, scroll_motion?: bool, backdrop_blur?: string}> $themes */
-        $themes = self::config()['themes'];
+        return BuiltinThemeCatalog::themes();
+    }
 
-        return $themes;
+    public static function reset(): void
+    {
+        self::$referenceConfig = null;
+        BuiltinThemeCatalog::reset();
     }
 
     /**
      * @return array<string, mixed>
      */
-    private static function config(): array
+    private static function contract(): array
     {
-        if (self::$config !== null) {
-            return self::$config;
+        $config = self::referenceConfig();
+
+        /** @var array<string, mixed> $contract */
+        $contract = $config['contract'];
+
+        return $contract;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function generator(): array
+    {
+        $config = self::referenceConfig();
+
+        /** @var array<string, mixed> $generator */
+        $generator = $config['generator'];
+
+        return $generator;
+    }
+
+    /**
+     * @return array{contract: array<string, mixed>, generator: array<string, mixed>}
+     */
+    private static function referenceConfig(): array
+    {
+        if (self::$referenceConfig !== null) {
+            return self::$referenceConfig;
         }
 
-        $configPath = dirname(__DIR__, 2) . '/config/palette_ssot.yaml';
+        $configPath = dirname(__DIR__, 2) . '/config/packages/symfinity_ui_kernel.yaml';
         /** @var array<string, mixed> $parsed */
         $parsed = Yaml::parseFile($configPath);
-        self::$config = $parsed;
 
-        return self::$config;
+        /** @var array<string, mixed> $kernel */
+        $kernel = $parsed['symfinity_ui_kernel'] ?? $parsed;
+
+        if (($kernel['schema_version'] ?? null) !== ThemeTokenSchema::V1_0) {
+            throw new \RuntimeException(sprintf(
+                'Bundle config "%s" must set schema_version: "%s".',
+                $configPath,
+                ThemeTokenSchema::V1_0,
+            ));
+        }
+
+        $contract = $kernel['contract']['palette'] ?? null;
+        $generator = $kernel['generator']['palette'] ?? null;
+        if (!is_array($contract) || !is_array($generator)) {
+            throw new \RuntimeException(sprintf(
+                'Bundle config "%s" must define symfinity_ui_kernel.contract.palette and generator.palette.',
+                $configPath,
+            ));
+        }
+
+        self::$referenceConfig = [
+            'contract' => $contract,
+            'generator' => $generator,
+        ];
+
+        return self::$referenceConfig;
     }
 }

@@ -22,6 +22,7 @@ final class UiKernelExtension extends Extension
         $loader->load('services.yaml');
 
         $container->setParameter('symfinity.ui_kernel.default_theme', $config['default_theme']);
+        $container->setParameter('symfinity.ui_kernel.default_variant', $config['default_variant']);
         $container->setParameter('symfinity.ui_kernel.schema_version', $config['schema_version']);
 
         $container->register(UserTokenSet::class)

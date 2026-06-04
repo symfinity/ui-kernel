@@ -1,22 +1,22 @@
 # UI Kernel architecture (v0)
 
-**Package:** `symfinity/ui-kernel` · **Planning:** [symfinity 002 — ui-kernel](../../../../specs/symfinity/symfinity/2-ui-kernel/spec.md)
+**Package:** `symfinity/ui-kernel`
 
 ## Spine
 
-- **UiPage** / **UiComponent** — transport-agnostic tree ([RFC](../../../../docs-classified/rfc/symfony_ui_kernel_rfc.md))
+- **UiPage** / **UiComponent** — transport-agnostic UI tree
 - **HtmlRenderer** — web HTML with `data-ui-role`, `data-ui-variant`, `data-ui-fragment`
-- **ThemeRegistry** + **CssGenerator** — runtime token CSS ([css-generation](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/css-generation.md)); theme data SSOT: [themes.md](./themes.md)
+- **ThemeRegistry** + **CssGenerator** — runtime token CSS; theme data details: [themes.md](./themes.md)
 
 ## Output channels
 
-Web HTML only in v0. See [output-channels.md](./output-channels.md) and [output-channels contract](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/output-channels.md).
+Web HTML only in v0. See [output-channels.md](./output-channels.md).
 
-## Port lineage
+## Themes
 
-Baseline themes **Kiroshi** / **Kiroshi dark** (`default` / `dark`) follow WebUI preset per [baseline-themes](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/baseline-themes.md). Maintainer port source: [agent-local-staging](../../../../docs-classified/guidelines/agent-local-staging.md) — not committed paths.
+Eight built-in themes ship as `config/themes/{id}.yaml` (e.g. **Kiroshi** `default` / `dark`, **Semantic**, **Utility**). Palette contract and preset recipes live in [configuration.md](./configuration.md). Resolved tokens: [themes.md](./themes.md).
 
-## Deferred
+## Related packages
 
-- UiAction / Turbo ([symfinity 004](../../../../specs/symfinity/symfinity/4-ui-action-protocol/spec.md))
-- Full UX catalog ([symfinity 003](../../../../specs/symfinity/symfinity/3-ux-component-catalog/spec.md))
+- **symfinity/ui-action** — native action validation
+- **symfinity/ux-blocks-core** — Twig components for showcase and apps

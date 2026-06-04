@@ -15,22 +15,22 @@ final class ThemeTokenResolver
     public function resolve(ThemeConfig $config, ?UserTokenSet $userTokens = null): DesignTokenSet
     {
         $schemaVersion = $config->schemaVersion();
+        ThemeTokenSchema::requiredKeys($schemaVersion);
+
         $colors = $this->semanticColorMap->resolve($config->colorRefs(), $config->paletteRecipe());
 
-        if ($schemaVersion === ThemeTokenSchema::V1_0) {
-            $colors = array_intersect_key($colors, array_flip(ThemeTokenSchema::COLOR_KEYS_V1));
+        $appearance = $config->appearanceTokens();
+        if ($appearance === []) {
+            $appearance = $this->presetRegistry->tokensFor($config->layout(), $schemaVersion);
         }
 
-        $layout = $this->presetRegistry->tokensFor($config->layout(), $schemaVersion);
-        $merged = [...$layout, ...$colors];
+        $merged = [...$appearance, ...$colors];
 
         if ($userTokens !== null && !$userTokens->isEmpty()) {
             $merged = $userTokens->merge($merged, $schemaVersion);
         }
 
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $merged = [...$merged, ...self::overlayTokens($merged, $config)];
-        }
+        $merged = [...$merged, ...self::overlayTokens($merged, $config)];
 
         return DesignTokenSet::fromArray($merged, $schemaVersion);
     }

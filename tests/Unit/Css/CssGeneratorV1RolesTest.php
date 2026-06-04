@@ -27,7 +27,7 @@ final class CssGeneratorV1RolesTest extends TestCase
     #[Test]
     public function schemaTwoIncludesV1CoreRoleSelectors(): void
     {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
 
         foreach (self::v1CoreRoles() as $role) {
             self::assertStringContainsString('[data-ui-role="' . $role . '"]', $css, $role);

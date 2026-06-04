@@ -60,9 +60,7 @@ final class CssGenerator
             $lines[] = '}';
         }
 
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $lines[] = $this->profileGlobals($profile);
-        }
+        $lines[] = $this->profileGlobals($profile);
 
         $lines[] = $this->roleRules($schemaVersion, $profile, $scrollMotion);
 
@@ -124,9 +122,7 @@ final class CssGenerator
 
         $lines[] = '}';
 
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $lines[] = $this->profileGlobals($profile);
-        }
+        $lines[] = $this->profileGlobals($profile);
 
         $lines[] = $this->roleRules($schemaVersion, $profile, $light->scrollMotion());
 
@@ -195,8 +191,7 @@ CSS;
 
     private function roleRules(string $schemaVersion, SystemProfile $profile, bool $scrollMotion = false): string
     {
-        $base = $this->componentRhythmRules($schemaVersion);
-        $base .= <<<'CSS'
+        $base = <<<'CSS'
 [data-ui-role="button"] {
   border-radius: var(--ui-radius-md);
   padding: var(--ui-space-sm) var(--ui-space-md);
@@ -437,9 +432,8 @@ CSS;
 }
 CSS;
 
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $base .= $this->buttonInteractionRules();
-            $base .= <<<'CSS'
+        $base .= $this->buttonInteractionRules();
+        $base .= <<<'CSS'
 
 [data-ui-role="button"]:focus-visible,
 [data-ui-role="input"]:focus-visible,
@@ -449,15 +443,14 @@ CSS;
   box-shadow: 0 0 var(--ui-focus-ring-blur) var(--ui-focus-ring-width) color-mix(in srgb, var(--ui-color-focus) calc(var(--ui-focus-ring-opacity) * 100%), transparent);
 }
 CSS;
-            $base .= $this->layoutRoleRules($profile);
-            $base .= $this->v1CoreRoleRules();
-            $base .= $this->nativeOverlayRules();
-            $base .= $this->anchorMenuRules();
-            $base .= $this->extendedRoleRules();
-            $base .= $this->marketingRoleRules();
-            $base .= $this->extendedOverlayPanelRules();
-            $base .= $this->scrollAndLoadingRules($scrollMotion);
-        }
+        $base .= $this->layoutRoleRules($profile);
+        $base .= $this->v1CoreRoleRules();
+        $base .= $this->nativeOverlayRules();
+        $base .= $this->anchorMenuRules();
+        $base .= $this->extendedRoleRules();
+        $base .= $this->marketingRoleRules();
+        $base .= $this->extendedOverlayPanelRules();
+        $base .= $this->scrollAndLoadingRules($scrollMotion);
 
         return $base;
     }
@@ -494,50 +487,6 @@ CSS;
         $lines[] = '}';
 
         return implode("\n", $lines) . "\n";
-    }
-
-    /**
-     * Default block rhythm between component roots — {@see ThemeTokenSchema} `--ui-space-md` (Kiroshi 0.625rem).
-     */
-    private function componentRhythmRules(string $schemaVersion): string
-    {
-        $css = <<<'CSS'
-[data-ui-role] {
-  margin-block-end: var(--ui-space-md);
-}
-[data-ui-role="field"] [data-ui-role],
-[data-ui-role="alert"] [data-ui-role],
-[data-ui-role="card"] [data-ui-role],
-[data-ui-role="empty"] [data-ui-role],
-[data-ui-role="radio-group"] [data-ui-role],
-[data-ui-role="typography"] [data-ui-role],
-[data-ui-role="table"] [data-ui-role],
-[data-ui-role="tabs"] [data-ui-role],
-[data-ui-role="dropdown-menu"] [data-ui-role],
-[data-ui-role="alert-dialog-enhanced"] [data-ui-role],
-[data-ui-role="drawer"] [data-ui-role],
-[data-ui-role="sheet"] [data-ui-role],
-[data-ui-role="context-menu"] [data-ui-role],
-[data-ui-role="hover-card"] [data-ui-role] {
-  margin-block-end: 0;
-}
-[data-ui-role]:last-child {
-  margin-block-end: 0;
-}
-CSS;
-
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $css .= <<<'CSS'
-
-[data-ui-role="stack"] > [data-ui-role],
-[data-ui-role="grid"] > [data-ui-role],
-[data-ui-role="grid-cell"] > [data-ui-role] {
-  margin-block-end: 0;
-}
-CSS;
-        }
-
-        return $css;
     }
 
     private function alertActionButtonRules(): string
@@ -1211,6 +1160,47 @@ CSS;
   [data-ui-role="sidebar"] {
     grid-template-columns: 1fr;
   }
+}
+[data-ui-role="table-of-contents"] {
+  position: sticky;
+  top: var(--ui-scroll-offset, 5rem);
+  align-self: start;
+  max-block-size: calc(100vh - var(--ui-scroll-offset, 5rem) - var(--ui-space-md));
+  overflow-y: auto;
+  font-family: var(--ui-font-family-sans);
+  font-size: var(--ui-font-size-sm);
+}
+[data-ui-role="table-of-contents"] .ux-ext-toc__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-xs);
+}
+[data-ui-role="table-of-contents"] .ux-ext-toc__link {
+  display: block;
+  padding: var(--ui-space-xs) var(--ui-space-sm);
+  border-radius: var(--ui-radius-sm);
+  color: var(--ui-color-text-muted);
+  text-decoration: none;
+  border-inline-start: 2px solid transparent;
+}
+[data-ui-role="table-of-contents"] .ux-ext-toc__item--nested .ux-ext-toc__link {
+  padding-inline-start: var(--ui-space-md);
+  font-size: var(--ui-font-size-xs, 0.8125rem);
+}
+[data-ui-role="table-of-contents"] .ux-ext-toc__link:hover,
+[data-ui-role="table-of-contents"] .ux-ext-toc__link:focus-visible {
+  color: var(--ui-color-text);
+  background: var(--ui-color-surface-elevated);
+  outline: 0;
+}
+[data-ui-role="table-of-contents"] .ux-ext-toc__link.active,
+[data-ui-role="table-of-contents"] .ux-ext-toc__link[aria-current="true"] {
+  color: var(--ui-toc-active, var(--ui-color-primary));
+  border-inline-start-color: var(--ui-toc-active, var(--ui-color-primary));
+  font-weight: 500;
 }
 CSS;
     }

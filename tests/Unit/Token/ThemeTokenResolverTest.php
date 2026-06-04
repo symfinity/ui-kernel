@@ -14,11 +14,11 @@ use Symfinity\UiKernel\Token\UserTokenSet;
 final class ThemeTokenResolverTest extends TestCase
 {
     #[Test]
-    public function itResolvesAllSchemaTwoKeysForSemanticTheme(): void
+    public function itResolvesAllSchemaOneKeysForSemanticTheme(): void
     {
         $tokens = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
 
-        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
+        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
             self::assertArrayHasKey($key, $tokens, $key);
             self::assertNotSame('', $tokens[$key]);
         }
@@ -49,7 +49,7 @@ final class ThemeTokenResolverTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $override = new UserTokenSet(['--ui-color-warning' => '#112233']);
+        $override = new UserTokenSet(['--ui-not-a-real-token' => '#112233']);
         $base = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
         $override->merge($base, ThemeTokenSchema::V1_0);
     }

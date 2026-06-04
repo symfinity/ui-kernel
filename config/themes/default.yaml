@@ -1,0 +1,133 @@
+symfinity_ui_kernel:
+  themes:
+    default:
+      palette:
+        hues:
+          red: 0.0
+          orange: 30.0
+          yellow: 60.0
+          lime: 90.0
+          green: 120.0
+          emerald: 150.0
+          cyan: 180.0
+          sky: 210.0
+          blue: 240.0
+          violet: 270.0
+          purple: 300.0
+          pink: 330.0
+        mono:
+          pure:
+            hue: 0.0
+            saturation: 0.0
+          evil:
+            hue: 0.0
+            saturation: 7.5
+          warm:
+            hue: 30.0
+            saturation: 7.5
+          wood:
+            hue: 120.0
+            saturation: 7.5
+          cool:
+            hue: 240.0
+            saturation: 7.5
+          pope:
+            hue: 300.0
+            saturation: 7.5
+      tokens:
+        space:
+          xs: 0.25rem
+          sm: 0.5rem
+          md: 1rem
+          lg: 1.5rem
+          xl: 3rem
+          '2xl': 4rem
+        grid_gap: 1rem
+        radius:
+          xs: 0.125rem
+          sm: 0.25rem
+          md: 0.375rem
+          lg: 0.5rem
+          full: 9999px
+        shadow:
+          sm: '0 1px 2px rgba(0, 0, 0, 0.06)'
+          md: '0 4px 12px rgba(0, 0, 0, 0.1)'
+          lg: '0 12px 28px rgba(0, 0, 0, 0.15)'
+        font:
+          family:
+            sans: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'
+            mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+          size:
+            sm: 0.875rem
+            md: 1rem
+            lg: 1.25rem
+          weight:
+            normal: '400'
+            medium: '500'
+            semibold: '600'
+          line_height:
+            tight: '1.25'
+            normal: '1.5'
+            relaxed: '1.625'
+        motion:
+          duration:
+            fast: 120ms
+            normal: 200ms
+            slow: 300ms
+            skeleton: 1.75s
+          easing:
+            standard: 'cubic-bezier(0.4, 0, 0.2, 1)'
+            linear: linear
+        focus:
+          ring:
+            width: 0.25rem
+            opacity: '0.25'
+            blur: '0'
+      variants:
+        default:
+          label: Balanced
+          tone: cool
+          mode: light
+          colors:
+            brand:
+              primary: sky.600
+              secondary: mono.cool.500
+              tertiary: pink.800
+            surface:
+              base: mono.pure.100
+              elevated: mono.cool.100
+              overlay: mono.cool.900@40
+            text:
+              default: mono.cool.900
+              muted: mono.cool.400
+            border:
+              default: mono.cool.900
+            state:
+              danger: red.600
+              success: green.800
+              warning: orange.500
+              info: cyan.700
+              focus: blue.600
+            skeleton:
+              base: mono.cool.200
+              shine: mono.cool.100
+        default_dark:
+          extends: default
+          label: 'Balanced dark'
+          mode: dark
+          colors:
+            brand:
+              secondary: mono.cool.600
+            surface:
+              base: mono.cool.950
+              elevated: mono.cool.900
+            text:
+              default: mono.cool.100
+              muted: mono.cool.300
+            border:
+              default: mono.cool.600
+            state:
+              focus: blue.400
+            skeleton:
+              base: mono.cool.600
+              shine: mono.cool.500

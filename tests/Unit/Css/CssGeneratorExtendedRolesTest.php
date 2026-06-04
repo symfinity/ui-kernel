@@ -26,7 +26,7 @@ final class CssGeneratorExtendedRolesTest extends TestCase
     #[Test]
     public function schemaTwoIncludesAllExtendedRoleSelectors(): void
     {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
 
         foreach (self::extendedRoles() as $role) {
             self::assertStringContainsString(

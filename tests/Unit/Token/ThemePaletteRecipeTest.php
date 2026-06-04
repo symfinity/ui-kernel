@@ -11,12 +11,15 @@ use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 final class ThemePaletteRecipeTest extends TestCase
 {
     #[Test]
-    public function fromBaselineMergesOverrides(): void
+    public function fromPaletteDefinitionBuildsFullRecipe(): void
     {
-        $recipe = ThemePaletteRecipe::fromBaseline(
-            hueOverrides: ['blue' => 217.0],
-            monoOverrides: ['warm' => ['saturation' => 9.0]],
-        );
+        $baseline = ThemePaletteRecipe::baseline();
+        $hueBase = $baseline->hueBase();
+        $hueBase['blue'] = 217.0;
+        $monoTones = $baseline->monoTones();
+        $monoTones['warm']['saturation'] = 9.0;
+
+        $recipe = ThemePaletteRecipe::fromPaletteDefinition($hueBase, $monoTones);
 
         self::assertSame(217.0, $recipe->hueDegrees('blue'));
         self::assertSame(9.0, $recipe->monoTones()['warm']['saturation']);

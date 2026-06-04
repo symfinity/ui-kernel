@@ -1,0 +1,138 @@
+symfinity_ui_kernel:
+  themes:
+    utility:
+      palette:
+        hues:
+          red: 0.0
+          orange: 25.0
+          yellow: 48.0
+          lime: 90.0
+          green: 142.0
+          emerald: 150.0
+          cyan: 190.0
+          sky: 210.0
+          blue: 217.0
+          violet: 270.0
+          purple: 271.0
+          pink: 330.0
+        mono:
+          pure:
+            hue: 0.0
+            saturation: 0.0
+          evil:
+            hue: 0.0
+            saturation: 7.5
+          warm:
+            hue: 30.0
+            saturation: 7.5
+          wood:
+            hue: 120.0
+            saturation: 7.5
+          cool:
+            hue: 220.0
+            saturation: 7.0
+          pope:
+            hue: 300.0
+            saturation: 7.5
+      tokens:
+        space:
+          xs: 0.25rem
+          sm: 0.5rem
+          md: 0.75rem
+          lg: 1.5rem
+          xl: 2.5rem
+          '2xl': 3.5rem
+        grid_gap: 0.75rem
+        radius:
+          xs: 0.125rem
+          sm: 0.125rem
+          md: 0.25rem
+          lg: 0.5rem
+          full: 9999px
+        shadow:
+          sm: '0 1px 2px rgba(15, 23, 42, 0.08)'
+          md: '0 4px 8px rgba(15, 23, 42, 0.12)'
+          lg: '0 10px 20px rgba(15, 23, 42, 0.16)'
+        font:
+          family:
+            sans: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif'
+            mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+          size:
+            sm: 0.875rem
+            md: 0.875rem
+            lg: 1.125rem
+          weight:
+            normal: '400'
+            medium: '500'
+            semibold: '600'
+          line_height:
+            tight: '1.25'
+            normal: '1.5'
+            relaxed: '1.625'
+        motion:
+          duration:
+            fast: 100ms
+            normal: 150ms
+            slow: 280ms
+            skeleton: 1.6s
+          easing:
+            standard: 'cubic-bezier(0.4, 0, 0.2, 1)'
+            linear: linear
+        focus:
+          ring:
+            width: 0.25rem
+            opacity: '0.25'
+            blur: '0'
+      variants:
+        utility:
+          label: Utility
+          tone: cool
+          mode: light
+          colors:
+            brand:
+              primary: blue.500
+              secondary: mono.cool.500
+              tertiary: purple.500
+            surface:
+              base: mono.cool.100
+              elevated: mono.cool.100
+              overlay: mono.cool.900@40
+            text:
+              default: mono.cool.900
+              muted: mono.cool.400
+            border:
+              default: mono.cool.200
+            state:
+              danger: red.500
+              success: green.500
+              warning: orange.500
+              info: blue.500
+              focus: blue.500
+            skeleton:
+              base: mono.cool.200
+              shine: mono.cool.100
+        utility_dark:
+          extends: utility
+          label: 'Utility dark'
+          mode: dark
+          colors:
+            brand:
+              primary: blue.400
+              secondary: mono.cool.400
+              tertiary: purple.400
+            surface:
+              base: mono.cool.900
+              elevated: mono.cool.800
+            text:
+              default: mono.cool.100
+              muted: mono.cool.500
+            border:
+              default: mono.cool.700
+            state:
+              danger: red.400
+              success: green.400
+              info: blue.400
+              focus: blue.400
+            skeleton:
+              base: mono.cool.700
+              shine: mono.cool.600

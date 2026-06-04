@@ -38,7 +38,7 @@ final class ThemeConfigRefsTest extends TestCase
     {
         self::assertSame(
             ThemeConfig::get('default')->paletteRecipe()->hueBase(),
-            ThemeConfig::get('dark')->paletteRecipe()->hueBase(),
+            ThemeConfig::get('default-dark')->paletteRecipe()->hueBase(),
         );
         self::assertSame(
             ThemeConfig::get('semantic')->paletteRecipe()->monoTones(),

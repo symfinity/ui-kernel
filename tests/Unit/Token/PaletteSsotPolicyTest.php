@@ -46,7 +46,7 @@ final class PaletteSsotPolicyTest extends TestCase
     #[Test]
     public function activeIsStrongerThanHoverForAllSemanticVariantsAcrossThemes(): void
     {
-        foreach (['default', 'dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $themeId) {
+        foreach (['default', 'default-dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $themeId) {
             $tokens = ThemeCatalog::get($themeId)->tokens()->all();
 
             foreach (ButtonVariantMap::SEMANTIC_VARIANTS as $variant) {
@@ -147,14 +147,14 @@ final class PaletteSsotPolicyTest extends TestCase
         $partsA = CssCacheKeyPolicy::parts(
             'semantic',
             'user-hash',
-            ThemeTokenSchema::V2_0,
+            ThemeTokenSchema::V1_0,
             $semantic->presetHash(),
             $profile,
         );
         $partsB = CssCacheKeyPolicy::parts(
             'utility',
             'user-hash',
-            ThemeTokenSchema::V2_0,
+            ThemeTokenSchema::V1_0,
             $utility->presetHash(),
             $profile,
         );
@@ -171,8 +171,8 @@ final class PaletteSsotPolicyTest extends TestCase
         $profile = SystemProfile::chameleonDefault();
         $preset = ThemeConfig::get('semantic')->presetHash();
 
-        $partsA = CssGenerator::cacheKeyParts('semantic', 'hash-a', ThemeTokenSchema::V2_0, $profile, $preset);
-        $partsB = CssGenerator::cacheKeyParts('semantic', 'hash-b', ThemeTokenSchema::V2_0, $profile, $preset);
+        $partsA = CssGenerator::cacheKeyParts('semantic', 'hash-a', ThemeTokenSchema::V1_0, $profile, $preset);
+        $partsB = CssGenerator::cacheKeyParts('semantic', 'hash-b', ThemeTokenSchema::V1_0, $profile, $preset);
 
         self::assertNotSame(
             CssCacheKeyPolicy::fingerprint($partsA),
@@ -183,7 +183,7 @@ final class PaletteSsotPolicyTest extends TestCase
     #[Test]
     public function generatedCssUsesCentralizedButtonHoverAndActiveDerivation(): void
     {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
 
         self::assertStringContainsString(
             ':hover:not([disabled]):not([aria-disabled="true"])',

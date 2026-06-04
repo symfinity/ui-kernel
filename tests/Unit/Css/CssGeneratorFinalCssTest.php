@@ -107,15 +107,15 @@ final class CssGeneratorFinalCssTest extends TestCase
     {
         $css = (new CssGenerator())->forAdaptiveThemePair(
             ThemeCatalog::get('default'),
-            ThemeCatalog::get('dark'),
+            ThemeCatalog::get('default-dark'),
         );
 
-        self::assertStringContainsString('ui-kernel adaptive:default+dark', $css);
+        self::assertStringContainsString('ui-kernel adaptive:default+default-dark', $css);
         self::assertStringContainsString('html[data-theme="default"]', $css);
         self::assertStringContainsString('@media (prefers-color-scheme: dark)', $css);
         self::assertStringContainsString('color-scheme: light dark', $css);
         self::assertStringContainsString('dialog::backdrop', $css);
-        self::assertStringNotContainsString('[data-theme="dark"] {', $css);
+        self::assertStringNotContainsString('[data-theme="default-dark"] {', $css);
     }
 
     #[Test]
@@ -195,10 +195,10 @@ final class CssGeneratorFinalCssTest extends TestCase
     #[Test]
     public function allThemesIncludeOverlayTokens(): void
     {
-        foreach (['default', 'dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
+        foreach (['default', 'default-dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
             $config = ThemeConfig::get($id);
             $tokens = (new \Symfinity\UiKernel\Token\ThemeTokenResolver())->resolve($config)->all();
-            foreach (ThemeTokenSchema::OVERLAY_KEYS_V2_ADDITIVE as $key) {
+            foreach (ThemeTokenSchema::OVERLAY_KEYS as $key) {
                 self::assertArrayHasKey($key, $tokens, $id . ' missing ' . $key);
             }
         }

@@ -1,0 +1,28 @@
+composer_name: symfinity/ui-kernel
+package_major: "1.x"
+
+sidebar:
+  - architecture
+  - configuration
+  - installation
+  - quickstart
+  - reference
+  - troubleshooting
+  - upgrade
+  - usage
+
+slices:
+  - symfony: "7.4"
+    sources:
+      - architecture.md
+      - configuration.md
+      - font-manager-pairing.md
+      - index.md
+      - installation.md
+      - output-channels.md
+      - quickstart.md
+      - reference.md
+      - themes.md
+      - troubleshooting.md
+      - upgrade.md
+      - usage.md

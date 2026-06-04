@@ -16,42 +16,39 @@ final class CssGeneratorTest extends TestCase
     public function itSnapshotsTokenVariablesForTwoThemes(): void
     {
         $generator = new CssGenerator();
-        $dark = $generator->forTheme(ThemeCatalog::get('dark'));
+        $dark = $generator->forTheme(ThemeCatalog::get('default-dark'));
         $semantic = $generator->forTheme(ThemeCatalog::get('semantic'));
 
-        self::assertStringContainsString('[data-theme="dark"]', $dark);
+        self::assertStringContainsString('[data-theme="default-dark"]', $dark);
         self::assertStringContainsString('[data-theme="semantic"]', $semantic);
-        self::assertStringContainsString('schema:2.0', $dark);
+        self::assertStringContainsString('schema:1.0', $dark);
 
-        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
+        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
             self::assertStringContainsString($key, $dark);
             self::assertStringContainsString($key, $semantic);
         }
     }
 
     #[Test]
-    public function allSixThemesEmitSchemaTwoKeys(): void
+    public function allSixThemesEmitSchemaOneKeys(): void
     {
         $generator = new CssGenerator();
 
-        foreach (['default', 'dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
+        foreach (['default', 'default-dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
             $css = $generator->forTheme(ThemeCatalog::get($id));
-            foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
+            foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
                 self::assertStringContainsString($key, $css, $id . ' missing ' . $key);
             }
         }
     }
 
     #[Test]
-    public function schemaVersionOneOmitsFocusRingRules(): void
+    public function schemaOneIncludesFocusRingRules(): void
     {
-        $theme = ThemeCatalog::get('semantic');
-        $cssV1 = (new CssGenerator())->forTheme($theme, ThemeTokenSchema::V1_0);
-        $cssV2 = (new CssGenerator())->forTheme($theme, ThemeTokenSchema::V2_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
-        self::assertStringContainsString('schema:1.0', $cssV1);
-        self::assertStringNotContainsString(':focus-visible', $cssV1);
-        self::assertStringContainsString(':focus-visible', $cssV2);
+        self::assertStringContainsString('schema:1.0', $css);
+        self::assertStringContainsString(':focus-visible', $css);
     }
 
     #[Test]
@@ -136,17 +133,15 @@ final class CssGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function schemaTwoIncludesSystemProfileOutput(): void
+    public function schemaOneIncludesSystemProfileOutput(): void
     {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
 
         self::assertStringContainsString('profile:chameleon-default', $css);
         self::assertStringContainsString('--ui-z-dropdown:', $css);
         self::assertStringContainsString('@keyframes ui-shimmer', $css);
         self::assertStringContainsString('[data-ui-role="grid"]', $css);
         self::assertStringContainsString('[data-ui-role="button"][data-ui-size="sm"]', $css);
-        self::assertStringContainsString('[data-ui-role] {', $css);
-        self::assertStringContainsString('margin-block-end: var(--ui-space-md)', $css);
         self::assertStringContainsString('[data-ui-role="button"][data-ui-layout="block"]', $css);
         self::assertStringContainsString('[data-ui-role="grid"] > [data-ui-role="button"]', $css);
         self::assertStringContainsString('[data-ui-role="nav"]', $css);
