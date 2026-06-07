@@ -33,7 +33,13 @@ services:
   Symfinity\UiKernel\Palette\PalettePageViewModelBuilder: ~
 
   Symfinity\UiKernel\Twig\UiKernelExtension:
+    arguments:
+      $bundleSchemaVersion: '%symfinity.ui_kernel.schema_version%'
     tags: ['twig.extension']
+
+  Symfinity\UiKernel\Http\ThemeSchemeResponder:
+    arguments:
+      $bundleSchemaVersion: '%symfinity.ui_kernel.schema_version%'
 
   Symfinity\UiKernel\Twig\ThemeShellTwigExtension:
     tags: ['twig.extension']

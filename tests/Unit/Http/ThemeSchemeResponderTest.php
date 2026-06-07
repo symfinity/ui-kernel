@@ -14,6 +14,7 @@ use Symfinity\UiKernel\Theme\ThemePreference;
 use Symfinity\UiKernel\Theme\ThemePreferenceCookies;
 use Symfinity\UiKernel\Theme\ThemePreferenceResolver;
 use Symfinity\UiKernel\Theme\ThemeRegistry;
+use Symfinity\UiKernel\Token\ThemeTokenSchema;
 use Symfony\Component\HttpFoundation\Request;
 
 final class ThemeSchemeResponderTest extends TestCase
@@ -26,7 +27,13 @@ final class ThemeSchemeResponderTest extends TestCase
         $resolver = new ThemePreferenceResolver($registry, 'semantic');
         $cookies = new ThemePreferenceCookies();
         $context = new ActiveThemeContext($cookies, $resolver, $registry);
-        $this->responder = new ThemeSchemeResponder($context, $resolver, $cookies, new CssGenerator());
+        $this->responder = new ThemeSchemeResponder(
+            $context,
+            $resolver,
+            $cookies,
+            new CssGenerator(),
+            ThemeTokenSchema::V1_0,
+        );
     }
 
     #[Test]

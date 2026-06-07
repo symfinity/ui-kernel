@@ -20,6 +20,7 @@ final class ThemeSchemeResponder
         private readonly ThemePreferenceResolver $resolver,
         private readonly ThemePreferenceCookies $cookies,
         private readonly CssGenerator $cssGenerator,
+        private readonly string $bundleSchemaVersion,
     ) {
     }
 
@@ -30,7 +31,7 @@ final class ThemeSchemeResponder
 
         $response = new JsonResponse([
             'themeId' => $themeId,
-            'css' => $this->cssGenerator->forTheme($theme),
+            'css' => $this->cssGenerator->forTheme($theme, $this->bundleSchemaVersion),
             'colorScheme' => str_ends_with($themeId, '-dark') ? 'dark' : 'light',
             'scheme' => $preference->scheme->value,
             'lineage' => $preference->lineage,

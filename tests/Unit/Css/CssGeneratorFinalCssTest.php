@@ -46,6 +46,23 @@ final class CssGeneratorFinalCssTest extends TestCase
     }
 
     #[Test]
+    public function accordionSummaryUsesPointerCursorForTypographyTitles(): void
+    {
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
+
+        self::assertStringContainsString('[data-ui-role="accordion"] summary {', $css);
+        self::assertMatchesRegularExpression(
+            '/\[data-ui-role="accordion"\] summary \{[^}]*cursor:\s*pointer;/s',
+            $css,
+        );
+        self::assertStringContainsString('[data-ui-role="accordion"] summary * {', $css);
+        self::assertMatchesRegularExpression(
+            '/\[data-ui-role="accordion"\] summary \* \{[^}]*cursor:\s*inherit;/s',
+            $css,
+        );
+    }
+
+    #[Test]
     public function overlayRulesUseProfileZIndexVariablesNotLiterals(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
