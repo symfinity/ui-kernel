@@ -13,6 +13,7 @@ All changes to **symfinity/ui-kernel** are currently on `main` (unreleased, unta
 
 ### Added
 
+- Dev-only Web Profiler `UiKernelDataCollector` — WDT palette badge + profiler panel for theme resolution and CSS metrics ([profiler.md](docs/profiler.md))
 - Symfony bundle `UiKernelBundle` for integration
 - Modules: `Component`, `Css`, `Page`, `Palette`, `Profile`, `Renderer`, `Theme`
 - Package configuration under `config/`; Twig templates for UI integration

@@ -1,0 +1,101 @@
+{# MUST be emitted in <head> before ui-kernel theme CSS to avoid flash. #}
+<script>
+(function () {
+    var root = document.documentElement;
+    var cfg = {{ boot_config|json_encode|raw }};
+
+    function prefersDark() {
+        return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    }
+
+    function pairFor(lineage) {
+        return cfg.pairs[lineage] || cfg.pairs[cfg.defaultLineage] || null;
+    }
+
+    function resolve(scheme, lineage) {
+        var pair = pairFor(lineage);
+        if (!pair) {
+            return cfg.fallbackId;
+        }
+        if (scheme === 'dark') {
+            return pair.dark;
+        }
+        if (scheme === 'light') {
+            return pair.light;
+        }
+
+        return prefersDark() ? pair.dark : pair.light;
+    }
+
+    function applyTheme(id, colorScheme) {
+        root.dataset.theme = id;
+        root.style.colorScheme = colorScheme;
+    }
+
+    function applyPayload(payload) {
+        var style = document.getElementById('ui-kernel-theme-css');
+        if (style && payload.css) {
+            style.textContent = payload.css;
+        }
+        applyTheme(payload.themeId, payload.colorScheme);
+    }
+
+    function patchBody() {
+        var body = { scheme: cfg.scheme };
+        if (cfg.scheme === 'auto') {
+            body.systemPrefersDark = prefersDark();
+        }
+
+        return body;
+    }
+
+    function syncFromServer() {
+        if (!cfg.schemeEndpoint) {
+            return;
+        }
+
+        fetch(cfg.schemeEndpoint, {
+            method: 'PATCH',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(patchBody())
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('scheme sync failed');
+                }
+
+                return response.json();
+            })
+            .then(applyPayload)
+            .catch(function () {
+                var id = resolve(cfg.scheme, cfg.lineage);
+                applyTheme(id, id.endsWith('-dark') ? 'dark' : 'light');
+            });
+    }
+
+    var scheme = cfg.scheme;
+    var lineage = cfg.lineage;
+    var id = resolve(scheme, lineage);
+    applyTheme(id, id.endsWith('-dark') ? 'dark' : 'light');
+
+    if (scheme === 'auto' && cfg.resolvedThemeId && id !== cfg.resolvedThemeId) {
+        syncFromServer();
+    }
+
+    if (scheme === 'auto' && window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function () {
+            if (cfg.schemeEndpoint) {
+                syncFromServer();
+                return;
+            }
+
+            var nextId = prefersDark() ? resolve('dark', lineage) : resolve('light', lineage);
+            applyTheme(nextId, prefersDark() ? 'dark' : 'light');
+        });
+    }
+})();
+</script>

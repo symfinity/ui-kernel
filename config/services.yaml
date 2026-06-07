@@ -2,6 +2,8 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
+    bind:
+      $defaultLineage: '%symfinity.ui_kernel.default_lineage%'
 
   Symfinity\UiKernel\:
     resource: '../src/'
@@ -15,6 +17,8 @@ services:
       - '../src/Theme/ThemeCatalog.php'
       - '../src/Theme/DefinedTheme.php'
       - '../src/Theme/LayoutProfile.php'
+      - '../src/Theme/ThemeColorScheme.php'
+      - '../src/Theme/ThemePreference.php'
 
   Symfinity\UiKernel\Renderer\HtmlRenderer: ~
 
@@ -30,3 +34,11 @@ services:
 
   Symfinity\UiKernel\Twig\UiKernelExtension:
     tags: ['twig.extension']
+
+  Symfinity\UiKernel\Twig\ThemeShellTwigExtension:
+    tags: ['twig.extension']
+
+  Symfinity\UiKernel\DataCollector\UiKernelDataCollector:
+    tags:
+      - { name: data_collector, id: 'ui_kernel', template: '@UiKernel/Collector/ui_kernel.html.twig' }
+      - { name: ui_profiler.menu, title: 'UI Kernel', icon: '@UiKernel/Collector/icon.svg' }

@@ -1,0 +1,7 @@
+schema: showcase-examples/1.0
+role: palette
+requires_stimulus: false
+sections:
+  - id: demo
+    title: Palette
+    layout: custom

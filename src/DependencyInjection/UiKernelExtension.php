@@ -18,12 +18,13 @@ final class UiKernelExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
-        $loader->load('services.yaml');
-
         $container->setParameter('symfinity.ui_kernel.default_theme', $config['default_theme']);
         $container->setParameter('symfinity.ui_kernel.default_variant', $config['default_variant']);
         $container->setParameter('symfinity.ui_kernel.schema_version', $config['schema_version']);
+        $container->setParameter('symfinity.ui_kernel.default_lineage', $config['default_variant']);
+
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
+        $loader->load('services.yaml');
 
         $container->register(UserTokenSet::class)
             ->setAutowired(false)

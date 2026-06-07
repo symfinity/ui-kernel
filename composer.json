@@ -36,6 +36,7 @@
         }
     },
     "suggest": {
+        "symfony/web-profiler-bundle": "Dev-only Web Profiler toolbar and panel for theme/CSS observability (UiKernelDataCollector)",
         "symfinity/ux-blocks-demo": "Integration demo hub — index and per-pack pages combining ui-kernel with ux-blocks",
         "symfinity/font-manager": "Optional webfont loading — pair css_variables export with --ui-font-family-sans / --ui-font-family-mono (see docs/font-manager-pairing.md)"
     }

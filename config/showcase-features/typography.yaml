@@ -1,0 +1,7 @@
+schema: showcase-examples/1.0
+role: typography
+requires_stimulus: false
+sections:
+  - id: demo
+    title: Typography
+    layout: custom

@@ -8,6 +8,8 @@ final class ThemeTokenSchema
 {
     public const V1_0 = '1.0';
 
+    public const V2_0 = '2.0';
+
     /** @var list<string> */
     public const COLOR_KEYS = [
         '--ui-color-primary',
@@ -88,11 +90,12 @@ final class ThemeTokenSchema
      */
     public static function requiredKeys(string $schemaVersion = self::V1_0): array
     {
-        if ($schemaVersion !== self::V1_0) {
+        if (!in_array($schemaVersion, [self::V1_0, self::V2_0], true)) {
             throw new \InvalidArgumentException(sprintf(
-                'Unsupported schema_version "%s"; only "%s" is supported.',
+                'Unsupported schema_version "%s"; expected "%s" or "%s".',
                 $schemaVersion,
                 self::V1_0,
+                self::V2_0,
             ));
         }
 

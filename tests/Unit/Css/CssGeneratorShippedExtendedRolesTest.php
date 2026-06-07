@@ -67,7 +67,7 @@ final class CssGeneratorShippedExtendedRolesTest extends TestCase
     #[Test]
     public function schemaTwoIncludesShippedExtendedRootRoles(): void
     {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
 
         foreach (self::shippedRootRoles() as $role) {
             self::assertStringContainsString(
@@ -81,7 +81,7 @@ final class CssGeneratorShippedExtendedRolesTest extends TestCase
     #[Test]
     public function schemaTwoIncludesShippedExtendedSubRoles(): void
     {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
 
         foreach (self::shippedSubRoles() as $role) {
             self::assertStringContainsString(
@@ -95,7 +95,7 @@ final class CssGeneratorShippedExtendedRolesTest extends TestCase
     #[Test]
     public function overlayPanelRulesCoverDrawerAndSheetSides(): void
     {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
 
         self::assertStringContainsString('[data-ui-role="drawer-content"][data-ui-side="bottom"]', $css);
         self::assertStringContainsString('[data-ui-role="sheet-content"][data-ui-side="right"]', $css);

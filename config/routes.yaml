@@ -1,0 +1,4 @@
+ui_kernel_theme_scheme:
+  path: /_ui/theme/scheme
+  controller: Symfinity\UiKernel\Http\ThemeSchemeController::update
+  methods: [PATCH]

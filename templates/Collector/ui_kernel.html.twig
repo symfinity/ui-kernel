@@ -1,0 +1,187 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block head %}
+    {{ parent() }}
+    <style>
+        #collector-content .ui-kernel-profiler-palette {
+            background:
+                repeating-conic-gradient(rgba(128, 128, 128, 0.18) 0% 25%, transparent 0% 50%)
+                50% / 10px 10px;
+            border: 1px solid var(--border-color, rgba(128, 128, 128, 0.35));
+            border-radius: 6px;
+            display: grid;
+            gap: 4px;
+            grid-template-columns: repeat(auto-fill, minmax(2.25rem, 1fr));
+            margin: 0.75rem 0 1.25rem;
+            max-width: 28rem;
+            padding: 6px;
+        }
+        #collector-content .ui-kernel-profiler-palette__swatch {
+            aspect-ratio: 1;
+            border: 1px solid rgba(128, 128, 128, 0.35);
+            border-radius: 4px;
+            cursor: help;
+            min-height: 2.25rem;
+            width: 100%;
+        }
+        #collector-content .ui-kernel-profiler-palette__swatch[data-empty="true"] {
+            background: transparent !important;
+            opacity: 0.45;
+        }
+        #collector-content .ui-kernel-profiler-palette-legend {
+            color: var(--color-muted, #6c757d);
+            font-size: 0.8125rem;
+            margin: 0 0 0.75rem;
+        }
+    </style>
+{% endblock %}
+
+{% block toolbar %}
+    {% set icon %}
+        {{ source('@UiKernel/Collector/icon.svg') }}
+        <span class="sf-toolbar-value">{{ collector.themeId|default('n/a') }}</span>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>Theme</b>
+            <span>{{ collector.themeId|default('n/a') }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Lineage</b>
+            <span>{{ collector.lineage|default('n/a') }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Scheme</b>
+            <span>{{ collector.scheme|default('n/a') }}</span>
+        </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', {
+        link: profiler_url,
+        status: collector.themeId ? '' : 'disabled',
+        name: 'ui_kernel',
+        icon: icon,
+        text: text,
+    }) }}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <span class="icon">{{ source('@UiKernel/Collector/icon.svg') }}</span>
+        <strong>UI Kernel</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>UI Kernel</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th scope="col" class="key">Property</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Resolved theme</th>
+                <td>{{ collector.themeId|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>Lineage</th>
+                <td>{{ collector.lineage|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>Scheme</th>
+                <td>{{ collector.scheme|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>System prefers dark</th>
+                <td>{{ collector.systemPrefersDark ? 'yes' : 'no' }}</td>
+            </tr>
+            <tr>
+                <th>CSS bytes (request)</th>
+                <td>{{ collector.cssBytes }}</td>
+            </tr>
+            <tr>
+                <th>CSS tokens</th>
+                <td>{{ collector.tokenCount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Color palette</h3>
+    <p class="ui-kernel-profiler-palette-legend">
+        {{ collector.colorPalette|length }} semantic <code>--ui-color-*</code> tokens for
+        <strong>{{ collector.activeTheme.label|default(collector.themeId|default('n/a')) }}</strong>.
+        Hover a swatch for the CSS variable name.
+    </p>
+    {% if collector.colorPalette is not empty %}
+        <div class="ui-kernel-profiler-palette" role="list" aria-label="Active theme color palette">
+            {% for color in collector.colorPalette %}
+                <span
+                    class="ui-kernel-profiler-palette__swatch"
+                    role="listitem"
+                    {% if color.value %}style="background: {{ color.value|e('html_attr') }};"{% endif %}
+                    {% if not color.value %}data-empty="true"{% endif %}
+                    title="{{ color.cssVar }}"
+                    aria-label="{{ color.cssVar }}"
+                ></span>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty">
+            <p>No color tokens available for the active theme.</p>
+        </div>
+    {% endif %}
+
+    <h3>Active theme</h3>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col" class="key">Property</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Label</th>
+                <td>{{ collector.activeTheme.label|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>Theme id</th>
+                <td><code>{{ collector.activeTheme.id|default('n/a') }}</code></td>
+            </tr>
+            <tr>
+                <th>Schema version</th>
+                <td>{{ collector.activeTheme.schemaVersion|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>Scroll motion</th>
+                <td>{{ collector.activeTheme.scrollMotion ? 'enabled' : 'disabled' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Registered themes ({{ collector.themeCount }})</h3>
+    {% if collector.themes is not empty %}
+        <ul>
+            {% for theme in collector.themes %}
+                <li>
+                    <strong>{{ theme.label }}</strong>
+                    (<code>{{ theme.id }}</code>)
+                    {% if theme.id == collector.themeId %}<span class="label status-success">active</span>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="empty">
+            <p>No themes registered.</p>
+        </div>
+    {% endif %}
+
+    {% if collector.showcaseUrl %}
+        <p><a href="{{ collector.showcaseUrl }}">Open theme showcase</a></p>
+    {% endif %}
+{% endblock %}
