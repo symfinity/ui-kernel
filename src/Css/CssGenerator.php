@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Css;
 
 use Symfinity\UiKernel\Theme\Theme;
+use Symfinity\UiKernel\Theme\ThemeLineageCatalog;
 use Symfinity\UiKernel\Profile\SystemProfile;
 use Symfinity\UiKernel\Profile\SystemProfileRegistry;
+use Symfinity\UiKernel\Token\Appearance;
 use Symfinity\UiKernel\Token\ButtonStateDerivation;
 use Symfinity\UiKernel\Token\ButtonVariantMap;
 use Symfinity\UiKernel\Token\DesignTokenSet;
+use Symfinity\UiKernel\Token\SemanticVariant;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class CssGenerator
@@ -45,6 +48,7 @@ final class CssGenerator
         $selector = sprintf('[data-theme="%s"]', $themeId);
         $lines[] = sprintf('/* ui-kernel schema:%s profile:%s */', $schemaVersion, $profile->id);
         $lines[] = $selector . ' {';
+        $lines[] = sprintf('  color-scheme: %s;', ThemeLineageCatalog::nativeColorScheme($themeId));
 
         foreach ($tokens->all() as $key => $value) {
             $lines[] = sprintf('  %s: %s;', $key, $value);
@@ -54,15 +58,14 @@ final class CssGenerator
 
         if ($themeId === 'default') {
             $lines[] = ':root {';
+            $lines[] = sprintf('  color-scheme: %s;', ThemeLineageCatalog::nativeColorScheme($themeId));
             foreach ($tokens->all() as $key => $value) {
                 $lines[] = sprintf('  %s: %s;', $key, $value);
             }
             $lines[] = '}';
         }
 
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $lines[] = $this->profileGlobals($profile);
-        }
+        $lines[] = $this->profileGlobals($profile);
 
         $lines[] = $this->roleRules($schemaVersion, $profile, $scrollMotion);
 
@@ -124,9 +127,7 @@ final class CssGenerator
 
         $lines[] = '}';
 
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $lines[] = $this->profileGlobals($profile);
-        }
+        $lines[] = $this->profileGlobals($profile);
 
         $lines[] = $this->roleRules($schemaVersion, $profile, $light->scrollMotion());
 
@@ -207,59 +208,6 @@ CSS;
   justify-content: center;
   gap: var(--ui-space-xs);
 }
-[data-ui-role="button"][data-ui-variant="default"],
-[data-ui-role="button"][data-ui-variant="primary"] {
-  background: var(--ui-color-primary);
-  color: #fff;
-  border: 1px solid var(--ui-color-primary);
-}
-[data-ui-role="button"][data-ui-variant="secondary"] {
-  background: var(--ui-color-secondary);
-  color: #fff;
-  border: 1px solid var(--ui-color-secondary);
-}
-[data-ui-role="button"][data-ui-variant="tertiary"] {
-  background: var(--ui-color-tertiary);
-  color: #fff;
-  border: 1px solid var(--ui-color-tertiary);
-}
-[data-ui-role="button"][data-ui-variant="destructive"],
-[data-ui-role="button"][data-ui-variant="danger"] {
-  background: var(--ui-color-danger);
-  color: #fff;
-  border: 1px solid var(--ui-color-danger);
-}
-[data-ui-role="button"][data-ui-variant="success"] {
-  background: var(--ui-color-success);
-  color: #fff;
-  border: 1px solid var(--ui-color-success);
-}
-[data-ui-role="button"][data-ui-variant="info"] {
-  background: var(--ui-color-info);
-  color: #fff;
-  border: 1px solid var(--ui-color-info);
-}
-[data-ui-role="button"][data-ui-variant="warning"] {
-  background: var(--ui-color-warning);
-  color: #fff;
-  border: 1px solid var(--ui-color-warning);
-}
-[data-ui-role="button"][data-ui-variant="outline"] {
-  background: transparent;
-  color: var(--ui-color-text);
-  border: 1px solid var(--ui-color-border);
-}
-[data-ui-role="button"][data-ui-variant="ghost"] {
-  background: transparent;
-  color: var(--ui-color-text);
-  border: 1px solid transparent;
-}
-[data-ui-role="button"][data-ui-variant="link"] {
-  background: transparent;
-  color: var(--ui-color-primary);
-  border: 1px solid transparent;
-  text-decoration: underline;
-}
 [data-ui-role="button"][data-ui-state="disabled"] {
   opacity: 0.5;
   cursor: not-allowed;
@@ -297,8 +245,7 @@ CSS;
   font-family: var(--ui-font-family-sans);
   font-size: var(--ui-font-size-sm);
 }
-[data-ui-role="alert"][data-ui-variant="danger"],
-[data-ui-role="alert"][data-ui-variant="destructive"] {
+[data-ui-role="alert"][data-ui-variant="danger"] {
   background: color-mix(in srgb, var(--ui-color-danger) 15%, var(--ui-color-surface));
   color: var(--ui-color-danger);
   border: 1px solid var(--ui-color-danger);
@@ -355,6 +302,14 @@ CSS;
 [data-ui-role="select"][data-ui-state="disabled"] {
   opacity: 0.6;
   cursor: not-allowed;
+}
+[data-ui-role="select"][data-ui-size="sm"] {
+  font-size: var(--ui-font-size-sm);
+  padding: var(--ui-space-xs) var(--ui-space-sm);
+}
+[data-ui-role="select"][data-ui-size="lg"] {
+  font-size: var(--ui-font-size-lg);
+  padding: var(--ui-space-md) var(--ui-space-lg);
 }
 [data-ui-role="input"][aria-invalid="true"],
 [data-ui-role="textarea"][aria-invalid="true"] {
@@ -447,10 +402,12 @@ CSS;
         $base .= $this->avatarRoleRules();
         $base .= $this->badgeRoleRules();
         $base .= $this->breadcrumbRoleRules();
-
-        if ($schemaVersion === ThemeTokenSchema::V2_0) {
-            $base .= $this->buttonInteractionRules();
-            $base .= <<<'CSS'
+        $base .= $this->layoutRoleRules($profile);
+        $base .= $this->v1CoreRoleRules();
+        $base .= $this->buttonVariantAppearanceRules();
+        $base .= $this->linkVariantAppearanceRules();
+        $base .= $this->buttonInteractionRules();
+        $base .= <<<'CSS'
 
 [data-ui-role="button"]:focus-visible,
 [data-ui-role="input"]:focus-visible,
@@ -460,17 +417,188 @@ CSS;
   box-shadow: 0 0 var(--ui-focus-ring-blur) var(--ui-focus-ring-width) color-mix(in srgb, var(--ui-color-focus) calc(var(--ui-focus-ring-opacity) * 100%), transparent);
 }
 CSS;
-            $base .= $this->layoutRoleRules($profile);
-            $base .= $this->v1CoreRoleRules();
-            $base .= $this->nativeOverlayRules();
-            $base .= $this->anchorMenuRules();
-            $base .= $this->extendedRoleRules();
-            $base .= $this->marketingRoleRules();
-            $base .= $this->extendedOverlayPanelRules();
-            $base .= $this->scrollAndLoadingRules($scrollMotion);
-        }
+        $base .= $this->nativeOverlayRules();
+        $base .= $this->anchorMenuRules();
+        $base .= $this->extendedRoleRules();
+        $base .= $this->marketingRoleRules();
+        $base .= $this->shopRoleRules();
+        $base .= $this->labRoleRules();
+        $base .= $this->extendedOverlayPanelRules();
+        $base .= $this->scrollAndLoadingRules($scrollMotion);
+        $base .= $this->accentSemanticVariantRules();
 
         return $base;
+    }
+
+    /**
+     * Semantic colour variants for accent-driven controls (range, progress, form toggles).
+     */
+    private function accentSemanticVariantRules(): string
+    {
+        $css = '';
+
+        foreach (['slider', 'progress', 'switch', 'checkbox'] as $role) {
+            $css .= $this->semanticAccentColorVariantRules($role);
+        }
+
+        $css .= $this->semanticToggleVariantRules();
+        $css .= $this->semanticRatingVariantRules();
+        $css .= $this->accordionSemanticVariantRules();
+
+        return $css;
+    }
+
+    private function accordionSemanticVariantRules(): string
+    {
+        $lines = [];
+        foreach (SemanticVariant::tokenMap() as $variant => $token) {
+            $lines[] = sprintf(
+                '[data-ui-role="accordion"][data-ui-variant="%s"] details { background: color-mix(in srgb, var(%s) 10%%, var(--ui-color-surface)); border-color: var(%s); }',
+                $variant,
+                $token,
+                $token,
+            );
+            $lines[] = sprintf(
+                '[data-ui-role="accordion"][data-ui-variant="%s"] summary { color: var(%s); }',
+                $variant,
+                $token,
+            );
+        }
+
+        return "\n".implode("\n", $lines)."\n";
+    }
+
+    /**
+     * @return array<string, string> variant => CSS custom property name
+     */
+    private function semanticAccentColorTokens(): array
+    {
+        return SemanticVariant::tokenMap();
+    }
+
+    private function semanticAccentColorVariantRules(string $role): string
+    {
+        $lines = [];
+        foreach ($this->semanticAccentColorTokens() as $variant => $token) {
+            $lines[] = sprintf(
+                '[data-ui-role="%s"][data-ui-variant="%s"] { accent-color: var(%s); }',
+                $role,
+                $variant,
+                $token,
+            );
+        }
+
+        return "\n".implode("\n", $lines)."\n";
+    }
+
+    private function semanticToggleVariantRules(): string
+    {
+        $lines = [];
+        foreach ($this->semanticAccentColorTokens() as $variant => $token) {
+            $lines[] = sprintf(
+                '[data-ui-role="toggle"][data-ui-variant="%s"][aria-pressed="true"] { background: var(%s); color: #fff; border-color: var(%s); }',
+                $variant,
+                $token,
+                $token,
+            );
+        }
+
+        return "\n".implode("\n", $lines)."\n";
+    }
+
+    private function semanticRatingVariantRules(): string
+    {
+        $lines = [];
+        foreach ($this->semanticAccentColorTokens() as $variant => $token) {
+            $lines[] = sprintf(
+                '[data-ui-role="rating"][data-ui-variant="%s"] button[aria-pressed="true"] { color: var(%s); }',
+                $variant,
+                $token,
+            );
+        }
+
+        return "\n".implode("\n", $lines)."\n";
+    }
+
+    private function buttonVariantAppearanceRules(): string
+    {
+        $lines = [];
+
+        foreach (SemanticVariant::tokenMap() as $variant => $token) {
+            if ('ghost' === $variant) {
+                $lines[] = '[data-ui-role="button"][data-ui-variant="ghost"][data-ui-appearance="solid"],';
+                $lines[] = '[data-ui-role="button"][data-ui-variant="ghost"]:not([data-ui-appearance]) {';
+                $lines[] = '  background: transparent;';
+                $lines[] = '  color: var(--ui-color-text-muted);';
+                $lines[] = '  border: 1px solid transparent;';
+                $lines[] = '}';
+                $lines[] = '[data-ui-role="button"][data-ui-variant="ghost"][data-ui-appearance="outline"] {';
+                $lines[] = '  background: transparent;';
+                $lines[] = '  color: var(--ui-color-text-muted);';
+                $lines[] = '  border: 1px solid var(--ui-color-border);';
+                $lines[] = '}';
+                $lines[] = '[data-ui-role="button"][data-ui-variant="ghost"][data-ui-appearance="link"] {';
+                $lines[] = '  background: transparent;';
+                $lines[] = '  color: var(--ui-color-text-muted);';
+                $lines[] = '  border: 1px solid transparent;';
+                $lines[] = '  text-decoration: underline;';
+                $lines[] = '}';
+
+                continue;
+            }
+
+            $lines[] = sprintf('[data-ui-role="button"][data-ui-variant="%s"][data-ui-appearance="solid"],', $variant);
+            $lines[] = sprintf('[data-ui-role="button"][data-ui-variant="%s"]:not([data-ui-appearance]) {', $variant);
+            $lines[] = sprintf('  background: var(%s);', $token);
+            $lines[] = '  color: #fff;';
+            $lines[] = sprintf('  border: 1px solid var(%s);', $token);
+            $lines[] = '}';
+            $lines[] = sprintf('[data-ui-role="button"][data-ui-variant="%s"][data-ui-appearance="outline"] {', $variant);
+            $lines[] = '  background: transparent;';
+            $lines[] = sprintf('  color: var(%s);', $token);
+            $lines[] = sprintf('  border: 1px solid var(%s);', $token);
+            $lines[] = '}';
+            $lines[] = sprintf('[data-ui-role="button"][data-ui-variant="%s"][data-ui-appearance="link"] {', $variant);
+            $lines[] = '  background: transparent;';
+            $lines[] = sprintf('  color: var(%s);', $token);
+            $lines[] = '  border: 1px solid transparent;';
+            $lines[] = '  text-decoration: underline;';
+            $lines[] = '}';
+        }
+
+        return "\n".implode("\n", $lines)."\n";
+    }
+
+    private function linkVariantAppearanceRules(): string
+    {
+        $lines = [
+            '[data-ui-role="link"] {',
+            '  color: var(--ui-color-primary);',
+            '  text-decoration: underline;',
+            '  font-family: var(--ui-font-family-sans);',
+            '  cursor: pointer;',
+            '}',
+        ];
+
+        foreach (SemanticVariant::tokenMap() as $variant => $token) {
+            $lines[] = sprintf('[data-ui-role="link"][data-ui-variant="%s"][data-ui-appearance="link"],', $variant);
+            $lines[] = sprintf('[data-ui-role="link"][data-ui-variant="%s"]:not([data-ui-appearance]) {', $variant);
+            $lines[] = sprintf('  color: var(%s);', $token);
+            $lines[] = '  text-decoration: underline;';
+            $lines[] = '}';
+            $lines[] = sprintf('[data-ui-role="link"][data-ui-variant="%s"][data-ui-appearance="solid"] {', $variant);
+            $lines[] = sprintf('  color: var(%s);', $token);
+            $lines[] = '  text-decoration: none;';
+            $lines[] = '  font-weight: var(--ui-font-weight-medium, 500);';
+            $lines[] = '}';
+            $lines[] = sprintf('[data-ui-role="link"][data-ui-variant="%s"][data-ui-appearance="outline"] {', $variant);
+            $lines[] = sprintf('  color: var(%s);', $token);
+            $lines[] = '  text-decoration: none;';
+            $lines[] = sprintf('  border-bottom: 1px solid var(%s);', $token);
+            $lines[] = '}';
+        }
+
+        return "\n".implode("\n", $lines)."\n";
     }
 
     private function buttonInteractionRules(): string
@@ -478,22 +606,27 @@ CSS;
         $guard = ButtonStateDerivation::interactionGuard();
         $lines = [];
 
-        foreach (ButtonVariantMap::cssVariantSelectors() as $semanticVariant => $attributeValues) {
+        foreach (SemanticVariant::ALL as $semanticVariant) {
+            if ('ghost' === $semanticVariant) {
+                continue;
+            }
+
             $tokenVar = ButtonVariantMap::semanticTokenKey($semanticVariant);
             $hoverBg = ButtonStateDerivation::cssHoverBackground($tokenVar);
             $activeBg = ButtonStateDerivation::cssActiveBackground($tokenVar);
-
-            foreach ($attributeValues as $attributeValue) {
-                $selector = '[data-ui-role="button"][data-ui-variant="' . $attributeValue . '"]';
-                $lines[] = $selector . ':hover' . $guard . ' {';
-                $lines[] = '  background: ' . $hoverBg . ';';
-                $lines[] = '  border-color: ' . $hoverBg . ';';
-                $lines[] = '}';
-                $lines[] = $selector . ':active' . $guard . ' {';
-                $lines[] = '  background: ' . $activeBg . ';';
-                $lines[] = '  border-color: ' . $activeBg . ';';
-                $lines[] = '}';
-            }
+            $selector = sprintf(
+                '[data-ui-role="button"][data-ui-variant="%s"][data-ui-appearance="solid"], [data-ui-role="button"][data-ui-variant="%s"]:not([data-ui-appearance])',
+                $semanticVariant,
+                $semanticVariant,
+            );
+            $lines[] = $selector . ':hover' . $guard . ' {';
+            $lines[] = '  background: ' . $hoverBg . ';';
+            $lines[] = '  border-color: ' . $hoverBg . ';';
+            $lines[] = '}';
+            $lines[] = $selector . ':active' . $guard . ' {';
+            $lines[] = '  background: ' . $activeBg . ';';
+            $lines[] = '  border-color: ' . $activeBg . ';';
+            $lines[] = '}';
         }
 
         $lines[] = '[data-ui-role="button"][disabled],';
@@ -529,8 +662,7 @@ CSS;
   color: var(--ui-color-warning, #ca8a04);
   border: 1px solid var(--ui-color-warning, #ca8a04);
 }
-[data-ui-role="alert"][data-ui-variant="danger"] [data-ui-role="button"],
-[data-ui-role="alert"][data-ui-variant="destructive"] [data-ui-role="button"] {
+[data-ui-role="alert"][data-ui-variant="danger"] [data-ui-role="button"] {
   background: color-mix(in srgb, var(--ui-color-danger) 28%, var(--ui-color-surface-elevated));
   color: var(--ui-color-danger);
   border: 1px solid var(--ui-color-danger);
@@ -796,6 +928,14 @@ CSS;
   color: var(--ui-color-text);
   background: var(--ui-color-surface-elevated);
   border-color: var(--ui-color-border);
+}
+[data-ui-role="tabs-trigger"][data-ui-state="linked"] {
+  color: var(--ui-color-primary);
+}
+[data-ui-role="tabs-trigger"][data-ui-state="disabled"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 [data-ui-role="tabs-content"] {
   padding-block-start: var(--ui-space-sm);
@@ -1075,12 +1215,21 @@ CSS;
   font-family: var(--ui-font-family-sans);
 }
 [data-ui-role="toast-item"] {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--ui-space-sm);
   padding: var(--ui-space-md);
   border-radius: var(--ui-radius-md);
   border: 1px solid var(--ui-overlay-border);
   background: var(--ui-overlay-surface);
   box-shadow: var(--ui-overlay-shadow);
   font-size: var(--ui-font-size-sm);
+}
+[data-ui-role="carousel-interactive-controls"] {
+  display: flex;
+  gap: var(--ui-space-sm);
+  margin-block-start: var(--ui-space-md);
 }
 [data-ui-role="resizable"] {
   display: flex;
@@ -1403,6 +1552,190 @@ CSS;
   border-block-end: 1px solid var(--ui-color-border);
   padding-block: var(--ui-space-sm);
 }
+[data-ui-role="pricing-section"] [data-ui-highlight="true"] {
+  border-color: var(--ui-color-primary);
+  box-shadow: 0 0 0 1px var(--ui-color-primary);
+}
+CSS;
+    }
+
+    /**
+     * symfinity/ux-blocks-ecommerce — blocks.shop section roles (060 T004).
+     */
+    private function shopRoleRules(): string
+    {
+        return <<<'CSS'
+
+[data-ui-role="product-overview"],
+[data-ui-role="product-list-section"],
+[data-ui-role="product-card"],
+[data-ui-role="shopping-cart-layout"],
+[data-ui-role="checkout-form-section"],
+[data-ui-role="category-filters-static"],
+[data-ui-role="order-summary"],
+[data-ui-role="order-history"],
+[data-ui-role="promo-incentives"],
+[data-ui-role="cart-drawer-quickview"] {
+  font-family: var(--ui-font-family-sans);
+  color: var(--ui-color-text);
+  box-sizing: border-box;
+}
+[data-ui-role="price"] {
+  font-weight: var(--ui-font-weight-semibold, 600);
+  color: var(--ui-color-text);
+}
+[data-ui-role="product-card"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-sm);
+  padding: var(--ui-space-md);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-lg);
+  background: var(--ui-color-surface-elevated);
+}
+[data-ui-role="product-card"] img {
+  max-width: 100%;
+  border-radius: var(--ui-radius-md);
+  display: block;
+}
+[data-ui-role="product-overview"] {
+  display: grid;
+  gap: var(--ui-space-lg);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  [data-ui-role="product-overview"] {
+    grid-template-columns: minmax(12rem, 1fr) minmax(16rem, 1.2fr);
+    align-items: start;
+  }
+}
+[data-ui-role="product-gallery"] {
+  display: grid;
+  gap: var(--ui-space-sm);
+}
+[data-ui-role="product-list-section"] {
+  display: grid;
+  gap: var(--ui-space-md);
+}
+[data-ui-role="shopping-cart-layout"] {
+  display: grid;
+  gap: var(--ui-space-lg);
+  grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+  [data-ui-role="shopping-cart-layout"] {
+    grid-template-columns: 1fr minmax(14rem, 20rem);
+  }
+}
+[data-ui-role="shopping-cart-layout"] [data-ui-slot="items"] ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-md);
+}
+[data-ui-role="shopping-cart-layout"] [data-ui-slot="items"] li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--ui-space-sm) var(--ui-space-md);
+  align-items: center;
+  padding-block: var(--ui-space-sm);
+  border-block-end: 1px solid var(--ui-color-border);
+}
+[data-ui-role="shopping-cart-layout"] [data-ui-slot="items"] img {
+  max-width: 4rem;
+  border-radius: var(--ui-radius-sm);
+}
+[data-ui-role="order-summary"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-sm);
+  padding: var(--ui-space-md);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface-elevated);
+}
+[data-ui-role="cart-drawer-quickview"] {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: var(--ui-z-modal);
+  max-inline-size: min(24rem, 100vw);
+  width: 100%;
+  padding: var(--ui-space-md);
+  background: var(--ui-overlay-surface);
+  border-inline-start: 1px solid var(--ui-overlay-border);
+  box-shadow: var(--ui-overlay-shadow);
+  overflow: auto;
+}
+CSS;
+    }
+
+    /**
+     * symfinity/ux-blocks-lab — blocks.lab incubator roots (060 T005).
+     */
+    private function labRoleRules(): string
+    {
+        $roles = [
+            'achievement-badge',
+            'author-github-badges',
+            'card-swap',
+            'crash-recovery-modal',
+            'daisy-mockups',
+            'dino-chart',
+            'echo-text',
+            'error-fallback-banner',
+            'fab-dock-chat',
+            'fade-content',
+            'flashcard-deck',
+            'flight-route-map',
+            'flip-clock',
+            'food-vote',
+            'game-2048',
+            'game-minesweeper',
+            'game-snake',
+            'heatmap',
+            'inline-edit-food',
+            'invoice-creator',
+            'json-viewer',
+            'kanban-board',
+            'leaderboard',
+            'lms-quiz',
+            'magnetic-card',
+            'marquee',
+            'matching-pairs',
+            'onboarding-tour',
+            'partition-bar',
+            'product-grid-load-more',
+            'registration-form-demo',
+            'scroll-fade',
+            'scroll-stack',
+            'slide-deck',
+            'status-indicator',
+            'streak-counter',
+            'system-banner',
+            'terminal-swapper',
+            'timeline-8star',
+            'todo-list-form',
+            'transport-badge',
+            'turbo-mercure-spa',
+            'upload-files-demo',
+            'video-embed',
+            'wave-player',
+        ];
+
+        $selectors = array_map(
+            static fn (string $role): string => '[data-ui-role="' . $role . '"]',
+            $roles,
+        );
+
+        return implode(",\n", $selectors) . <<<'CSS'
+ {
+  font-family: var(--ui-font-family-sans);
+  color: var(--ui-color-text);
+  box-sizing: border-box;
+}
 CSS;
     }
 
@@ -1571,7 +1904,6 @@ CSS;
   border-color: var(--ui-color-tertiary);
   color: #fff;
 }
-[data-ui-role="avatar"][data-ui-variant="destructive"],
 [data-ui-role="avatar"][data-ui-variant="danger"] {
   background: var(--ui-color-danger);
   border-color: var(--ui-color-danger);
@@ -1591,6 +1923,11 @@ CSS;
   background: var(--ui-color-warning);
   border-color: var(--ui-color-warning);
   color: #fff;
+}
+[data-ui-role="avatar"][data-ui-variant="ghost"] {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ui-color-text-muted);
 }
 [data-ui-role="avatar"] img,
 [data-ui-role="avatar"] [data-ui-role="image"] {
@@ -1624,7 +1961,6 @@ CSS;
   line-height: 1.25;
   box-sizing: border-box;
 }
-[data-ui-role="badge"][data-ui-variant="default"],
 [data-ui-role="badge"][data-ui-variant="primary"] {
   background: var(--ui-color-primary);
   border-color: var(--ui-color-primary);
@@ -1635,12 +1971,11 @@ CSS;
   border-color: var(--ui-color-secondary);
   color: #fff;
 }
-[data-ui-role="badge"][data-ui-variant="outline"] {
-  background: transparent;
-  color: var(--ui-color-text);
-  border-color: var(--ui-color-border);
+[data-ui-role="badge"][data-ui-variant="tertiary"] {
+  background: var(--ui-color-tertiary);
+  border-color: var(--ui-color-tertiary);
+  color: #fff;
 }
-[data-ui-role="badge"][data-ui-variant="destructive"],
 [data-ui-role="badge"][data-ui-variant="danger"] {
   background: var(--ui-color-danger);
   border-color: var(--ui-color-danger);
@@ -1860,8 +2195,38 @@ CSS;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--ui-space-sm);
+  gap: 0;
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-lg);
+  background: var(--ui-color-surface-elevated);
+  overflow: hidden;
   font-family: var(--ui-font-family-sans);
+}
+[data-ui-role="list"] > li,
+[data-ui-role="list-item"] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-xs);
+  padding: var(--ui-space-md) var(--ui-space-lg);
+  border-block-end: 1px solid var(--ui-color-border);
+}
+[data-ui-role="list"] > li:last-child,
+[data-ui-role="list-item"]:last-child {
+  border-block-end: 0;
+}
+[data-ui-role="list-item-title"],
+[data-ui-role="list"] [data-ui-role="typography"][data-ui-variant="strong"] {
+  font-weight: var(--ui-font-weight-semibold, 600);
+  color: var(--ui-color-text);
+}
+[data-ui-role="list-item-description"],
+[data-ui-role="list"] [data-ui-role="typography"][data-ui-variant="small"] {
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-color-text-muted);
+}
+[data-ui-role="list"] > li:hover,
+[data-ui-role="list-item"]:hover {
+  background: color-mix(in srgb, var(--ui-color-primary) 6%, var(--ui-color-surface-elevated));
 }
 [data-ui-role="accordion"] details {
   border: 1px solid var(--ui-color-border);
@@ -1871,22 +2236,6 @@ CSS;
 }
 [data-ui-role="accordion"] details + details {
   margin-block-start: var(--ui-space-sm);
-}
-[data-ui-role="steps"] {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--ui-space-md);
-  font-family: var(--ui-font-family-sans);
-  font-size: var(--ui-font-size-sm);
-}
-[data-ui-role="link"] {
-  color: var(--ui-color-primary);
-  text-decoration: underline;
-  font-family: var(--ui-font-family-sans);
-  cursor: pointer;
-}
-[data-ui-role="link"][data-ui-variant="muted"] {
-  color: var(--ui-color-text-muted);
 }
 [data-ui-role="switch"] {
   accent-color: var(--ui-color-primary);
@@ -1918,35 +2267,83 @@ CSS;
   padding: 0 var(--ui-space-xs);
   font-weight: 600;
 }
-[data-ui-role="description-list"] {
-  display: grid;
-  gap: var(--ui-space-sm);
-  font-family: var(--ui-font-family-sans);
-}
-[data-ui-role="description-list"] dt {
-  font-weight: 600;
-  color: var(--ui-color-text);
-}
-[data-ui-role="description-list"] dd {
-  margin: 0 0 var(--ui-space-sm);
-  color: var(--ui-color-text-muted);
-}
 [data-ui-role="stat"] {
   display: flex;
   flex-direction: column;
   gap: var(--ui-space-xs);
-  padding: var(--ui-space-md);
+  padding: var(--ui-space-md) var(--ui-space-lg);
   border: 1px solid var(--ui-color-border);
   border-radius: var(--ui-radius-md);
   font-family: var(--ui-font-family-sans);
+  background: var(--ui-color-surface-elevated);
+  min-width: 8rem;
+}
+[data-ui-role="stat-label"] {
+  font-size: var(--ui-font-size-sm);
+  color: var(--ui-color-text-muted);
+  font-weight: var(--ui-font-weight-medium, 500);
+}
+[data-ui-role="stat-value"] {
+  font-size: var(--ui-font-size-lg);
+  font-weight: var(--ui-font-weight-semibold, 600);
+  color: var(--ui-color-text);
+  line-height: 1.2;
 }
 [data-ui-role="timeline"] {
   display: flex;
   flex-direction: column;
   gap: var(--ui-space-md);
   border-inline-start: 2px solid var(--ui-color-border);
-  padding-inline-start: var(--ui-space-md);
+  padding-inline-start: var(--ui-space-lg);
   font-family: var(--ui-font-family-sans);
+}
+[data-ui-role="timeline-item"] {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ui-space-xs);
+  padding-block-end: var(--ui-space-sm);
+}
+[data-ui-role="timeline-item"]::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(-1 * var(--ui-space-lg) - 5px);
+  inset-block-start: 0.35rem;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--ui-radius-full);
+  background: var(--ui-color-primary);
+  border: 2px solid var(--ui-color-surface-elevated);
+}
+[data-ui-role="steps"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-sm);
+  font-family: var(--ui-font-family-sans);
+  font-size: var(--ui-font-size-sm);
+}
+[data-ui-role="steps"] [data-ui-role="badge"] {
+  font-weight: var(--ui-font-weight-medium, 500);
+}
+[data-ui-role="description-list"] {
+  display: grid;
+  gap: var(--ui-space-md);
+  font-family: var(--ui-font-family-sans);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-lg);
+  padding: var(--ui-space-md) var(--ui-space-lg);
+  background: var(--ui-color-surface-elevated);
+}
+[data-ui-role="description-list"] dt {
+  font-weight: 600;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-sm);
+}
+[data-ui-role="description-list"] dd {
+  margin: 0 0 var(--ui-space-sm);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
 }
 [data-ui-role="carousel"] {
   display: flex;
@@ -2008,6 +2405,18 @@ CSS;
   grid-template-columns: minmax(12rem, 16rem) 1fr;
   min-height: 100vh;
   font-family: var(--ui-font-family-sans);
+  border: 1px solid var(--ui-color-border);
+  border-radius: var(--ui-radius-lg);
+  overflow: hidden;
+  background: var(--ui-color-surface-elevated);
+}
+[data-ui-role="dashboard-shell"] [data-ui-slot="sidebar"] {
+  padding: var(--ui-space-md);
+  border-inline-end: 1px solid var(--ui-color-border);
+  background: var(--ui-color-surface);
+}
+[data-ui-role="dashboard-shell"] [data-ui-slot="main"] {
+  padding: var(--ui-space-lg);
 }
 [data-ui-role="dashboard-shell"] > * {
   margin-block-end: 0;
@@ -2015,6 +2424,10 @@ CSS;
 @media (max-width: 767px) {
   [data-ui-role="dashboard-shell"] {
     grid-template-columns: 1fr;
+  }
+  [data-ui-role="dashboard-shell"] [data-ui-slot="sidebar"] {
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--ui-color-border);
   }
 }
 @media (prefers-reduced-motion: reduce) {

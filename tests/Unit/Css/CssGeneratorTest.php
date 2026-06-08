@@ -21,6 +21,8 @@ final class CssGeneratorTest extends TestCase
 
         self::assertStringContainsString('[data-theme="default-dark"]', $dark);
         self::assertStringContainsString('[data-theme="semantic"]', $semantic);
+        self::assertStringContainsString('color-scheme: dark;', $dark);
+        self::assertStringContainsString('color-scheme: light;', $semantic);
         self::assertStringContainsString('schema:1.0', $dark);
 
         foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
@@ -39,6 +41,22 @@ final class CssGeneratorTest extends TestCase
             foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
                 self::assertStringContainsString($key, $css, $id . ' missing ' . $key);
             }
+        }
+    }
+
+    #[Test]
+    public function allSixThemesEmitNativeColorScheme(): void
+    {
+        $generator = new CssGenerator();
+
+        foreach (['default', 'semantic', 'utility'] as $id) {
+            $css = $generator->forTheme(ThemeCatalog::get($id));
+            self::assertStringContainsString('color-scheme: light;', $css, $id);
+        }
+
+        foreach (['default-dark', 'semantic-dark', 'utility-dark'] as $id) {
+            $css = $generator->forTheme(ThemeCatalog::get($id));
+            self::assertStringContainsString('color-scheme: dark;', $css, $id);
         }
     }
 
@@ -72,7 +90,6 @@ final class CssGeneratorTest extends TestCase
                 $css,
             );
         }
-        self::assertStringContainsString('background: var(--ui-color-tertiary)', $css);
         self::assertStringContainsString('background: var(--ui-color-danger)', $css);
         self::assertStringContainsString('background: var(--ui-color-success)', $css);
         self::assertStringContainsString('background: var(--ui-color-info)', $css);
@@ -86,7 +103,7 @@ final class CssGeneratorTest extends TestCase
 
         foreach (['primary', 'secondary', 'tertiary', 'danger', 'success', 'info', 'warning'] as $variant) {
             self::assertMatchesRegularExpression(
-                '/\[data-ui-role="button"\]\[data-ui-variant="'.$variant.'"\][^{]*\{[^}]*color: #fff;/s',
+                '/\[data-ui-role="button"\]\[data-ui-variant="'.$variant.'"\](?:\[data-ui-appearance="solid"\]|:not\(\[data-ui-appearance\]\))[^{]*\{[^}]*color: #fff;/s',
                 $css,
             );
         }
@@ -128,7 +145,7 @@ final class CssGeneratorTest extends TestCase
             self::assertStringContainsString('[data-ui-role="' . $role . '"]', $css, $role);
         }
 
-        self::assertStringContainsString('[data-ui-role="button"][data-ui-variant="outline"]', $css);
+        self::assertStringContainsString('[data-ui-role="button"][data-ui-variant="primary"][data-ui-appearance="outline"]', $css);
         self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="warning"]', $css);
     }
 

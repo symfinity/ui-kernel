@@ -64,6 +64,14 @@ final class ThemeLineageCatalog
     }
 
     /**
+     * Resolved native browser chrome axis for CSS color-scheme (not user preference scheme=auto).
+     */
+    public static function nativeColorScheme(string $themeId): string
+    {
+        return self::isDarkThemeId($themeId) ? 'dark' : 'light';
+    }
+
+    /**
      * @return array<string, array{light: string, dark: string}>
      */
     public static function pairs(): array

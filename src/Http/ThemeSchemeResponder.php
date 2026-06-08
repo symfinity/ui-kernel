@@ -9,6 +9,7 @@ use Symfinity\UiKernel\Theme\ActiveThemeContext;
 use Symfinity\UiKernel\Theme\ThemePreference;
 use Symfinity\UiKernel\Theme\ThemePreferenceCookies;
 use Symfinity\UiKernel\Theme\ThemePreferenceResolver;
+use Symfinity\UiKernel\Theme\ThemeLineageCatalog;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +21,6 @@ final class ThemeSchemeResponder
         private readonly ThemePreferenceResolver $resolver,
         private readonly ThemePreferenceCookies $cookies,
         private readonly CssGenerator $cssGenerator,
-        private readonly string $bundleSchemaVersion,
     ) {
     }
 
@@ -31,8 +31,8 @@ final class ThemeSchemeResponder
 
         $response = new JsonResponse([
             'themeId' => $themeId,
-            'css' => $this->cssGenerator->forTheme($theme, $this->bundleSchemaVersion),
-            'colorScheme' => str_ends_with($themeId, '-dark') ? 'dark' : 'light',
+            'css' => $this->cssGenerator->forTheme($theme),
+            'colorScheme' => ThemeLineageCatalog::nativeColorScheme($themeId),
             'scheme' => $preference->scheme->value,
             'lineage' => $preference->lineage,
         ], Response::HTTP_OK);

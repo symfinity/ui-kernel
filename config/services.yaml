@@ -32,14 +32,14 @@ services:
 
   Symfinity\UiKernel\Palette\PalettePageViewModelBuilder: ~
 
-  Symfinity\UiKernel\Twig\UiKernelExtension:
-    arguments:
-      $bundleSchemaVersion: '%symfinity.ui_kernel.schema_version%'
-    tags: ['twig.extension']
+  Symfinity\UiKernel\Palette\PaletteGenerator: ~
 
-  Symfinity\UiKernel\Http\ThemeSchemeResponder:
-    arguments:
-      $bundleSchemaVersion: '%symfinity.ui_kernel.schema_version%'
+  Symfinity\UiKernel\Palette\PaletteRampSampler: ~
+
+  Symfinity\UiKernel\Palette\PaletteRampSamplerInterface: '@Symfinity\UiKernel\Palette\PaletteRampSampler'
+
+  Symfinity\UiKernel\Twig\UiKernelExtension:
+    tags: ['twig.extension']
 
   Symfinity\UiKernel\Twig\ThemeShellTwigExtension:
     tags: ['twig.extension']

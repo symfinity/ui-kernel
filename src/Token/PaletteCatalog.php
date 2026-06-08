@@ -75,46 +75,50 @@ final class PaletteCatalog
     }
 
     /**
-     * @return list<int>
+     * @return array<int, float>
      */
-    public static function rampLevels(): array
+    public static function oklchLightnessCurve(string $key): array
     {
-        $generator = self::generator();
-        /** @var list<int> $levels */
-        $levels = $generator['ramp_levels'] ?? self::levels();
+        return self::oklchLightnessCurveInternal($key);
+    }
 
-        return $levels;
+    public static function interpolation(): string
+    {
+        $interpolation = self::generator()['interpolation'] ?? 'oklch';
+
+        return is_string($interpolation) ? $interpolation : 'oklch';
+    }
+
+    public static function revision(): int
+    {
+        $revision = self::generator()['revision'] ?? 2;
+
+        return (int) $revision;
+    }
+
+    public static function hueChroma(string $hue): float
+    {
+        $map = self::generator()['hue_chroma'] ?? null;
+        if (!is_array($map) || !isset($map[$hue])) {
+            throw new \InvalidArgumentException(sprintf('Unknown hue chroma for "%s".', $hue));
+        }
+
+        return (float) $map[$hue];
     }
 
     /**
      * @return array<int, float>
      */
-    public static function levelLightness(): array
+    private static function oklchLightnessCurveInternal(string $key): array
     {
-        return self::levelLightnessCurve('default');
-    }
-
-    /**
-     * @return array<int, float>
-     */
-    public static function levelLightnessPure(): array
-    {
-        return self::levelLightnessCurve('pure');
-    }
-
-    /**
-     * @return array<int, float>
-     */
-    private static function levelLightnessCurve(string $key): array
-    {
-        $lightness = self::generator()['lightness'] ?? null;
+        $lightness = self::generator()['lightness_curve'] ?? null;
         if (!is_array($lightness)) {
-            throw new \RuntimeException('generator.palette.lightness must be a mapping.');
+            throw new \RuntimeException('generator.palette.lightness_curve must be a mapping.');
         }
 
         $raw = $lightness[$key] ?? null;
         if (!is_array($raw) || $raw === []) {
-            throw new \RuntimeException(sprintf('generator.palette.lightness.%s must be a non-empty list.', $key));
+            throw new \RuntimeException(sprintf('generator.palette.lightness_curve.%s must be a non-empty list.', $key));
         }
 
         if (!array_is_list($raw)) {
@@ -122,18 +126,18 @@ final class PaletteCatalog
             return $raw;
         }
 
-        $rampLevels = self::rampLevels();
-        if (count($raw) !== count($rampLevels)) {
+        $levels = self::levels();
+        if (count($raw) !== count($levels)) {
             throw new \RuntimeException(sprintf(
-                'generator.palette.lightness.%s length (%d) must match ramp_levels (%d).',
+                'generator.palette.lightness_curve.%s length (%d) must match contract.palette.levels (%d).',
                 $key,
                 count($raw),
-                count($rampLevels),
+                count($levels),
             ));
         }
 
         $curve = [];
-        foreach ($rampLevels as $index => $level) {
+        foreach ($levels as $index => $level) {
             $curve[$level] = (float) $raw[$index];
         }
 
@@ -220,6 +224,8 @@ final class PaletteCatalog
                 $configPath,
             ));
         }
+
+        GeneratorPaletteConfigValidator::validate($contract, $generator);
 
         self::$referenceConfig = [
             'contract' => $contract,

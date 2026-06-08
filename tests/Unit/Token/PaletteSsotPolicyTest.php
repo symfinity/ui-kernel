@@ -28,7 +28,7 @@ final class PaletteSsotPolicyTest extends TestCase
     public function semanticVariantsMapToCanonicalTokenKeys(): void
     {
         self::assertSame('--ui-color-primary', ButtonVariantMap::semanticTokenKey('primary'));
-        self::assertSame('--ui-color-danger', ButtonVariantMap::semanticTokenKey('destructive'));
+        self::assertSame('--ui-color-danger', ButtonVariantMap::semanticTokenKey('danger'));
         self::assertSame('--ui-color-info', ButtonVariantMap::semanticTokenKey('info'));
     }
 

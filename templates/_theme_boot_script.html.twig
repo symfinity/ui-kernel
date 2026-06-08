@@ -27,6 +27,24 @@
         return prefersDark() ? pair.dark : pair.light;
     }
 
+    function colorSchemeForThemeId(id) {
+        var lineageKey;
+        for (lineageKey in cfg.pairs) {
+            if (!Object.prototype.hasOwnProperty.call(cfg.pairs, lineageKey)) {
+                continue;
+            }
+            var pair = cfg.pairs[lineageKey];
+            if (pair.dark === id) {
+                return 'dark';
+            }
+            if (pair.light === id) {
+                return 'light';
+            }
+        }
+
+        return 'light';
+    }
+
     function applyTheme(id, colorScheme) {
         root.dataset.theme = id;
         root.style.colorScheme = colorScheme;
@@ -73,14 +91,14 @@
             .then(applyPayload)
             .catch(function () {
                 var id = resolve(cfg.scheme, cfg.lineage);
-                applyTheme(id, id.endsWith('-dark') ? 'dark' : 'light');
+                applyTheme(id, colorSchemeForThemeId(id));
             });
     }
 
     var scheme = cfg.scheme;
     var lineage = cfg.lineage;
     var id = resolve(scheme, lineage);
-    applyTheme(id, id.endsWith('-dark') ? 'dark' : 'light');
+    applyTheme(id, cfg.resolvedColorScheme || colorSchemeForThemeId(id));
 
     if (scheme === 'auto' && cfg.resolvedThemeId && id !== cfg.resolvedThemeId) {
         syncFromServer();
@@ -94,7 +112,7 @@
             }
 
             var nextId = prefersDark() ? resolve('dark', lineage) : resolve('light', lineage);
-            applyTheme(nextId, prefersDark() ? 'dark' : 'light');
+            applyTheme(nextId, colorSchemeForThemeId(nextId));
         });
     }
 })();

@@ -53,7 +53,7 @@ final class CssGeneratorV1RolesTest extends TestCase
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
 
         self::assertStringContainsString('[data-ui-role="badge"][data-ui-variant="secondary"]', $css);
-        self::assertStringContainsString('[data-ui-role="badge"][data-ui-variant="outline"]', $css);
+        self::assertStringContainsString('[data-ui-role="badge"][data-ui-variant="ghost"]', $css);
         self::assertStringContainsString('[data-ui-role="avatar"][data-ui-variant="primary"]', $css);
         self::assertStringContainsString('[data-ui-role="avatar"][data-ui-size="sm"]', $css);
     }

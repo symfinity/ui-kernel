@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\MonoTone;
-use Symfinity\UiKernel\Token\PaletteGenerator;
+use Symfinity\UiKernel\Palette\PaletteGenerator;
 
 final class PaletteGeneratorTest extends TestCase
 {

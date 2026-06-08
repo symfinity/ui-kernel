@@ -43,6 +43,20 @@ symfinity_ui_kernel:
 
 **Do not** put `contract.palette`, `generator.palette`, or built-in theme trees in the app file unless you maintain a private kernel fork.
 
+## Generator palette — L / C / H responsibility
+
+Bundle `generator.palette` supplies shared ramp math; theme lineage YAML supplies brand hue angles and mono spice.
+
+| OKLCH | Source | Config path |
+|-------|--------|-------------|
+| **L** | Bundle generator | `generator.palette.lightness_curve.{curve}[i]` (index aligns with `contract.palette.levels`) |
+| **C** (hue ramps) | Bundle generator | `generator.palette.hue_chroma.{family}` |
+| **C** (mono spice) | Theme lineage | `themes.{lineage}.palette.mono.{tone}.saturation` |
+| **H** (hue ramps) | Theme lineage | `themes.{lineage}.palette.hues.{family}` |
+| **H** (mono spice) | Theme lineage | `themes.{lineage}.palette.mono.{tone}.hue` |
+
+Normative detail: [generator-palette-config](../../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/generator-palette-config.md).
+
 ## Built-in theme shape (`config/themes/{lineage}.yaml`)
 
 See [config/themes/README.md](../config/themes/README.md). Summary:

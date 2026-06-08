@@ -8,7 +8,6 @@ use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\PaletteCatalog;
-use Symfinity\UiKernel\Token\PaletteGenerator;
 use Symfinity\UiKernel\Token\PaletteRefGrammar;
 use Symfinity\UiKernel\Token\SemanticColorMap;
 

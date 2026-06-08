@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
+use Symfinity\UiKernel\Palette\PaletteGenerator;
+
 /**
  * Maps semantic colour roles to CSS custom property keys and resolves palette refs.
  */

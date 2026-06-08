@@ -112,7 +112,7 @@ final class ThemeShellPresenter
 
     private function colorSchemeFromTheme(Theme $theme): string
     {
-        return ThemeLineageCatalog::isDarkThemeId($theme->id()) ? 'dark' : 'light';
+        return ThemeLineageCatalog::nativeColorScheme($theme->id());
     }
 
     /**

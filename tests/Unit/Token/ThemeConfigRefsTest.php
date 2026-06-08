@@ -7,7 +7,7 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Token\PaletteGenerator;
+use Symfinity\UiKernel\Palette\PaletteGenerator;
 use Symfinity\UiKernel\Token\PaletteRefGrammar;
 use Symfinity\UiKernel\Token\ThemeTokenResolver;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;

@@ -41,6 +41,8 @@
 | Upgrade | [docs/upgrade.md](docs/upgrade.md) |
 | Usage | [docs/usage.md](docs/usage.md) |
 
+**Palette generator revision:** Bundle `generator.palette.revision` (currently `2`) tracks OKLCH ramp math — distinct from theme-token `schema_version: '1.0'`. Integrators author palette **refs** (e.g. `blue.600`); resolved `--ui-color-*` hex may drift on generator revision bumps without a schema change. See [oklch-palette-generator](../../specs/symfinity/symfinity/2-ui-kernel/contracts/oklch-palette-generator.md).
+
 ## Requirements
 
 - PHP 8.2+

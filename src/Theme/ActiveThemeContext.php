@@ -48,6 +48,7 @@ final class ActiveThemeContext
      *     lineage: string,
      *     defaultLineage: string,
      *     resolvedThemeId: string,
+     *     resolvedColorScheme: string,
      *     schemeEndpoint: string,
      *     fallbackId: string,
      *     pairs: array<string, array{light: string, dark: string}>
@@ -64,6 +65,7 @@ final class ActiveThemeContext
             'lineage' => $preference->lineage,
             'defaultLineage' => $this->resolver->defaultLineage(),
             'resolvedThemeId' => $resolvedThemeId,
+            'resolvedColorScheme' => ThemeLineageCatalog::nativeColorScheme($resolvedThemeId),
             'schemeEndpoint' => ThemeShellView::SCHEME_ENDPOINT,
             'fallbackId' => $this->resolver->resolveThemeId(
                 ThemePreference::defaults($this->resolver->defaultLineage()),

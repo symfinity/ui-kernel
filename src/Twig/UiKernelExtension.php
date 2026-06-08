@@ -24,7 +24,6 @@ final class UiKernelExtension extends AbstractExtension
         private readonly ThemeShellPresenter $themeShellPresenter,
         private readonly RequestStack $requestStack,
         private readonly Environment $twig,
-        private readonly string $bundleSchemaVersion,
     ) {
     }
 
@@ -50,20 +49,14 @@ final class UiKernelExtension extends AbstractExtension
     {
         $css = '';
         if ($themeId !== null && $themeId !== '') {
-            $css = $this->cssGenerator->forTheme(
-                $this->themeRegistry->resolve($themeId),
-                $this->bundleSchemaVersion,
-            );
+            $css = $this->cssGenerator->forTheme($this->themeRegistry->resolve($themeId));
         } else {
             $request = $this->requestStack->getCurrentRequest();
             if ($request === null) {
-                $css = $this->cssGenerator->forTheme(
-                    $this->themeRegistry->resolve(null),
-                    $this->bundleSchemaVersion,
-                );
+                $css = $this->cssGenerator->forTheme($this->themeRegistry->resolve(null));
             } else {
                 foreach ($this->activeThemeContext->cssThemesFromRequest($request) as $theme) {
-                    $css .= $this->cssGenerator->forTheme($theme, $this->bundleSchemaVersion) . "\n";
+                    $css .= $this->cssGenerator->forTheme($theme) . "\n";
                 }
             }
         }

@@ -69,7 +69,7 @@ final class CssGeneratorR2RolesTest extends TestCase
         self::assertStringContainsString('[data-ui-role="avatar"] [data-ui-role="image"]', $css);
         self::assertStringContainsString('[data-ui-role="avatar"][data-ui-size="sm"]', $css);
         self::assertStringContainsString('[data-ui-role="avatar"][data-ui-size="lg"]', $css);
-        foreach (['primary', 'secondary', 'tertiary', 'destructive', 'success', 'info', 'warning'] as $variant) {
+        foreach (['primary', 'secondary', 'tertiary', 'danger', 'success', 'info', 'warning', 'ghost'] as $variant) {
             self::assertStringContainsString('[data-ui-role="avatar"][data-ui-variant="' . $variant . '"]', $css);
         }
     }
@@ -92,7 +92,7 @@ final class CssGeneratorR2RolesTest extends TestCase
 
         self::assertStringContainsString('[data-ui-role="badge"]', $css);
         self::assertStringContainsString('border-radius: var(--ui-radius-full)', $css);
-        foreach (['primary', 'secondary', 'outline', 'destructive', 'success', 'info', 'warning', 'ghost'] as $variant) {
+        foreach (['primary', 'secondary', 'tertiary', 'danger', 'success', 'info', 'warning', 'ghost'] as $variant) {
             self::assertStringContainsString('[data-ui-role="badge"][data-ui-variant="' . $variant . '"]', $css);
         }
     }
