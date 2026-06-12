@@ -4,6 +4,10 @@ One YAML file per **lineage** (schema **1.0**). Palette contract, generator revi
 
 Files whose basename starts with `_` are reference-only — not loaded.
 
+## COLOR FREEZE v1 (2026-06-12)
+
+Built-in palette visuals are locked. Change only after operator **palette-freeze lift** — see contract + `PaletteFreezeTest`.
+
 ## Lineages (frozen 2026-06-12)
 
 | File | `anchor_profile` | Label |

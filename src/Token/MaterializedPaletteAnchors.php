@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Token;
 
 /**
- * Frozen materialized palette anchors (hue + mono) — palette-freeze v1.
+ * Frozen materialized palette anchors (hue + mono) — COLOR FREEZE v1 (2026-06-12).
  *
  * Balanced hue ramps: TW/BS midpoint; state hues (red–blue) without slate desat.
  *
- * @internal SSOT; regenerate via packages/ui-kernel/bin/materialize-palette-anchors.php
+ * @internal SSOT — MUST NOT edit by hand. Regenerate only on palette-freeze lift:
+ *           packages/ui-kernel/bin/materialize-palette-anchors.php
+ *           Guarded by PaletteFreezeTest.
  */
 final class MaterializedPaletteAnchors
 {

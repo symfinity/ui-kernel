@@ -1,3 +1,4 @@
+# COLOR FREEZE v1 — Balanced lineage; lift only per palette-freeze.md
 symfinity_ui_kernel:
   themes:
     default:
@@ -16,7 +17,7 @@ symfinity_ui_kernel:
           violet: 270.0
           purple: 300.0
           pink: 330.0
-        # Balanced lineage — TW/BS midpoint + restrained chroma (PaletteAnchorProfiles::balanced)
+        # FROZEN anchor_profile: balanced (190 materialized refs)
         anchor_profile: balanced
         mono:
           pure:
