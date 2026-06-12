@@ -120,7 +120,7 @@ symfinity_ui_kernel:
           mode: dark
           colors:
             brand:
-              primary: blue.400
+              primary: blue.500
               secondary: mono.cool.600
               tertiary: purple.500
             surface:

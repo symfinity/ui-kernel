@@ -88,6 +88,11 @@ final class SemanticColorDerivatives
                 continue;
             }
 
+            // Frozen #hex anchors are canonical sRGB SSOT — OKLCH round-trip skews hue on P3 displays.
+            if (str_starts_with($value, '#')) {
+                continue;
+            }
+
             try {
                 $tuple = $this->colorSpace->capToSrgbGamut($this->colorSpace->parseColor($value));
             } catch (\InvalidArgumentException) {

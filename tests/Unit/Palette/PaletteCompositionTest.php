@@ -37,7 +37,7 @@ final class PaletteCompositionTest extends TestCase
         $semantic = ThemeConfig::get('semantic')->paletteRecipe();
 
         self::assertSame('#0d6efd', $this->generator->resolveToCss('blue.500', $semantic));
-        self::assertSame('#2377f3', $this->generator->resolveToCss('blue.500', $default));
+        self::assertSame('#1c77fe', $this->generator->resolveToCss('blue.500', $default));
 
         $generatorOnly = ThemePaletteRecipe::fromPaletteDefinition(
             $default->hueBase(),

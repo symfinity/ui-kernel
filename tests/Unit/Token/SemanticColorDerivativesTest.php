@@ -40,14 +40,15 @@ final class SemanticColorDerivativesTest extends TestCase
     }
 
     #[Test]
-    public function p3BoostsIncludeAnchoredHexBrandColours(): void
+    public function p3BoostsSkipFrozenHexAnchorsToPreserveHue(): void
     {
         $tokens = (new ThemeTokenResolver())->resolve(ThemeConfig::get('default'))->all();
         $boosts = (new SemanticColorDerivatives())->p3Boosts($tokens);
         $keys = array_column($boosts, 'key');
 
-        self::assertContains('--ui-color-primary', $keys);
-        self::assertContains('--ui-color-tertiary', $keys);
-        self::assertContains('--ui-color-danger', $keys);
+        self::assertNotContains('--ui-color-primary', $keys);
+        self::assertNotContains('--ui-color-danger', $keys);
+        self::assertNotContains('--ui-color-success', $keys);
+        self::assertNotContains('--ui-color-warning', $keys);
     }
 }

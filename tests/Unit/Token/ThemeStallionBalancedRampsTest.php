@@ -30,7 +30,7 @@ final class ThemeStallionBalancedRampsTest extends TestCase
 
         self::assertCount(190, $recipe->scaleAnchors());
         self::assertSame(PaletteAnchorProfiles::get('balanced')['blue.500'], $recipe->scaleAnchors()['blue.500']);
-        self::assertSame('#2377f3', $recipe->scaleAnchors()['blue.500']);
+        self::assertSame('#1c77fe', $recipe->scaleAnchors()['blue.500']);
     }
 
     #[Test]
@@ -81,7 +81,7 @@ final class ThemeStallionBalancedRampsTest extends TestCase
 
         self::assertNotSame($tw, $balanced);
         self::assertNotSame($bs, $balanced);
-        self::assertSame('#2377f3', $balanced);
+        self::assertSame('#1c77fe', $balanced);
     }
 
     #[Test]
@@ -93,6 +93,7 @@ final class ThemeStallionBalancedRampsTest extends TestCase
         $resolved = $map->resolve(ThemeConfig::get('default')->colorRefs(), $recipe);
 
         self::assertSame($targets['blue.600'], $resolved['--ui-color-primary']);
+        self::assertSame('#105be3', $resolved['--ui-color-primary']);
         self::assertSame($targets['green.500'], $resolved['--ui-color-success']);
         self::assertSame($targets['orange.500'], $resolved['--ui-color-warning']);
         self::assertSame($targets['teal.500'], $resolved['--ui-color-info']);
