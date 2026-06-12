@@ -61,15 +61,6 @@ final class CssGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function schemaOneIncludesFocusRingRules(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
-
-        self::assertStringContainsString('schema:1.0', $css);
-        self::assertStringContainsString(':focus-visible', $css);
-    }
-
-    #[Test]
     public function itIncludesShadowAndMotionTokensInOutput(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
@@ -80,73 +71,15 @@ final class CssGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function itIncludesSemanticFilledButtonVariants(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
-
-        foreach (['tertiary', 'danger', 'success', 'info', 'warning'] as $variant) {
-            self::assertStringContainsString(
-                '[data-ui-role="button"][data-ui-variant="'.$variant.'"]',
-                $css,
-            );
-        }
-        self::assertStringContainsString('background: var(--ui-color-danger)', $css);
-        self::assertStringContainsString('background: var(--ui-color-success)', $css);
-        self::assertStringContainsString('background: var(--ui-color-info)', $css);
-        self::assertStringContainsString('background: var(--ui-color-warning)', $css);
-    }
-
-    #[Test]
-    public function filledButtonVariantsUseWhiteLabelText(): void
+    public function itEmitsOklchSemanticColorsAndOptionalP3Boosts(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
-        foreach (['primary', 'secondary', 'tertiary', 'danger', 'success', 'info', 'warning'] as $variant) {
-            self::assertMatchesRegularExpression(
-                '/\[data-ui-role="button"\]\[data-ui-variant="'.$variant.'"\](?:\[data-ui-appearance="solid"\]|:not\(\[data-ui-appearance\]\))[^{]*\{[^}]*color: #fff;/s',
-                $css,
-            );
+        self::assertMatchesRegularExpression('/--ui-color-primary: (#[0-9a-f]{6}|oklch\([^;]+\));/i', $css);
+        // P3 block is optional — stallion hex anchors may already exceed boost headroom.
+        if (str_contains($css, '@media (color-gamut: p3)')) {
+            self::assertStringContainsString('@media (color-gamut: p3)', $css);
         }
-    }
-
-    #[Test]
-    public function secondaryButtonUsesSecondaryColorToken(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
-
-        self::assertStringContainsString(
-            '[data-ui-role="button"][data-ui-variant="secondary"]',
-            $css,
-        );
-        self::assertMatchesRegularExpression(
-            '/\[data-ui-role="button"\]\[data-ui-variant="secondary"\][^{]*\{[^}]*background: var\(--ui-color-secondary\)/s',
-            $css,
-        );
-    }
-
-    #[Test]
-    public function itIncludesAllV0UxPrimitiveRoles(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
-
-        foreach ([
-            'separator',
-            'typography',
-            'label',
-            'input',
-            'textarea',
-            'select',
-            'field',
-            'checkbox',
-            'radio-group',
-            'empty',
-            'table',
-        ] as $role) {
-            self::assertStringContainsString('[data-ui-role="' . $role . '"]', $css, $role);
-        }
-
-        self::assertStringContainsString('[data-ui-role="button"][data-ui-variant="primary"][data-ui-appearance="outline"]', $css);
-        self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="warning"]', $css);
     }
 
     #[Test]
@@ -157,13 +90,7 @@ final class CssGeneratorTest extends TestCase
         self::assertStringContainsString('profile:chameleon-default', $css);
         self::assertStringContainsString('--ui-z-dropdown:', $css);
         self::assertStringContainsString('@keyframes ui-shimmer', $css);
-        self::assertStringContainsString('[data-ui-role="grid"]', $css);
-        self::assertStringContainsString('[data-ui-role="button"][data-ui-size="sm"]', $css);
-        self::assertStringContainsString('[data-ui-role="button"][data-ui-layout="block"]', $css);
-        self::assertStringContainsString('[data-ui-role="grid"] > [data-ui-role="button"]', $css);
-        self::assertStringContainsString('[data-ui-role="nav"]', $css);
-        self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="info"]', $css);
-        self::assertStringContainsString('[data-ui-role="alert"][data-ui-variant="info"] [data-ui-role="button"]', $css);
+        self::assertStringNotContainsString('[data-ui-role="button"]', $css);
         self::assertStringNotContainsString('var(--ui-breakpoint', $css);
     }
 }

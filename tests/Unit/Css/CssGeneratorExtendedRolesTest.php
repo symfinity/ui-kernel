@@ -9,35 +9,32 @@ use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Css\CssGenerator;
 use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
+
+/** 065 W2 — extended tier chrome lives in symfinity/ux-blocks-extended, not kernel. */
 final class CssGeneratorExtendedRolesTest extends TestCase
 {
     /**
-     * symfinity/ux-blocks-live — blocks.live stl roles (054).
-     *
      * @return list<string>
      */
-    private static function liveRoles(): array
+    private static function extendedRolesInPackage(): array
     {
         return [
-            'tabs', 'alert-dialog-enhanced', 'drawer', 'sheet', 'dropdown-menu', 'combobox',
-            'slider', 'toggle', 'toggle-group', 'calendar', 'date-picker', 'input-otp',
-            'sidebar', 'stacked-layout-interactive', 'command-palette', 'toast', 'context-menu',
-            'hover-card', 'resizable', 'menubar', 'navigation-menu', 'data-table-chrome-interactive',
-            'carousel-interactive', 'rating', 'filter-chips',
-            'date-range-picker', 'tags-input', 'tree-view',
+            'tabs', 'tabs-trigger', 'tabs-content', 'dropdown-menu', 'drawer', 'drawer-content',
+            'sheet', 'sheet-content', 'context-menu', 'hover-card', 'alert-dialog-enhanced',
+            'combobox', 'menubar', 'navigation-menu', 'filter-chips',
         ];
     }
 
     #[Test]
-    public function schemaTwoIncludesAllLiveRoleSelectors(): void
+    public function schemaTwoOmitsExtendedTierRoleSelectors(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
 
-        foreach (self::liveRoles() as $role) {
-            self::assertStringContainsString(
+        foreach (self::extendedRolesInPackage() as $role) {
+            self::assertStringNotContainsString(
                 '[data-ui-role="' . $role . '"]',
                 $css,
-                sprintf('Missing kernel CSS for live role "%s"', $role),
+                sprintf('Kernel must not ship extended role "%s" after 065 W2', $role),
             );
         }
     }

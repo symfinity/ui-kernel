@@ -64,11 +64,11 @@ See [config/themes/README.md](../config/themes/README.md). Summary:
 - `symfinity_ui_kernel.themes.{lineage}.palette` — `hues` + `mono` (not flat `hue_base` in YAML)
 - Grouped `tokens` (space, radius, font, motion, focus, …)
 - `variants.{key}` — `label`, `tone`, optional `mode`, nested `colors`, optional `extends`, `scroll_motion`, `backdrop_blur`
-- Layout profile is derived from lineage (`default`/`semantic` → Semantic, `utility` → Utility, `kiroshi` → Kiroshi)
+- Layout profile is derived from lineage (`default`/`semantic` → Semantic, `utility` → Utility)
 
 ## Custom brand themes
 
-Use **symfinity/ui-themer** (or handbook packs) — YAML with `version`, `id`, `schema_version`, `preset` (lineage: `default`, `semantic`, `utility`, `kiroshi`), `tone`, `semantics`. Those files are **not** loaded from `ui-kernel/config/themes/`.
+Use **symfinity/ui-themer** (or handbook packs) — YAML with `version`, `id`, `schema_version`, `preset` (lineage: `default`, `semantic`, `utility`), `tone`, `semantics`. Those files are **not** loaded from `ui-kernel/config/themes/`.
 
 ## Environment variables
 

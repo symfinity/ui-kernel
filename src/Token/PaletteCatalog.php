@@ -91,7 +91,7 @@ final class PaletteCatalog
 
     public static function revision(): int
     {
-        $revision = self::generator()['revision'] ?? 2;
+        $revision = self::generator()['revision'] ?? 1;
 
         return (int) $revision;
     }

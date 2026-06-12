@@ -3,18 +3,21 @@ symfinity_ui_kernel:
     utility:
       palette:
         hues:
-          red: 0.0
-          orange: 25.0
-          yellow: 48.0
-          lime: 90.0
-          green: 142.0
-          emerald: 150.0
-          cyan: 190.0
+          red: 25.0
+          orange: 47.6
+          yellow: 88.0
+          lime: 105.0
+          green: 158.0
+          emerald: 168.0
+          teal: 182.5
+          cyan: 200.0
           sky: 210.0
-          blue: 217.0
+          blue: 264.0
           violet: 270.0
-          purple: 271.0
+          purple: 275.0
           pink: 330.0
+        # Full Tailwind CSS v4 hue ramps (100–950) — SSOT PaletteAnchorProfiles::tailwind-v4
+        anchor_profile: tailwind-v4
         mono:
           pure:
             hue: 0.0
@@ -29,8 +32,8 @@ symfinity_ui_kernel:
             hue: 120.0
             saturation: 7.5
           cool:
-            hue: 220.0
-            saturation: 7.0
+            hue: 225.0
+            saturation: 8.0
           pope:
             hue: 300.0
             saturation: 7.5
@@ -90,27 +93,27 @@ symfinity_ui_kernel:
           mode: light
           colors:
             brand:
-              primary: blue.500
+              primary: blue.400
               secondary: mono.cool.500
-              tertiary: purple.500
+              tertiary: violet.500
             surface:
-              base: mono.cool.100
+              base: mono.pure.100
               elevated: mono.cool.100
               overlay: mono.cool.900@40
             text:
-              default: mono.cool.900
-              muted: mono.cool.400
+              default: mono.cool.800
+              muted: mono.cool.300
             border:
               default: mono.cool.200
             state:
               danger: red.500
-              success: green.500
-              warning: orange.500
-              info: blue.500
-              focus: blue.500
+              success: emerald.600
+              warning: orange.400
+              info: teal.600
+              focus: blue.400
             skeleton:
               base: mono.cool.200
-              shine: mono.cool.100
+              shine: mono.cool.400
         utility_dark:
           extends: utility
           label: 'Utility dark'
@@ -119,20 +122,21 @@ symfinity_ui_kernel:
             brand:
               primary: blue.400
               secondary: mono.cool.400
-              tertiary: purple.400
+              tertiary: violet.400
             surface:
               base: mono.cool.900
               elevated: mono.cool.800
             text:
               default: mono.cool.100
-              muted: mono.cool.500
+              muted: mono.cool.300
             border:
               default: mono.cool.700
             state:
               danger: red.400
-              success: green.400
-              info: blue.400
-              focus: blue.400
+              success: emerald.400
+              warning: orange.400
+              info: teal.400
+              focus: blue.300
             skeleton:
-              base: mono.cool.700
-              shine: mono.cool.600
+              base: mono.cool.600
+              shine: mono.cool.400

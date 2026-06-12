@@ -130,10 +130,30 @@ final class TokenValueValidator
             return;
         }
 
+        if (self::isAllowedOklchColor($value)) {
+            return;
+        }
+
         ThemeErrorCatalog::throw(
             ThemeErrorCatalog::INVALID_TOKEN_VALUE,
             sprintf('Token "%s" value is not an allowed color form.', $key),
         );
+    }
+
+    private static function isAllowedOklchColor(string $value): bool
+    {
+        if (!str_starts_with($value, 'oklch(') || !str_ends_with($value, ')')) {
+            return false;
+        }
+
+        if (preg_match('/^oklch\(from var\(--ui-color-[\w-]+\)\s+calc\(l \* [\d.]+\)\s+c\s+h\)$/', $value) === 1) {
+            return true;
+        }
+
+        return preg_match(
+            '/^oklch\(\s*[\d.]+\s+[\d.]+\s+[\d.]+(?:\s*\/\s*[\d.]+)?\s*\)$/',
+            $value,
+        ) === 1;
     }
 
     private static function assertDurationValue(string $key, string $value): void

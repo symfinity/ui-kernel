@@ -17,21 +17,24 @@ final class BuiltinThemeCatalogTest extends TestCase
         parent::tearDown();
     }
 
-    public function testLoadsEightBuiltInThemesFromBundleConfig(): void
+    public function testLoadsSixBuiltInThemesFromBundleConfig(): void
     {
         $themes = BuiltinThemeCatalog::themes();
 
-        self::assertCount(8, $themes);
+        self::assertCount(6, $themes);
 
         $ids = array_map(static fn (array $t): string => $t['id'], $themes);
         self::assertContains('default', $ids);
         self::assertContains('default-dark', $ids);
-        self::assertContains('kiroshi-dark', $ids);
+        self::assertContains('utility-dark', $ids);
+        self::assertNotContains('kiroshi', $ids);
+        self::assertNotContains('kiroshi-dark', $ids);
 
         $lineages = BuiltinThemeCatalog::lineageDonors();
-        self::assertCount(4, $lineages);
+        self::assertCount(3, $lineages);
         self::assertSame('default', $lineages['default']);
         self::assertSame('semantic', $lineages['semantic']);
+        self::assertSame('utility', $lineages['utility']);
     }
 
     public function testGroupedThemesExposeShortTokensPerVariant(): void

@@ -16,10 +16,14 @@ final class ThemePaletteRecipe
     /**
      * @param array<string, float>                         $hueBase        hue family => degrees (0–360)
      * @param array<string, array{hue: float, saturation: float}> $monoTones tone => tint
+     * @param array<string, float>                         $hueChroma      optional per-family base C @ level 500
+     * @param array<string, string>                        $scaleAnchors   sparse ref => hex overrides (lineage stallion ramps)
      */
     public function __construct(
         private readonly array $hueBase,
         private readonly array $monoTones,
+        private readonly array $hueChroma = [],
+        private readonly array $scaleAnchors = [],
     ) {
         foreach (PaletteCatalog::hueFamilies() as $hue) {
             if (!isset($this->hueBase[$hue])) {
@@ -41,6 +45,31 @@ final class ThemePaletteRecipe
         }
 
         return $this->hueBase[$hue];
+    }
+
+    public function hueChromaBase(string $hue): float
+    {
+        if (isset($this->hueChroma[$hue])) {
+            return $this->hueChroma[$hue];
+        }
+
+        return PaletteCatalog::hueChroma($hue);
+    }
+
+    /**
+     * @return array<string, float>
+     */
+    public function hueChromaOverrides(): array
+    {
+        return $this->hueChroma;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function scaleAnchors(): array
+    {
+        return $this->scaleAnchors;
     }
 
     public function monoHue(MonoTone $spice): float
@@ -80,9 +109,15 @@ final class ThemePaletteRecipe
     /**
      * @param array<string, float> $hueBase full hue_base map (replaces baseline entirely)
      * @param array<string, array{hue?: float, saturation?: float}> $monoTones full mono_tones map
+     * @param array<string, float>  $hueChroma optional per-family chroma overrides
+     * @param array<string, string> $scaleAnchors optional sparse ramp overrides
      */
-    public static function fromPaletteDefinition(array $hueBase, array $monoTones): self
-    {
+    public static function fromPaletteDefinition(
+        array $hueBase,
+        array $monoTones,
+        array $hueChroma = [],
+        array $scaleAnchors = [],
+    ): self {
         $normalized = [];
         foreach ($monoTones as $tone => $params) {
             $normalized[$tone] = [
@@ -91,6 +126,6 @@ final class ThemePaletteRecipe
             ];
         }
 
-        return new self($hueBase, $normalized);
+        return new self($hueBase, $normalized, $hueChroma, $scaleAnchors);
     }
 }

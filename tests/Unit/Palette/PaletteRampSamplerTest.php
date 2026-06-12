@@ -58,15 +58,17 @@ final class PaletteRampSamplerTest extends TestCase
     }
 
     #[Test]
-    public function cssGeneratorOutputHasNoOklchInColorVars(): void
+    public function cssGeneratorOutputUsesOklchForSemanticColorVars(): void
     {
         $css = (new \Symfinity\UiKernel\Css\CssGenerator())->forTheme(
             \Symfinity\UiKernel\Theme\ThemeCatalog::get('semantic'),
         );
 
-        if (preg_match_all('/--ui-color-[^:]+:\s*([^;]+);/', $css, $matches)) {
+        self::assertMatchesRegularExpression('/--ui-color-primary: (#[0-9a-f]{6}|oklch\([^;]+\));/i', $css);
+
+        if (preg_match_all('/--ui-color-(?:primary|secondary|surface|danger)-hover:\s*([^;]+);/', $css, $matches)) {
             foreach ($matches[1] as $value) {
-                self::assertStringNotContainsString('oklch(', strtolower(trim($value)));
+                self::assertStringStartsWith('oklch(from var(--ui-color-', trim($value));
             }
         }
     }

@@ -12,7 +12,6 @@ use Symfinity\UiKernel\Token\ThemeTokenSchema;
  */
 enum LayoutProfile
 {
-    case Kiroshi;
     case Semantic;
     case Utility;
 

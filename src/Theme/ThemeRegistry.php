@@ -45,17 +45,18 @@ final class ThemeRegistry
         return $this->themes[$id];
     }
 
+    /**
+     * Resolves an explicit theme id or the bundle default when id is null/empty.
+     *
+     * @throws InvalidArgumentException when a non-empty id is unknown
+     */
     public function resolve(?string $id): Theme
     {
         if ($id === null || $id === '') {
             return $this->get('default');
         }
 
-        if (!isset($this->themes[$id])) {
-            return $this->get('default');
-        }
-
-        return $this->themes[$id];
+        return $this->get($id);
     }
 
     /**

@@ -10,44 +10,29 @@ use Symfinity\UiKernel\Css\CssGenerator;
 use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
-/**
- * symfinity/ux-blocks-marketing R2 roles (048 T026–T027).
- */
+/** 065 W5 — marketing tier CSS lives in symfinity/ux-blocks-marketing. */
 final class CssGeneratorMarketingR2RolesTest extends TestCase
 {
     /** @return list<string> */
-    private static function r2Roles(): array
+    private static function marketingRoles(): array
     {
         return [
-            'comparison-section',
-            'integrations-section',
-            'cookie-consent',
-            'status-band',
+            'hero', 'comparison-section', 'integrations-section', 'cookie-consent',
+            'status-band', 'stats-band',
         ];
     }
 
     #[Test]
-    public function schemaTwoIncludesMarketingR2RoleSelectors(): void
+    public function schemaTwoOmitsMarketingRoleSelectors(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
 
-        foreach (self::r2Roles() as $role) {
-            self::assertStringContainsString(
+        foreach (self::marketingRoles() as $role) {
+            self::assertStringNotContainsString(
                 '[data-ui-role="' . $role . '"]',
                 $css,
-                sprintf('Missing kernel CSS for marketing R2 role "%s"', $role),
+                sprintf('Kernel must not ship marketing role "%s" after 065 W5', $role),
             );
         }
-    }
-
-    #[Test]
-    public function statusBandAndStatsBandRulesAreDistinct(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
-
-        self::assertStringContainsString('[data-ui-role="stats-band"]', $css);
-        self::assertStringContainsString('[data-ui-role="status-band"]', $css);
-        self::assertStringContainsString('[data-ui-role="status-band"][data-ui-status-tone="operational"]', $css);
-        self::assertStringNotContainsString('[data-ui-role="stats-band"][data-ui-status-tone', $css);
     }
 }

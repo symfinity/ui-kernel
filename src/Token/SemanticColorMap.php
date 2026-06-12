@@ -51,7 +51,7 @@ final class SemanticColorMap
             if (!isset(self::ROLE_TO_CSS[$role])) {
                 throw new \InvalidArgumentException(sprintf('Unknown semantic colour role "%s".', $role));
             }
-            $colors[self::ROLE_TO_CSS[$role]] = $this->palette->resolve($ref, $recipe);
+            $colors[self::ROLE_TO_CSS[$role]] = $this->palette->resolveToCss($ref, $recipe);
         }
 
         return $colors;

@@ -3,18 +3,21 @@ symfinity_ui_kernel:
     default:
       palette:
         hues:
-          red: 0.0
-          orange: 30.0
-          yellow: 60.0
-          lime: 90.0
-          green: 120.0
-          emerald: 150.0
+          red: 23.0
+          orange: 43.0
+          yellow: 90.0
+          lime: 100.0
+          green: 145.0
+          emerald: 160.0
+          teal: 182.0
           cyan: 180.0
           sky: 210.0
-          blue: 240.0
+          blue: 258.0
           violet: 270.0
           purple: 300.0
           pink: 330.0
+        # Balanced lineage — TW/BS midpoint + restrained chroma (PaletteAnchorProfiles::balanced)
+        anchor_profile: balanced
         mono:
           pure:
             hue: 0.0
@@ -30,7 +33,7 @@ symfinity_ui_kernel:
             saturation: 7.5
           cool:
             hue: 240.0
-            saturation: 7.5
+            saturation: 4.5
           pope:
             hue: 300.0
             saturation: 7.5
@@ -71,9 +74,9 @@ symfinity_ui_kernel:
             relaxed: '1.625'
         motion:
           duration:
-            fast: 120ms
-            normal: 200ms
-            slow: 300ms
+            fast: 150ms
+            normal: 450ms
+            slow: 1350ms
             skeleton: 1.75s
           easing:
             standard: 'cubic-bezier(0.4, 0, 0.2, 1)'
@@ -90,44 +93,50 @@ symfinity_ui_kernel:
           mode: light
           colors:
             brand:
-              primary: sky.600
+              primary: blue.600
               secondary: mono.cool.500
-              tertiary: pink.800
+              tertiary: purple.500
             surface:
               base: mono.pure.100
               elevated: mono.cool.100
               overlay: mono.cool.900@40
             text:
-              default: mono.cool.900
-              muted: mono.cool.400
+              default: mono.cool.800
+              muted: mono.cool.300
             border:
-              default: mono.cool.900
+              default: mono.cool.200
             state:
-              danger: red.600
-              success: green.800
+              danger: red.500
+              success: green.500
               warning: orange.500
-              info: cyan.700
-              focus: blue.600
+              info: teal.500
+              focus: blue.500
             skeleton:
               base: mono.cool.200
-              shine: mono.cool.100
+              shine: mono.cool.400
         default_dark:
           extends: default
           label: 'Balanced dark'
           mode: dark
           colors:
             brand:
+              primary: blue.400
               secondary: mono.cool.600
+              tertiary: purple.500
             surface:
-              base: mono.cool.950
-              elevated: mono.cool.900
+              base: mono.cool.900
+              elevated: mono.cool.800
             text:
               default: mono.cool.100
               muted: mono.cool.300
             border:
               default: mono.cool.600
             state:
-              focus: blue.400
+              danger: red.500
+              success: green.500
+              warning: orange.500
+              info: teal.500
+              focus: blue.500
             skeleton:
               base: mono.cool.600
-              shine: mono.cool.500
+              shine: mono.cool.400

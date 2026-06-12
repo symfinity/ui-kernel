@@ -45,8 +45,9 @@ final class PaletteGenerator
             $alpha = (int) $alphaToken;
         }
 
-        if (isset($this->scaleAnchors[$base])) {
-            $hex = $this->scaleAnchors[$base];
+        $anchors = $this->anchorsFor($recipe);
+        if (isset($anchors[$base])) {
+            $hex = $anchors[$base];
 
             return $alpha !== null ? $this->applyAlpha($this->normalizeOpaqueColour($hex), $alpha) : $hex;
         }
@@ -70,6 +71,32 @@ final class PaletteGenerator
         throw new InvalidArgumentException(sprintf('Invalid palette ref "%s".', $ref));
     }
 
+    public function resolveToCss(string $ref, ThemePaletteRecipe $recipe): string
+    {
+        PaletteRefGrammar::assertValid($ref);
+
+        $base = $ref;
+        $alpha = null;
+        if (str_contains($ref, '@')) {
+            [$base, $alphaToken] = explode('@', $ref, 2);
+            $alpha = (int) $alphaToken;
+        }
+
+        $anchors = $this->anchorsFor($recipe);
+        if (isset($anchors[$base])) {
+            $hex = $this->normalizeOpaqueColour($anchors[$base]);
+
+            return $alpha !== null ? $this->applyAlpha($hex, $alpha) : $hex;
+        }
+
+        $tuple = $this->resolveToOklch($ref, $recipe);
+        if ($alpha !== null) {
+            $tuple = $tuple->withAlpha(max(0, min(100, $alpha)) / 100);
+        }
+
+        return $this->colorSpace->toCss($tuple);
+    }
+
     public function resolveToOklch(string $ref, ThemePaletteRecipe $recipe): OklchTuple
     {
         PaletteRefGrammar::assertValid($ref);
@@ -79,8 +106,9 @@ final class PaletteGenerator
             [$base] = explode('@', $ref, 2);
         }
 
-        if (isset($this->scaleAnchors[$base])) {
-            return $this->colorSpace->fromHex($this->normalizeOpaqueColour($this->scaleAnchors[$base]));
+        $anchors = $this->anchorsFor($recipe);
+        if (isset($anchors[$base])) {
+            return $this->colorSpace->fromHex($this->normalizeOpaqueColour($anchors[$base]));
         }
 
         if (preg_match('/^mono\.([a-z]+)\.(\d+)$/', $base, $matches) === 1) {
@@ -152,10 +180,12 @@ final class PaletteGenerator
     {
         $lightness = PaletteCatalog::oklchLightnessCurve('default')[$level]
             ?? throw new InvalidArgumentException(sprintf('Unknown level %d.', $level));
-        $baseChroma = PaletteCatalog::hueChroma($hue);
+        $baseChroma = $recipe->hueChromaBase($hue);
         $chroma = $this->hueChromaForLevel($level, $baseChroma);
+        $hueDegrees = $recipe->hueDegrees($hue);
+        $chroma = $this->colorSpace->maxInGamutChroma($lightness, $hueDegrees, $chroma);
 
-        return new OklchTuple($lightness, $chroma, $recipe->hueDegrees($hue));
+        return new OklchTuple($lightness, $chroma, $hueDegrees);
     }
 
     public function applyAlpha(string $hex, int $alphaPercent): string
@@ -180,9 +210,22 @@ final class PaletteGenerator
     private function hueChromaForLevel(int $level, float $baseChroma): float
     {
         $distance = abs($level - 500) / 450.0;
-        $scale = max(0.35, 1.0 - $distance * 0.65);
+        // Floor 0.48 keeps 100–300 ramps vivid enough for BS/TW warning + success refs.
+        $scale = max(0.48, 1.0 - $distance * 0.55);
 
         return $baseChroma * $scale;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function anchorsFor(ThemePaletteRecipe $recipe): array
+    {
+        return array_merge(
+            PaletteScaleAnchors::all(),
+            $recipe->scaleAnchors(),
+            $this->scaleAnchors,
+        );
     }
 
     private function normalizeOpaqueColour(string $colour): string

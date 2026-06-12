@@ -1,7 +1,0 @@
-schema: showcase-examples/1.0
-role: themes
-requires_stimulus: false
-sections:
-  - id: demo
-    title: Themes
-    layout: custom

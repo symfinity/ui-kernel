@@ -33,17 +33,23 @@ final class PaletteCompositionTest extends TestCase
     #[Test]
     public function themeHueChangeAltersHNotC(): void
     {
-        $baseline = ThemePaletteRecipe::baseline();
+        $default = ThemeConfig::get('default')->paletteRecipe();
         $semantic = ThemeConfig::get('semantic')->paletteRecipe();
 
-        $baselineTuple = $this->generator->resolveToOklch('blue.500', $baseline);
-        $semanticTuple = $this->generator->resolveToOklch('blue.500', $semantic);
+        self::assertSame('#0d6efd', $this->generator->resolveToCss('blue.500', $semantic));
+        self::assertSame('#2377f3', $this->generator->resolveToCss('blue.500', $default));
 
-        self::assertSame($baselineTuple->l, $semanticTuple->l);
-        self::assertSame($baselineTuple->c, $semanticTuple->c);
-        self::assertNotSame($baselineTuple->h, $semanticTuple->h);
-        self::assertSame(240.0, $baselineTuple->h);
-        self::assertSame(215.0, $semanticTuple->h);
+        $generatorOnly = ThemePaletteRecipe::fromPaletteDefinition(
+            $default->hueBase(),
+            $default->monoTones(),
+        );
+        $baselineTuple = $this->generator->resolveToOklch('blue.500', $generatorOnly);
+        self::assertSame(258.0, $baselineTuple->h);
+        self::assertLessThanOrEqual(PaletteCatalog::hueChroma('blue') + 0.001, $baselineTuple->c);
+        self::assertNotSame(
+            strtolower($this->generator->resolve('blue.500', $default)),
+            strtolower($this->generator->resolveToCss('blue.500', $semantic)),
+        );
     }
 
     #[Test]
@@ -51,7 +57,7 @@ final class PaletteCompositionTest extends TestCase
     {
         $expected = PaletteCatalog::hueFamilies();
 
-        foreach (['default', 'semantic', 'utility', 'kiroshi'] as $lineage) {
+        foreach (['default', 'semantic', 'utility'] as $lineage) {
             $recipe = ThemeConfig::get($lineage)->paletteRecipe();
             self::assertSame($expected, array_keys($recipe->hueBase()), $lineage);
         }

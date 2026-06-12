@@ -7,7 +7,7 @@ namespace Symfinity\UiKernel\Palette;
 use InvalidArgumentException;
 
 /**
- * OKLCH colour space utilities — parse, ΔE, gamut clip → sRGB hex.
+ * OKLCH colour space utilities — parse, ΔE, in-gamut chroma cap, sRGB hex.
  *
  * ΔE uses Euclidean distance in OKLCH with circular hue difference (degrees).
  * This is a stable, documented approximation for nearest-ref sampling (055).
@@ -33,7 +33,7 @@ final class OklchColorSpace
 
     public function toSrgb(OklchTuple $tuple): string
     {
-        [$r, $g, $b] = $this->oklchToLinearSrgb($tuple);
+        [$r, $g, $b] = $this->oklchToLinearSrgb($this->capToSrgbGamut($tuple));
 
         return sprintf(
             '#%02x%02x%02x',
@@ -41,6 +41,36 @@ final class OklchColorSpace
             (int) round($this->linearToSrgb($g) * 255),
             (int) round($this->linearToSrgb($b) * 255),
         );
+    }
+
+    public function toCss(OklchTuple $tuple): string
+    {
+        $mapped = $this->capToSrgbGamut($tuple);
+        $l = self::formatCssNumber($mapped->l);
+        $c = self::formatCssNumber($mapped->c);
+        $h = self::formatCssNumber($mapped->h, 2);
+
+        if ($mapped->alpha !== null) {
+            $alpha = self::formatCssNumber($mapped->alpha);
+
+            return sprintf('oklch(%s %s %s / %s)', $l, $c, $h, $alpha);
+        }
+
+        return sprintf('oklch(%s %s %s)', $l, $c, $h);
+    }
+
+    /**
+     * Parse oklch() CSS or #hex into a tuple (derivatives + P3 boost).
+     */
+    public function parseColor(string $css): OklchTuple
+    {
+        $css = trim($css);
+
+        if (str_starts_with(strtolower($css), 'oklch(')) {
+            return $this->parse($css);
+        }
+
+        return $this->fromHex($css);
     }
 
     public function fromHex(string $hex): OklchTuple
@@ -73,6 +103,37 @@ final class OklchColorSpace
     }
 
     /**
+     * Largest OKLCH chroma for (L, H) that stays inside sRGB — CSS Color 4 gamut-mapping input.
+     */
+    public function maxInGamutChroma(float $l, float $h, float $upperBound = 0.4): float
+    {
+        $upperBound = max(0.0, $upperBound);
+
+        if (!$this->isInSrgbGamut(new OklchTuple($l, 0.0, $h))) {
+            return 0.0;
+        }
+
+        if ($upperBound <= 0.0) {
+            return 0.0;
+        }
+
+        if (!$this->isInSrgbGamut(new OklchTuple($l, $upperBound, $h))) {
+            return $this->gamutMap(new OklchTuple($l, $upperBound, $h))->c;
+        }
+
+        return $upperBound;
+    }
+
+    public function capToSrgbGamut(OklchTuple $tuple): OklchTuple
+    {
+        if ($tuple->c <= 0.0 || $this->isInSrgbGamut($tuple)) {
+            return $tuple;
+        }
+
+        return $this->gamutMap($tuple);
+    }
+
+    /**
      * @param array{0: float, 1: float, 2: float} $linear
      */
     public function fromLinearSrgb(array $linear): OklchTuple
@@ -102,10 +163,49 @@ final class OklchColorSpace
         return new OklchTuple($L, $c, $h);
     }
 
+    private function gamutMap(OklchTuple $tuple): OklchTuple
+    {
+        if ($tuple->c <= 0.0 || $this->isInSrgbGamut($tuple)) {
+            return $tuple;
+        }
+
+        $low = 0.0;
+        $high = $tuple->c;
+
+        for ($i = 0; $i < 24; ++$i) {
+            $mid = ($low + $high) / 2.0;
+            $candidate = new OklchTuple($tuple->l, $mid, $tuple->h, $tuple->alpha);
+            if ($this->isInSrgbGamut($candidate)) {
+                $low = $mid;
+            } else {
+                $high = $mid;
+            }
+        }
+
+        return new OklchTuple($tuple->l, $low, $tuple->h, $tuple->alpha);
+    }
+
+    private function isInSrgbGamut(OklchTuple $tuple): bool
+    {
+        [$r, $g, $b] = $this->oklchToLinearSrgbUnclamped($tuple);
+
+        return $r >= 0.0 && $r <= 1.0
+            && $g >= 0.0 && $g <= 1.0
+            && $b >= 0.0 && $b <= 1.0;
+    }
+
     /**
      * @return array{0: float, 1: float, 2: float}
      */
     private function oklchToLinearSrgb(OklchTuple $tuple): array
+    {
+        return $this->clampLinearSrgb($this->oklchToLinearSrgbUnclamped($tuple));
+    }
+
+    /**
+     * @return array{0: float, 1: float, 2: float}
+     */
+    private function oklchToLinearSrgbUnclamped(OklchTuple $tuple): array
     {
         $hRad = $tuple->h * M_PI / 180.0;
         $a = $tuple->c * cos($hRad);
@@ -119,14 +219,24 @@ final class OklchColorSpace
         $m = $m_ * $m_ * $m_;
         $s = $s_ * $s_ * $s_;
 
-        $r = +4.0767416621 * $l - 3.3077115913 * $m + 0.2309699292 * $s;
-        $g = -1.2684380046 * $l + 2.6097574011 * $m - 0.3413193965 * $s;
-        $bLin = -0.0041960863 * $l - 0.7034186147 * $m + 1.7076147010 * $s;
-
         return [
-            max(0.0, min(1.0, $r)),
-            max(0.0, min(1.0, $g)),
-            max(0.0, min(1.0, $bLin)),
+            +4.0767416621 * $l - 3.3077115913 * $m + 0.2309699292 * $s,
+            -1.2684380046 * $l + 2.6097574011 * $m - 0.3413193965 * $s,
+            -0.0041960863 * $l - 0.7034186147 * $m + 1.7076147010 * $s,
+        ];
+    }
+
+    /**
+     * @param array{0: float, 1: float, 2: float} $linear
+     *
+     * @return array{0: float, 1: float, 2: float}
+     */
+    private function clampLinearSrgb(array $linear): array
+    {
+        return [
+            max(0.0, min(1.0, $linear[0])),
+            max(0.0, min(1.0, $linear[1])),
+            max(0.0, min(1.0, $linear[2])),
         ];
     }
 
@@ -140,5 +250,12 @@ final class OklchColorSpace
         $c = max(0.0, min(1.0, $c));
 
         return $c <= 0.0031308 ? 12.92 * $c : 1.055 * pow($c, 1.0 / 2.4) - 0.055;
+    }
+
+    private static function formatCssNumber(float $value, int $precision = 4): string
+    {
+        $formatted = rtrim(rtrim(sprintf('%.' . $precision . 'f', $value), '0'), '.');
+
+        return $formatted === '' ? '0' : $formatted;
     }
 }

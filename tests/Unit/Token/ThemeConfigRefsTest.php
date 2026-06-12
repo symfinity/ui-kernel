@@ -53,10 +53,10 @@ final class ThemeConfigRefsTest extends TestCase
     #[Test]
     public function presetsHaveDistinctPaletteRecipes(): void
     {
-        $kiroshi = ThemeConfig::get('default')->paletteRecipe();
+        $default = ThemeConfig::get('default')->paletteRecipe();
         $semantic = ThemeConfig::get('semantic')->paletteRecipe();
 
-        self::assertNotSame($kiroshi->hueBase()['blue'], $semantic->hueBase()['blue']);
+        self::assertNotSame($default->hueBase()['blue'], $semantic->hueBase()['blue']);
     }
 
     #[Test]

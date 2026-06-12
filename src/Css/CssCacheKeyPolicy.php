@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Css;
 
 use Symfinity\UiKernel\Profile\SystemProfile;
-use Symfinity\UiKernel\Token\ButtonStateDerivation;
 
 /**
  * CSS generation cache-key contract (018 FR-018).
  */
 final class CssCacheKeyPolicy
 {
+    private const TOKENS_ONLY_VERSION = 'tokens-only:1';
+
     public static function roleRulesVersion(): string
     {
-        return ButtonStateDerivation::ALGORITHM_VERSION;
+        return self::TOKENS_ONLY_VERSION;
     }
 
     /**

@@ -27,18 +27,6 @@ final class SemanticVariant
     }
 
     /**
-     * Map legacy showcase / shadcn alias values to canonical semantic colour (060 migration shim).
-     */
-    public static function coerceLegacy(string $value): string
-    {
-        return match ($value) {
-            'default', '' => 'primary',
-            'destructive' => 'danger',
-            default => $value,
-        };
-    }
-
-    /**
      * @param array<string, mixed> $props
      *
      * @return array<string, mixed>
@@ -52,8 +40,8 @@ final class SemanticVariant
                 continue;
             }
 
-            $coerced = self::coerceLegacy((string) $normalized[$name]);
-            $normalized[$name] = self::isValid($coerced) ? $coerced : 'primary';
+            $value = (string) $normalized[$name];
+            $normalized[$name] = self::isValid($value) ? $value : 'primary';
         }
 
         return $normalized;

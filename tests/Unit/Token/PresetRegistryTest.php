@@ -17,11 +17,9 @@ final class PresetRegistryTest extends TestCase
     {
         $registry = new PresetRegistry();
 
-        $kiroshi = $registry->tokensFor(LayoutProfile::Kiroshi, ThemeTokenSchema::V1_0);
         $semantic = $registry->tokensFor(LayoutProfile::Semantic, ThemeTokenSchema::V1_0);
         $utility = $registry->tokensFor(LayoutProfile::Utility, ThemeTokenSchema::V1_0);
 
-        self::assertSame('0', $kiroshi['--ui-radius-md']);
         self::assertSame('0.375rem', $semantic['--ui-radius-md']);
         self::assertSame('0.25rem', $utility['--ui-radius-md']);
 

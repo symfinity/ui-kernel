@@ -34,43 +34,30 @@ final class CssGeneratorFinalCssTest extends TestCase
     }
 
     #[Test]
-    public function semanticOverlayTokensAndNativeSelectorsPresent(): void
+    public function overlaySnapshotMatchesBalancedFixture(): void
+    {
+        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
+        $this->assertMatchesSnapshotFixture('css-016-overlay-balanced.css', $css);
+    }
+
+    #[Test]
+    public function semanticOverlayTokensPresentInKernelOutput(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
         self::assertStringContainsString('--ui-overlay-surface:', $css);
         self::assertStringContainsString('--ui-backdrop-color:', $css);
-        self::assertStringContainsString('dialog::backdrop', $css);
-        self::assertStringContainsString('[popover]', $css);
-        self::assertStringContainsString('[data-ui-role="modal"]', $css);
+        self::assertStringNotContainsString('dialog::backdrop', $css);
+        self::assertStringNotContainsString('[data-ui-role="modal"]', $css);
     }
 
     #[Test]
-    public function accordionSummaryUsesPointerCursorForTypographyTitles(): void
+    public function kernelOutputDefinesZIndexTokensWithoutRoleRules(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
 
-        self::assertStringContainsString('[data-ui-role="accordion"] summary {', $css);
-        self::assertMatchesRegularExpression(
-            '/\[data-ui-role="accordion"\] summary \{[^}]*cursor:\s*pointer;/s',
-            $css,
-        );
-        self::assertStringContainsString('[data-ui-role="accordion"] summary * {', $css);
-        self::assertMatchesRegularExpression(
-            '/\[data-ui-role="accordion"\] summary \* \{[^}]*cursor:\s*inherit;/s',
-            $css,
-        );
-    }
-
-    #[Test]
-    public function overlayRulesUseProfileZIndexVariablesNotLiterals(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
-
-        self::assertStringContainsString('z-index: var(--ui-z-modal)', $css);
-        self::assertStringContainsString('z-index: var(--ui-z-popover)', $css);
-        self::assertDoesNotMatchRegularExpression('/z-index:\s*1050/', $css);
-        self::assertDoesNotMatchRegularExpression('/z-index:\s*1060/', $css);
+        self::assertStringContainsString('--ui-z-modal:', $css);
+        self::assertStringNotContainsString('z-index: 1050', $css);
     }
 
     #[Test]
@@ -82,41 +69,12 @@ final class CssGeneratorFinalCssTest extends TestCase
     }
 
     #[Test]
-    public function semanticThemeWithScrollMotionIncludesViewTimeline(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
-
-        self::assertStringContainsString('animation-timeline: view()', $css);
-        self::assertStringContainsString('[data-ui-scroll-reveal]', $css);
-    }
-
-    #[Test]
     public function scrollMotionFlagOnlyOnSemanticThemes(): void
     {
         self::assertTrue(ThemeCatalog::get('semantic')->scrollMotion());
         self::assertTrue(ThemeCatalog::get('semantic-dark')->scrollMotion());
         self::assertFalse(ThemeCatalog::get('utility')->scrollMotion());
         self::assertFalse(ThemeCatalog::get('default')->scrollMotion());
-    }
-
-    #[Test]
-    public function hasPatternsAndContentVisibilityPresent(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('utility'));
-
-        self::assertStringContainsString('[data-ui-role="field-group"]:has(:invalid)', $css);
-        self::assertStringContainsString('[data-ui-defer="cv"]', $css);
-        self::assertStringContainsString('content-visibility: auto', $css);
-    }
-
-    #[Test]
-    public function anchorMenuRulesIncludeSupportsFallback(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
-
-        self::assertStringContainsString('anchor-name: --ui-menu-trigger', $css);
-        self::assertStringContainsString('position-anchor: --ui-menu-trigger', $css);
-        self::assertStringContainsString('@supports not (anchor-name: --ui-menu-trigger)', $css);
     }
 
     #[Test]
@@ -131,45 +89,8 @@ final class CssGeneratorFinalCssTest extends TestCase
         self::assertStringContainsString('html[data-theme="default"]', $css);
         self::assertStringContainsString('@media (prefers-color-scheme: dark)', $css);
         self::assertStringContainsString('color-scheme: light dark', $css);
-        self::assertStringContainsString('dialog::backdrop', $css);
+        self::assertStringNotContainsString('dialog::backdrop', $css);
         self::assertStringNotContainsString('[data-theme="default-dark"] {', $css);
-    }
-
-    #[Test]
-    public function skeletonUsesSkeletonMotionToken(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
-
-        self::assertStringContainsString(
-            'animation: ui-shimmer var(--ui-motion-duration-skeleton)',
-            $css,
-        );
-        self::assertStringNotContainsString(
-            'animation: ui-shimmer var(--ui-motion-duration-slow)',
-            $css,
-        );
-    }
-
-    #[Test]
-    public function popoverAnchorRulesTargetOpenStateOnly(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'));
-
-        self::assertStringContainsString(':popover-open[data-ui-role="popover"]', $css);
-        self::assertStringContainsString('position-anchor: --ui-menu-trigger', $css);
-        self::assertStringContainsString('[data-ui-role="menu"]:not([popover])', $css);
-    }
-
-    #[Test]
-    public function reducedMotionDisablesSkeletonAnimation(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('default'));
-
-        self::assertStringContainsString('@media (prefers-reduced-motion: reduce)', $css);
-        self::assertMatchesRegularExpression(
-            '/@media \(prefers-reduced-motion: reduce\)[^{]*\{[^}]*\[data-ui-role="skeleton"\][^}]*animation:\s*none/s',
-            $css,
-        );
     }
 
     #[Test]

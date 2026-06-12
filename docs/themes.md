@@ -9,7 +9,7 @@ Normative contracts: [theme-vocabulary](../../../../../specs/symfinity/symfinity
 | File | Role |
 |------|------|
 | `config/packages/symfinity_ui_kernel.yaml` | `contract.palette`, `generator.palette` |
-| `config/themes/*.yaml` | `symfinity_ui_kernel.themes` — eight built-ins across four files |
+| `config/themes/*.yaml` | `symfinity_ui_kernel.themes` — six built-ins across three files |
 | App `config/packages/symfinity_ui_kernel.yaml` | `default_theme`, `user_tokens`, `system_profile` only |
 
 See [configuration.md](configuration.md).
@@ -105,22 +105,21 @@ Quickstart: 018 palette SSOT quickstart.
 
 | Profile | Spacing rhythm | Radius | Type base | Motion |
 |---------|----------------|--------|-----------|--------|
-| **Kiroshi** | Tight (`md` 0.625rem) | Sharp (0) | Slightly compact (0.9375rem) | 150ms |
 | **Semantic** | Roomy (`xl` 3rem) | Rounded (md 0.375rem) | Classic 1rem | 200ms |
 | **Utility** | Compact mid (`md` 0.75rem) | Subtle (md 0.25rem) | Dense (md 0.875rem) | 150ms |
 
-Showcase stack gap, button padding, card padding, and form controls read CSS variables — carousel theme change affects **layout** and palette.
+Built-in **Balanced** themes (`default`, `default-dark`) ship full appearance tokens in YAML and share the Semantic layout profile for rhythm fallback only.
 
-## Kiroshi (`default`, `dark`)
+## Balanced (`default`, `default-dark`)
 
-**Lineage:** `LayoutProfile::Kiroshi` · **Spice:** `warm`
+**Lineage:** `default` · **Label:** Balanced / Balanced dark · **Spice:** `cool`
 
-**Visual inspiration:** Night City palette cues from the public [Cyberpunk 2077](https://www.cyberpunk.net/) site. Symfinity **inspired-by** styling only.
+Neutral, modern baseline — white surfaces, sky primary, restrained state colours. Not a third-party stack clone.
 
-| Id | Label | Surface (resolved) |
-|----|-------|---------------------|
-| `default` | Kiroshi | Neon yellow field |
-| `dark` | Kiroshi dark | Near-black field |
+| Id | Label | Role |
+|----|-------|------|
+| `default` | Balanced | Light neutral product baseline |
+| `default-dark` | Balanced dark | Dark neutral baseline |
 
 ## Semantic & Utility stacks
 
@@ -150,25 +149,13 @@ Values resolve through `ThemeConfig` palette refs and `PaletteGenerator` — **n
 | `info` | `#0dcaf0` | `#6edff6` | `#0ea5e9` | `#38bdf8` |
 | `tertiary` | `#6f42c1` | `#a98eda` | `#8b5cf6` | `#a78bfa` |
 
-Kiroshi (`default` / `dark`) keeps the neon Night City palette; `tertiary` uses hot-pink accent (`pink.500` / `pink.400`) distinct from `danger` and cyan `secondary`.
+Showcase stack gap, button padding, card padding, and form controls read CSS variables — carousel theme change affects **layout** and palette.
 
-## Demo page choreography (layout roles)
+## Role CSS (065+)
 
-Normative selectors: role-rules schema **2.0** · token `--ui-grid-gap` in theme-token-schema.
+`CssGenerator` emits **theme tokens and structural profile globals only** — no `[data-ui-role]` component rules. Tier role CSS lives in `ux-blocks-*` packages; see [package-role-css-ownership](../../../../../specs/symfinity/symfinity/3-ux-component-catalog/contracts/package-role-css-ownership.md).
 
-| Role | CSS in `CssGenerator` | Twig in `ux-blocks-core` | Demo usage |
-|------|-------------------------|--------------------------|------------|
-| `grid` | yes (`layoutRoleRules`) | `Grid`, `Grid:Cell` | Gallery columns, omnia mosaic |
-| `stack` | yes | `Stack` | Page shell, section vertical rhythm |
-| `grid-container` | yes (profile max-width) | raw `data-ui-role` | `base.html.twig` page width |
-| `nav` | yes | raw `data-ui-role` | Demo pack links, theme jump aside |
-| `card` | yes (v0) | `Card` | Demo sections, index pack list |
-
-**MUST NOT** duplicate grid/stack/nav spacing in demo `extra_styles` when a layout role covers it. Acceptable demo-only CSS: theme-jump pill chrome (`.demo-theme-jump`), kernel overlay fixture helpers (menu shell, scroll spacer).
-
-**Component block rhythm:** every `[data-ui-role]` root defaults to `margin-block-end: var(--ui-space-md)` (Kiroshi `0.625rem`) — see rhythm contract § Component block rhythm. Stacks/grids use `gap` for children; nested roles inside `field`/`alert`/`card` are exempt.
-
-**Still planned (registry):** `skeleton` Twig component — CSS exists; loading demo uses raw hooks.
+Kernel-themed showcase routes (`/ui-kernel/*`) and feature manifests live in **`symfinity/chameleon-showcase`**, not in this package.
 
 ## Fonts
 

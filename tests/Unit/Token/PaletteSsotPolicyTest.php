@@ -10,8 +10,6 @@ use Symfinity\UiKernel\Css\CssCacheKeyPolicy;
 use Symfinity\UiKernel\Css\CssGenerator;
 use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Profile\SystemProfile;
-use Symfinity\UiKernel\Token\ButtonStateDerivation;
-use Symfinity\UiKernel\Token\ButtonVariantMap;
 use Symfinity\UiKernel\Token\CanonicalTokenPolicy;
 use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\PresetCycleGuard;
@@ -24,42 +22,6 @@ use Symfinity\UiKernel\Token\UserTokenSet;
 
 final class PaletteSsotPolicyTest extends TestCase
 {
-    #[Test]
-    public function semanticVariantsMapToCanonicalTokenKeys(): void
-    {
-        self::assertSame('--ui-color-primary', ButtonVariantMap::semanticTokenKey('primary'));
-        self::assertSame('--ui-color-danger', ButtonVariantMap::semanticTokenKey('danger'));
-        self::assertSame('--ui-color-info', ButtonVariantMap::semanticTokenKey('info'));
-    }
-
-    #[Test]
-    public function unknownVariantThrowsStableErrorCode(): void
-    {
-        try {
-            ButtonVariantMap::semanticTokenKey('neon');
-            self::fail('Expected UiKernelThemeException');
-        } catch (UiKernelThemeException $e) {
-            self::assertSame(ThemeErrorCatalog::UNKNOWN_TOKEN_KEY, $e->errorCode);
-        }
-    }
-
-    #[Test]
-    public function activeIsStrongerThanHoverForAllSemanticVariantsAcrossThemes(): void
-    {
-        foreach (['default', 'default-dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $themeId) {
-            $tokens = ThemeCatalog::get($themeId)->tokens()->all();
-
-            foreach (ButtonVariantMap::SEMANTIC_VARIANTS as $variant) {
-                $tokenKey = ButtonVariantMap::semanticTokenKey($variant);
-                $baseHex = $tokens[$tokenKey];
-                self::assertTrue(
-                    ButtonStateDerivation::isActiveStrongerThanHover($baseHex),
-                    sprintf('%s/%s failed active>hover for %s', $themeId, $variant, $baseHex),
-                );
-            }
-        }
-    }
-
     #[Test]
     public function forbiddenLegacyAliasesAreRejected(): void
     {
@@ -181,24 +143,15 @@ final class PaletteSsotPolicyTest extends TestCase
     }
 
     #[Test]
-    public function generatedCssUsesCentralizedButtonHoverAndActiveDerivation(): void
+    public function generatedCssIsTokensOnlyWithoutRoleSelectors(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
 
-        self::assertStringContainsString(
+        self::assertStringContainsString('--ui-color-primary:', $css);
+        self::assertStringContainsString('--ui-color-focus:', $css);
+        self::assertStringNotContainsString('[data-ui-role="button"]', $css);
+        self::assertStringNotContainsString(
             ':hover:not([disabled]):not([aria-disabled="true"])',
-            $css,
-        );
-        self::assertStringContainsString(
-            'color-mix(in srgb, var(--ui-color-primary)',
-            $css,
-        );
-        self::assertStringContainsString(
-            '[data-ui-role="button"][data-ui-state="loading"]',
-            $css,
-        );
-        self::assertStringContainsString(
-            'var(--ui-color-focus)',
             $css,
         );
     }

@@ -18,7 +18,7 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
         return [
             'levels' => [100, 200, 300, 400, 500, 600, 700, 800, 900, 950],
             'alpha' => [0, 5, 10, 15, 25, 40, 50, 60, 75, 100],
-            'hues' => ['red', 'orange', 'yellow', 'lime', 'green', 'emerald', 'cyan', 'sky', 'blue', 'violet', 'purple', 'pink'],
+            'hues' => ['red', 'orange', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'violet', 'purple', 'pink'],
             'forbidden_hues' => [],
             'mono_tones' => ['pure', 'evil', 'warm', 'wood', 'cool', 'pope'],
         ];
@@ -31,24 +31,25 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     {
         return [
             'interpolation' => 'oklch',
-            'revision' => 2,
+            'revision' => 1,
             'lightness_curve' => [
                 'default' => [0.89, 0.80, 0.71, 0.62, 0.53, 0.44, 0.35, 0.26, 0.17, 0.08],
                 'pure' => [1.00, 0.89, 0.78, 0.67, 0.56, 0.45, 0.34, 0.23, 0.12, 0.00],
             ],
             'hue_chroma' => [
-                'red' => 0.17,
-                'orange' => 0.16,
-                'yellow' => 0.14,
-                'lime' => 0.15,
-                'green' => 0.15,
-                'emerald' => 0.14,
-                'cyan' => 0.13,
-                'sky' => 0.14,
-                'blue' => 0.15,
-                'violet' => 0.16,
-                'purple' => 0.17,
-                'pink' => 0.16,
+                'red' => 0.177,
+                'orange' => 0.169,
+                'yellow' => 0.156,
+                'lime' => 0.181,
+                'green' => 0.199,
+                'emerald' => 0.142,
+                'teal' => 0.140,
+                'cyan' => 0.179,
+                'sky' => 0.189,
+                'blue' => 0.199,
+                'violet' => 0.189,
+                'purple' => 0.185,
+                'pink' => 0.168,
             ],
         ];
     }
@@ -83,10 +84,10 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     public function unknownHueChromaKeyFailsValidation(): void
     {
         $generator = $this->validGenerator();
-        $generator['hue_chroma']['teal'] = 0.12;
+        $generator['hue_chroma']['amber'] = 0.12;
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('generator.palette.hue_chroma has unknown keys: teal.');
+        $this->expectExceptionMessage('generator.palette.hue_chroma has unknown keys: amber.');
 
         GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
     }

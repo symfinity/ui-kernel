@@ -10,6 +10,7 @@ use Symfinity\UiKernel\Palette\PaletteGenerator;
 use Symfinity\UiKernel\Palette\PaletteRampSampler;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\PaletteCatalog;
+use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 
 final class PaletteGeneratorOklchTest extends TestCase
@@ -31,7 +32,7 @@ final class PaletteGeneratorOklchTest extends TestCase
     public function bundleUsesOklchInterpolation(): void
     {
         self::assertSame('oklch', PaletteCatalog::interpolation());
-        self::assertSame(2, PaletteCatalog::revision());
+        self::assertSame(1, PaletteCatalog::revision());
     }
 
     #[Test]
@@ -90,7 +91,11 @@ final class PaletteGeneratorOklchTest extends TestCase
     #[Test]
     public function goldenOklchTuplesAreStable(): void
     {
-        $recipe = ThemePaletteRecipe::baseline();
+        $default = ThemeConfig::get('default')->paletteRecipe();
+        $recipe = ThemePaletteRecipe::fromPaletteDefinition(
+            $default->hueBase(),
+            $default->monoTones(),
+        );
 
         $cool500 = $this->generator->resolveToOklch('mono.cool.500', $recipe);
         $blue600 = $this->generator->resolveToOklch('blue.600', $recipe);
@@ -102,7 +107,7 @@ final class PaletteGeneratorOklchTest extends TestCase
 
         self::assertGreaterThan(0.0, $blue600->l);
         self::assertGreaterThan(0.0, $blue600->c);
-        self::assertSame(240.0, $blue600->h);
+        self::assertSame(258.0, $blue600->h);
     }
 
     #[Test]

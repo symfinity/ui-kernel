@@ -27,11 +27,11 @@ final class PaletteGeneratorTest extends TestCase
     public function sameRefResolvesDifferentlyPerThemeRecipe(): void
     {
         $generator = new PaletteGenerator();
-        $kiroshi = ThemeConfig::get('default')->paletteRecipe();
+        $default = ThemeConfig::get('default')->paletteRecipe();
         $semantic = ThemeConfig::get('semantic')->paletteRecipe();
 
         self::assertNotSame(
-            $generator->resolve('blue.500', $kiroshi),
+            $generator->resolve('blue.500', $default),
             $generator->resolve('blue.500', $semantic),
         );
     }

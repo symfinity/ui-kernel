@@ -2,7 +2,7 @@
 
 # Ui Kernel
 
-### Chameleon UI kernel — design tokens, themes, and role CSS generation
+### Chameleon UI kernel — design tokens, themes, and slim CSS generation
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat&logo=php&logoColor=white)](composer.json)
 [![Symfony](https://img.shields.io/badge/Symfony-6.4+-343434?style=flat&logo=symfony&logoColor=white)](composer.json)
@@ -41,7 +41,7 @@
 | Upgrade | [docs/upgrade.md](docs/upgrade.md) |
 | Usage | [docs/usage.md](docs/usage.md) |
 
-**Palette generator revision:** Bundle `generator.palette.revision` (currently `2`) tracks OKLCH ramp math — distinct from theme-token `schema_version: '1.0'`. Integrators author palette **refs** (e.g. `blue.600`); resolved `--ui-color-*` hex may drift on generator revision bumps without a schema change. See [oklch-palette-generator](../../specs/symfinity/symfinity/2-ui-kernel/contracts/oklch-palette-generator.md).
+**Palette generator revision:** Bundle `generator.palette.revision` (currently `1`) tracks OKLCH ramp math — distinct from theme-token `schema_version: '1.0'`. Integrators author palette **refs** (e.g. `blue.600`); resolved `--ui-color-*` hex may drift on generator revision bumps without a schema change. See [oklch-palette-generator](../../specs/symfinity/symfinity/2-ui-kernel/contracts/oklch-palette-generator.md).
 
 ## Requirements
 
@@ -54,20 +54,16 @@
 composer require symfinity/ui-kernel
 ```
 
-## Showcase (dev)
+## Browser demos (dev)
 
-With **UiKernelBundle** and **SymfinityUxBlocksCoreBundle** registered (Chameleon default):
+Kernel ships **tokens + slim CSS only** — no HTTP routes or showcase controllers. Use sibling packages for browser galleries:
 
-```text
-GET /ui-kernel/showcase
-GET /ui-kernel/showcase?theme=dark
-GET /ui-kernel/showcase?carousel=0
-GET /_ui/theme.css?theme=bootstrap-like
-```
+| Demo | Package | Routes |
+|------|---------|--------|
+| Kernel theme gallery | `symfinity/ux-blocks-demo` | `/kernel`, `/palette` |
+| Per-role showcases | `symfinity/chameleon-showcase` | `/ux-blocks-core/*`, … |
 
-Gallery slots render **symfinity/ux-blocks-core** Twig components (`blocks.*` fragments). Theme rotation exercises kernel token CSS only — gallery markup stays fixed.
-
-Themes are **Symfinity token packs inspired by** common systems — not official Bootstrap or Tailwind. Baseline labels: **Kiroshi** (`default`), **Kiroshi dark** (`default-dark`).
+Dogfood: `make dogfood-serve SLUG=ui-lab` or `SLUG=chameleon-showcase`.
 
 ## QA
 

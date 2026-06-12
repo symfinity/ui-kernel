@@ -24,17 +24,26 @@ final class ThemeRegistryTest extends TestCase
     public function itRegistersSixThemesIncludingForeignDarkVariants(): void
     {
         $registry = new ThemeRegistry();
-        self::assertCount(8, $registry->all());
+        self::assertCount(6, $registry->all());
         self::assertSame('Balanced', $registry->get('default')->label());
         self::assertSame('semantic-dark', $registry->get('semantic-dark')->id());
         self::assertSame('utility-dark', $registry->get('utility-dark')->id());
     }
 
     #[Test]
-    public function unknownThemeFallsBackToDefault(): void
+    public function unknownThemeIdThrows(): void
     {
         $registry = new ThemeRegistry();
-        self::assertSame('default', $registry->resolve('not-a-theme')->id());
+        $this->expectException(\InvalidArgumentException::class);
+        $registry->resolve('not-a-theme');
+    }
+
+    #[Test]
+    public function emptyThemeIdResolvesToDefault(): void
+    {
+        $registry = new ThemeRegistry();
+        self::assertSame('default', $registry->resolve(null)->id());
+        self::assertSame('default', $registry->resolve('')->id());
     }
 
     #[Test]
@@ -64,8 +73,8 @@ final class ThemeRegistryTest extends TestCase
         $tokens = ThemeCatalog::get('default')->tokens()->all();
 
         self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $tokens['--ui-color-primary']);
-        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $tokens['--ui-color-secondary']);
-        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $tokens['--ui-color-surface']);
+        self::assertMatchesRegularExpression('/^(oklch\(|#[0-9a-f]{6}$)/', $tokens['--ui-color-secondary']);
+        self::assertMatchesRegularExpression('/^(oklch\(|#[0-9a-f]{6}$)/', $tokens['--ui-color-surface']);
         self::assertNotSame($tokens['--ui-color-primary'], $tokens['--ui-color-secondary']);
     }
 }

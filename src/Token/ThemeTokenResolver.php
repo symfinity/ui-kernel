@@ -31,6 +31,7 @@ final class ThemeTokenResolver
         }
 
         $merged = [...$merged, ...self::overlayTokens($merged, $config)];
+        $merged = [...$merged, ...(new SemanticColorDerivatives())->derive($merged)];
 
         return DesignTokenSet::fromArray($merged, $schemaVersion);
     }

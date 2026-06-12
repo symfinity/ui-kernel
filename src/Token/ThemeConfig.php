@@ -90,9 +90,11 @@ final class ThemeConfig
         $recipe = $this->paletteRecipe;
 
         return hash('sha256', json_encode([
-            'layout' => $this->layout->value,
+            'layout' => $this->layout->name,
             'tone' => $this->tone->value,
             'hueBase' => $recipe->hueBase(),
+            'hueChroma' => $recipe->hueChromaOverrides(),
+            'scaleAnchors' => $recipe->scaleAnchors(),
             'monoTones' => $recipe->monoTones(),
             'colorRefs' => $this->colorRefs,
             'appearanceTokens' => $this->appearanceTokens,
@@ -162,13 +164,17 @@ final class ThemeConfig
      */
     private static function recipeFromTheme(array $theme): ThemePaletteRecipe
     {
-        return new ThemePaletteRecipe($theme['hue_base'], $theme['mono_tones']);
+        return ThemePaletteRecipe::fromPaletteDefinition(
+            $theme['hue_base'],
+            $theme['mono_tones'],
+            $theme['hue_chroma'] ?? [],
+            $theme['scale_anchors'] ?? [],
+        );
     }
 
     private static function layoutProfile(string $value): LayoutProfile
     {
         return match ($value) {
-            'Kiroshi' => LayoutProfile::Kiroshi,
             'Semantic' => LayoutProfile::Semantic,
             'Utility' => LayoutProfile::Utility,
             default => throw new \InvalidArgumentException(sprintf('Unknown layout profile "%s".', $value)),

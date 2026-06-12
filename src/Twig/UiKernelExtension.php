@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Twig;
 
 use Symfinity\UiKernel\Css\CssGenerator;
-use Symfinity\UiKernel\DataCollector\UiKernelDataCollector;
 use Symfinity\UiKernel\Theme\ActiveThemeContext;
 use Symfinity\UiKernel\Theme\ThemeShellPresenter;
 use Symfinity\UiKernel\Theme\ThemeShellView;
@@ -17,6 +16,8 @@ use Twig\TwigFunction;
 
 final class UiKernelExtension extends AbstractExtension
 {
+    private const CSS_BYTES_REQUEST_ATTR = '_symfinity_ui_kernel_css_bytes';
+
     public function __construct(
         private readonly CssGenerator $cssGenerator,
         private readonly ThemeRegistry $themeRegistry,
@@ -73,7 +74,7 @@ final class UiKernelExtension extends AbstractExtension
             return;
         }
 
-        $attr = UiKernelDataCollector::CSS_BYTES_REQUEST_ATTR;
+        $attr = self::CSS_BYTES_REQUEST_ATTR;
         $existing = (int) $request->attributes->get($attr, 0);
         $request->attributes->set($attr, $existing + \strlen($css));
     }

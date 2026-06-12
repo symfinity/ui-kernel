@@ -7,15 +7,15 @@ namespace Symfinity\UiKernel\Tests\Unit\Css;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Css\CssGenerator;
+use Symfinity\UiKernel\Css\CssCacheKeyPolicy;
 use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Profile\SystemProfile;
-use Symfinity\UiKernel\Token\ButtonStateDerivation;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class SystemProfileCssTest extends TestCase
 {
     #[Test]
-    public function schemaOneIncludesProfileGlobalsAndLayoutRoles(): void
+    public function schemaOneIncludesProfileGlobalsOnly(): void
     {
         $css = (new CssGenerator())->forTheme(
             ThemeCatalog::get('semantic'),
@@ -26,45 +26,8 @@ final class SystemProfileCssTest extends TestCase
         self::assertStringContainsString('--ui-z-toast: 1080', $css);
         self::assertStringContainsString('@keyframes ui-shimmer', $css);
         self::assertStringContainsString('@keyframes ui-pulse', $css);
-        self::assertStringContainsString('[data-ui-role="grid"]', $css);
-        self::assertStringContainsString('[data-ui-role="grid-cell"]', $css);
-        self::assertStringContainsString('[data-ui-role="grid-container"]', $css);
-        self::assertStringContainsString('[data-ui-role="stack"]', $css);
-        self::assertStringContainsString('[data-ui-role="skeleton"]', $css);
-        self::assertStringContainsString('@media (min-width: 768px)', $css);
-        self::assertStringContainsString('@media (min-width: 1024px)', $css);
-        self::assertStringContainsString('data-ui-span-lg="6"', $css);
-        self::assertStringContainsString('max-width: 1140px', $css);
+        self::assertStringNotContainsString('[data-ui-role="grid"]', $css);
         self::assertStringNotContainsString('var(--ui-breakpoint', $css);
-    }
-
-    #[Test]
-    public function customProfileUsesLiteralPxInMediaQueries(): void
-    {
-        $profile = SystemProfile::fromConfig(['breakpoints' => ['md' => 800]]);
-        $theme = ThemeCatalog::get('default');
-        $css = (new CssGenerator())->forResolvedTokens(
-            $theme->id(),
-            $theme->tokens(),
-            ThemeTokenSchema::V1_0,
-            $profile,
-        );
-
-        self::assertStringContainsString('@media (max-width: 799px)', $css);
-        self::assertStringContainsString('@media (min-width: 800px)', $css);
-    }
-
-    #[Test]
-    public function reducedMotionDisablesSkeletonShimmer(): void
-    {
-        $css = (new CssGenerator())->forTheme(
-            ThemeCatalog::get('default'),
-            ThemeTokenSchema::V1_0,
-        );
-
-        self::assertStringContainsString('@media (prefers-reduced-motion: reduce)', $css);
-        self::assertStringContainsString('animation: none', $css);
-        self::assertStringContainsString('[data-ui-role="grid"]', $css);
     }
 
     #[Test]
@@ -78,6 +41,7 @@ final class SystemProfileCssTest extends TestCase
         self::assertSame('chameleon-default', $parts['systemProfileId']);
         self::assertSame($profile->hash(), $parts['profileHash']);
         self::assertSame($preset, $parts['presetHash']);
-        self::assertSame(ButtonStateDerivation::ALGORITHM_VERSION, $parts['roleRulesVersion']);
+        self::assertSame('tokens-only:1', $parts['roleRulesVersion']);
+        self::assertSame(CssCacheKeyPolicy::roleRulesVersion(), $parts['roleRulesVersion']);
     }
 }

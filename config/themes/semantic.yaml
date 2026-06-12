@@ -3,18 +3,21 @@ symfinity_ui_kernel:
     semantic:
       palette:
         hues:
-          red: 354.0
-          orange: 29.0
-          yellow: 45.0
-          lime: 90.0
-          green: 152.0
-          emerald: 150.0
-          cyan: 190.0
+          red: 29.0
+          orange: 40.0
+          yellow: 92.0
+          lime: 100.0
+          green: 155.0
+          emerald: 162.0
+          teal: 182.0
+          cyan: 192.0
           sky: 210.0
-          blue: 215.0
+          blue: 254.0
           violet: 270.0
-          purple: 263.0
+          purple: 280.0
           pink: 330.0
+        # Bootstrap 5.3 tint/shade ramps — SSOT PaletteAnchorProfiles::bootstrap-5.3
+        anchor_profile: bootstrap-5.3
         mono:
           pure:
             hue: 0.0
@@ -30,7 +33,7 @@ symfinity_ui_kernel:
             saturation: 7.5
           cool:
             hue: 220.0
-            saturation: 8.0
+            saturation: 5.5
           pope:
             hue: 300.0
             saturation: 7.5
@@ -74,7 +77,7 @@ symfinity_ui_kernel:
             fast: 120ms
             normal: 200ms
             slow: 300ms
-            skeleton: 1.75s
+            skeleton: 3.5s
           easing:
             standard: 'cubic-bezier(0.4, 0, 0.2, 1)'
             linear: linear
@@ -92,27 +95,27 @@ symfinity_ui_kernel:
           backdrop_blur: 6px
           colors:
             brand:
-              primary: blue.600
+              primary: blue.500
               secondary: mono.cool.500
               tertiary: purple.600
             surface:
-              base: mono.cool.100
-              elevated: mono.cool.100
+              base: mono.pure.100
+              elevated: mono.pure.100
               overlay: mono.cool.900@40
             text:
-              default: mono.cool.900
-              muted: mono.cool.400
+              default: mono.cool.800
+              muted: mono.cool.300
             border:
-              default: mono.cool.200
+              default: mono.cool.300
             state:
-              danger: red.700
-              success: green.800
-              warning: orange.500
-              info: cyan.600
-              focus: blue.600
+              danger: red.500
+              success: green.500
+              warning: orange.400
+              info: cyan.500
+              focus: blue.500
             skeleton:
               base: mono.cool.200
-              shine: mono.cool.100
+              shine: mono.cool.400
         semantic_dark:
           extends: semantic
           label: 'Semantic dark'
@@ -121,17 +124,23 @@ symfinity_ui_kernel:
           backdrop_blur: 6px
           colors:
             brand:
-              secondary: mono.cool.600
+              primary: blue.400
+              secondary: mono.cool.400
+              tertiary: purple.400
             surface:
-              base: mono.cool.950
-              elevated: mono.cool.900
+              base: mono.cool.900
+              elevated: mono.cool.800
             text:
               default: mono.cool.100
               muted: mono.cool.300
             border:
               default: mono.cool.600
             state:
+              danger: red.400
+              success: green.400
+              warning: orange.400
+              info: cyan.400
               focus: blue.400
             skeleton:
               base: mono.cool.600
-              shine: mono.cool.500
+              shine: mono.cool.400

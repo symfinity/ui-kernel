@@ -10,51 +10,29 @@ use Symfinity\UiKernel\Css\CssGenerator;
 use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
-/**
- * symfinity/ux-blocks-ecommerce shop roles (060 T007).
- */
+/** 065 W6 — ecommerce tier CSS lives in symfinity/ux-blocks-ecommerce. */
 final class CssGeneratorShopRolesTest extends TestCase
 {
     /** @return list<string> */
     private static function shopRootRoles(): array
     {
         return [
-            'product-overview',
-            'product-list-section',
-            'product-card',
-            'shopping-cart-layout',
-            'checkout-form-section',
-            'category-filters-static',
-            'order-summary',
-            'order-history',
-            'promo-incentives',
-            'cart-drawer-quickview',
+            'product-overview', 'product-card', 'shopping-cart-layout',
+            'cart-drawer-quickview', 'price',
         ];
     }
 
     #[Test]
-    public function schemaTwoIncludesAllShopRootRoleSelectors(): void
+    public function schemaTwoOmitsShopRoleSelectors(): void
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
 
         foreach (self::shopRootRoles() as $role) {
-            self::assertStringContainsString(
+            self::assertStringNotContainsString(
                 '[data-ui-role="' . $role . '"]',
                 $css,
-                sprintf('Missing kernel CSS for shop role "%s"', $role),
+                sprintf('Kernel must not ship shop role "%s" after 065 W6', $role),
             );
         }
-    }
-
-    #[Test]
-    public function shopSubRoleRulesArePresent(): void
-    {
-        $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V2_0);
-
-        self::assertStringContainsString('[data-ui-role="price"]', $css);
-        self::assertStringContainsString('[data-ui-role="product-card"] img', $css);
-        self::assertStringContainsString('[data-ui-role="shopping-cart-layout"]', $css);
-        self::assertStringContainsString('[data-ui-role="cart-drawer-quickview"]', $css);
-        self::assertStringContainsString('z-index: var(--ui-z-modal)', $css);
     }
 }

@@ -1,14 +1,14 @@
 # Output channels (package index)
 
-Normative contract: output-channels.md.
+Normative contract: [output-channels.md](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/output-channels.md).
 
-| Channel | Renderer | 002 |
-|---------|----------|-----|
-| Web HTML | `HtmlRenderer` | Shipped |
-| Web fragment | `HtmlFragmentRenderer` | Deferred → 004 |
-| CLI | `CliRenderer` | Horizon |
-| JSON | `JsonRenderer` | Horizon |
-| Email | `EmailRenderer` | Horizon |
-| PDF / print | `PrintRenderer` | Horizon |
+**002 shipped:** kernel **CSS** via `ui_kernel_css()` and theme token engine.
 
-`UiPage` stays transport-agnostic; add renderers without forking theme logic.
+| Channel | Owner | Status |
+|---------|-------|--------|
+| Web HTML markup | `symfinity/ux-blocks-*` Twig components | Shipped (catalog) |
+| Web theme CSS | `symfinity/ui-kernel` `CssGenerator` | Shipped |
+| Web fragment / Turbo | `symfinity/ux-runtime` | Optional |
+| CLI / JSON / Email / PDF | Horizon | Not in kernel |
+
+Multi-channel `UiPage` trees are **not** part of `ui-kernel`; see `ux-runtime` for action response DTOs.
