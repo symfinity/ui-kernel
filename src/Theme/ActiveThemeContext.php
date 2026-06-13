@@ -11,7 +11,6 @@ final class ActiveThemeContext
     public function __construct(
         private readonly ThemePreferenceCookies $cookies,
         private readonly ThemePreferenceResolver $resolver,
-        private readonly ThemeRegistry $themeRegistry,
     ) {
     }
 

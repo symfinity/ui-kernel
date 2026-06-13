@@ -6,3 +6,5 @@ parameters:
 
     checkGenericClassInNonGenericObjectType: true
     reportUnmatchedIgnoredErrors: false
+    bootstrapFiles:
+        - phpstan-bootstrap.php

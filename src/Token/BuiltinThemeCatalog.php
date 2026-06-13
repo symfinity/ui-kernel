@@ -54,7 +54,7 @@ final class BuiltinThemeCatalog
 
         self::load();
 
-        return self::$themes;
+        return self::$themes ?? throw new \LogicException('Built-in themes failed to load.');
     }
 
     /**
@@ -68,7 +68,7 @@ final class BuiltinThemeCatalog
 
         self::load();
 
-        return self::$lineageDonors;
+        return self::$lineageDonors ?? throw new \LogicException('Built-in theme lineage donors failed to load.');
     }
 
     public static function reset(): void
@@ -125,7 +125,7 @@ final class BuiltinThemeCatalog
                     $context = sprintf('%s themes.%s variant %s', $path, $lineageKey, $theme['id']);
                     ThemeTokenMap::assertComplete($theme['tokens'], ThemeTokenSchema::V1_0, $context);
 
-                    $lineage = $theme['lineage'] ?? $lineageKey;
+                    $lineage = $theme['lineage'];
                     if (!isset($lineageDonors[$lineage])) {
                         $lineageDonors[$lineage] = $theme['id'];
                     }

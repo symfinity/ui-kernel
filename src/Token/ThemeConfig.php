@@ -135,7 +135,7 @@ final class ThemeConfig
     }
 
     /**
-     * @return list<array{id: string, label: string, layout: LayoutProfile, tone: MonoTone, paletteRecipe: ThemePaletteRecipe, colors: array<string, string>, schemaVersion?: string, scrollMotion?: bool, backdropBlur?: string}>
+     * @return list<array{id: string, label: string, layout: LayoutProfile, tone: MonoTone, paletteRecipe: ThemePaletteRecipe, colors: array<string, string>, appearanceTokens: array<string, string>, schemaVersion?: string, scrollMotion?: bool, backdropBlur?: string}>
      */
     private static function definitions(): array
     {
@@ -160,7 +160,12 @@ final class ThemeConfig
     }
 
     /**
-     * @param array{hue_base: array<string, float>, mono_tones: array<string, array{hue: float, saturation: float}>} $theme
+     * @param array{
+     *     hue_base: array<string, float>,
+     *     mono_tones: array<string, array{hue: float, saturation: float}>,
+     *     hue_chroma?: array<string, float>,
+     *     scale_anchors?: array<string, string>
+     * } $theme
      */
     private static function recipeFromTheme(array $theme): ThemePaletteRecipe
     {

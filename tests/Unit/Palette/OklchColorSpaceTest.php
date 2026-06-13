@@ -77,7 +77,12 @@ final class OklchColorSpaceTest extends TestCase
 
         self::assertNotSame('#ff0000', strtolower($hex));
 
-        [$r, $g, $b] = sscanf(ltrim($hex, '#'), '%2x%2x%2x');
+        $parts = sscanf(ltrim($hex, '#'), '%2x%2x%2x');
+        self::assertIsArray($parts);
+        [$r, $g, $b] = $parts;
+        self::assertIsInt($r);
+        self::assertIsInt($g);
+        self::assertIsInt($b);
         self::assertGreaterThan($b, $g, 'yellow family should have green above blue');
         self::assertGreaterThan($b, $r, 'yellow family should have red above blue');
     }

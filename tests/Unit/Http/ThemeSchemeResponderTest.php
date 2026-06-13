@@ -25,7 +25,7 @@ final class ThemeSchemeResponderTest extends TestCase
         $registry = new ThemeRegistry();
         $resolver = new ThemePreferenceResolver($registry, 'semantic');
         $cookies = new ThemePreferenceCookies();
-        $context = new ActiveThemeContext($cookies, $resolver, $registry);
+        $context = new ActiveThemeContext($cookies, $resolver);
         $this->responder = new ThemeSchemeResponder($context, $resolver, $cookies, new CssGenerator());
     }
 

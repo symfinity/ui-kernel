@@ -71,8 +71,13 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     #[Test]
     public function invalidLightnessCurveLengthIncludesCurveName(): void
     {
+        /** @var array<string, mixed> $generator */
         $generator = $this->validGenerator();
-        $generator['lightness_curve']['default'] = [0.89, 0.80];
+        /** @var array<string, list<float>> $lightnessCurve */
+        $lightnessCurve = $generator['lightness_curve'];
+        self::assertIsArray($lightnessCurve);
+        $lightnessCurve['default'] = [0.89, 0.80];
+        $generator['lightness_curve'] = $lightnessCurve;
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('generator.palette.lightness_curve.default length (2) must match contract.palette.levels (10).');
@@ -83,8 +88,13 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     #[Test]
     public function unknownHueChromaKeyFailsValidation(): void
     {
+        /** @var array<string, mixed> $generator */
         $generator = $this->validGenerator();
-        $generator['hue_chroma']['amber'] = 0.12;
+        /** @var array<string, float> $hueChroma */
+        $hueChroma = $generator['hue_chroma'];
+        self::assertIsArray($hueChroma);
+        $hueChroma['amber'] = 0.12;
+        $generator['hue_chroma'] = $hueChroma;
 
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('generator.palette.hue_chroma has unknown keys: amber.');

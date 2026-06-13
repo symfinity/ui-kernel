@@ -75,7 +75,8 @@ final class UiKernelExtension extends AbstractExtension
         }
 
         $attr = self::CSS_BYTES_REQUEST_ATTR;
-        $existing = (int) $request->attributes->get($attr, 0);
+        $raw = $request->attributes->get($attr, 0);
+        $existing = is_int($raw) ? $raw : (is_numeric($raw) ? (int) $raw : 0);
         $request->attributes->set($attr, $existing + \strlen($css));
     }
 

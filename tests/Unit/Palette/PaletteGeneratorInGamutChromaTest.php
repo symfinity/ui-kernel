@@ -82,7 +82,12 @@ final class PaletteGeneratorInGamutChromaTest extends TestCase
                 $hex = strtolower($this->generator->resolve($hue . '.' . $level, $recipe));
                 self::assertNotSame('#ff0000', $hex, $hue . '.' . $level);
 
-                [$r, $g, $b] = sscanf(ltrim($hex, '#'), '%2x%2x%2x');
+                $parts = sscanf(ltrim($hex, '#'), '%2x%2x%2x');
+                self::assertIsArray($parts);
+                [$r, $g, $b] = $parts;
+                self::assertIsInt($r);
+                self::assertIsInt($g);
+                self::assertIsInt($b);
                 self::assertGreaterThan($b, $g, $hue . '.' . $level);
             }
         }

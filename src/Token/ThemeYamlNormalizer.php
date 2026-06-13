@@ -178,6 +178,7 @@ final class ThemeYamlNormalizer
 
     /**
      * @param array<string, mixed> $variant
+     * @param array<string, mixed> $parent
      *
      * @return array<string, mixed>
      */
@@ -216,7 +217,21 @@ final class ThemeYamlNormalizer
     /**
      * @param array<string, mixed> $group
      *
-     * @return list<array<string, mixed>>
+     * @return list<array{
+     *     id: string,
+     *     label: string,
+     *     layout: string,
+     *     tone: string,
+     *     colors: array<string, string>,
+     *     hue_base: array<string, float>,
+     *     mono_tones: array<string, array{hue: float, saturation: float}>,
+     *     hue_chroma: array<string, float>,
+     *     scale_anchors: array<string, string>,
+     *     tokens: array<string, string>,
+     *     lineage: string,
+     *     scroll_motion: bool,
+     *     backdrop_blur: string
+     * }>
      */
     public static function expandVariants(array $group, string $lineageKey, string $path): array
     {

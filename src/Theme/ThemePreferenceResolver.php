@@ -54,7 +54,7 @@ final class ThemePreferenceResolver
 
     public function systemPrefersDark(Request $request): bool
     {
-        $hint = strtolower($request->headers->get('Sec-CH-Prefers-Color-Scheme', ''));
+        $hint = strtolower((string) $request->headers->get('Sec-CH-Prefers-Color-Scheme', ''));
 
         return $hint === 'dark';
     }
@@ -65,7 +65,7 @@ final class ThemePreferenceResolver
      */
     public function resolveSystemPrefersDark(Request $request): bool
     {
-        $hint = strtolower($request->headers->get('Sec-CH-Prefers-Color-Scheme', ''));
+        $hint = strtolower((string) $request->headers->get('Sec-CH-Prefers-Color-Scheme', ''));
         if ($hint === 'dark') {
             return true;
         }

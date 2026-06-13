@@ -65,6 +65,7 @@ final class SemanticVariant
             'warning' => '--ui-color-warning',
             'info' => '--ui-color-info',
             'ghost' => '--ui-color-text-muted',
+            default => throw new \LogicException(sprintf('Unhandled semantic variant "%s".', $variant)),
         };
     }
 

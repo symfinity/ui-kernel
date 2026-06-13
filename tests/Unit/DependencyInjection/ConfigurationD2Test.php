@@ -55,7 +55,9 @@ final class ConfigurationD2Test extends TestCase
 
         self::assertSame('semantic', $config['default_theme']);
         self::assertSame('semantic', $config['default_variant']);
-        self::assertSame('#336699', $config['user_tokens']['--ui-color-primary']);
+        /** @var array<string, string> $userTokens */
+        $userTokens = $config['user_tokens'];
+        self::assertSame('#336699', $userTokens['--ui-color-primary']);
     }
 
     /**

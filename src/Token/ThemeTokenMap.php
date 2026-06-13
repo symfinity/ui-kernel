@@ -57,7 +57,7 @@ final class ThemeTokenMap
     {
         $css = [];
         foreach ($shortTokens as $shortKey => $value) {
-            if (!is_string($shortKey) || !is_string($value) || $value === '') {
+            if ($value === '') {
                 throw new \InvalidArgumentException('Theme tokens must be a map of non-empty strings.');
             }
 

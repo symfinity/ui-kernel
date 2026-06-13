@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 
 final class PaletteCatalog
 {
-    /** @var array<string, mixed>|null */
+    /** @var array{contract: array<string, mixed>, generator: array<string, mixed>}|null */
     private static ?array $referenceConfig = null;
 
     /**
@@ -93,7 +93,15 @@ final class PaletteCatalog
     {
         $revision = self::generator()['revision'] ?? 1;
 
-        return (int) $revision;
+        if (is_int($revision)) {
+            return $revision;
+        }
+
+        if (is_numeric($revision)) {
+            return (int) $revision;
+        }
+
+        return 1;
     }
 
     public static function hueChroma(string $hue): float
@@ -216,8 +224,17 @@ final class PaletteCatalog
             ));
         }
 
-        $contract = $kernel['contract']['palette'] ?? null;
-        $generator = $kernel['generator']['palette'] ?? null;
+        $contractNode = $kernel['contract'] ?? null;
+        $generatorNode = $kernel['generator'] ?? null;
+        if (!is_array($contractNode) || !is_array($generatorNode)) {
+            throw new \RuntimeException(sprintf(
+                'Bundle config "%s" must define symfinity_ui_kernel.contract and generator.',
+                $configPath,
+            ));
+        }
+
+        $contract = $contractNode['palette'] ?? null;
+        $generator = $generatorNode['palette'] ?? null;
         if (!is_array($contract) || !is_array($generator)) {
             throw new \RuntimeException(sprintf(
                 'Bundle config "%s" must define symfinity_ui_kernel.contract.palette and generator.palette.',

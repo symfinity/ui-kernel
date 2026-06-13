@@ -25,7 +25,7 @@ final class ThemeShellPresenterTest extends TestCase
     {
         $registry = new ThemeRegistry();
         $resolver = new ThemePreferenceResolver($registry, 'default');
-        $context = new ActiveThemeContext(new ThemePreferenceCookies(), $resolver, $registry);
+        $context = new ActiveThemeContext(new ThemePreferenceCookies(), $resolver);
 
         $router = $this->createMock(UrlGeneratorInterface::class);
         $router->method('generate')->willReturnCallback(

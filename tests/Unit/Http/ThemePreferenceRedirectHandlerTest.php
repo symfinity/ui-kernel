@@ -31,7 +31,6 @@ final class ThemePreferenceRedirectHandlerTest extends TestCase
             new ActiveThemeContext(
                 new ThemePreferenceCookies(),
                 new ThemePreferenceResolver(new ThemeRegistry(), 'default'),
-                new ThemeRegistry(),
             ),
             $urlGenerator,
         );
@@ -76,7 +75,6 @@ final class ThemePreferenceRedirectHandlerTest extends TestCase
             new ActiveThemeContext(
                 new ThemePreferenceCookies(),
                 new ThemePreferenceResolver(new ThemeRegistry(), 'default'),
-                new ThemeRegistry(),
             ),
             $this->createMock(UrlGeneratorInterface::class),
         );

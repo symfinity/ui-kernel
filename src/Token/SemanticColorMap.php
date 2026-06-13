@@ -41,9 +41,6 @@ final class SemanticColorMap
      *
      * @return array<string, string> --ui-color-* => value
      */
-    /**
-     * @param array<string, string> $roleRefs
-     */
     public function resolve(array $roleRefs, ThemePaletteRecipe $recipe): array
     {
         $colors = [];

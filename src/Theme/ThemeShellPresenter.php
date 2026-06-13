@@ -87,8 +87,10 @@ final class ThemeShellPresenter
      */
     private function routeParams(Request $request): array
     {
+        $routeParams = $request->attributes->get('_route_params', []);
+        /** @var array<string, mixed> $params */
         $params = array_merge(
-            $request->attributes->get('_route_params', []),
+            is_array($routeParams) ? $routeParams : [],
             $request->query->all(),
         );
         unset($params['theme'], $params['scheme']);
