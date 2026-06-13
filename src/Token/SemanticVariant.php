@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Token;
 
 /**
- * Closed enum for Chameleon semantic colour on {@code data-ui-variant} (060).
+ * Closed enum for semantic colour on {@code data-ui-variant}.
  */
 final class SemanticVariant
 {

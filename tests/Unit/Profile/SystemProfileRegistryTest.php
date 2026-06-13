@@ -12,7 +12,7 @@ use Symfinity\UiKernel\Profile\SystemProfileRegistry;
 final class SystemProfileRegistryTest extends TestCase
 {
     #[Test]
-    public function resolveReturnsChameleonDefaultWhenConfigEmpty(): void
+    public function resolveReturnsDefaultProfileWhenConfigEmpty(): void
     {
         $registry = new SystemProfileRegistry();
 
@@ -37,6 +37,6 @@ final class SystemProfileRegistryTest extends TestCase
         $registry = new SystemProfileRegistry(['breakpoints' => ['md' => 900]]);
 
         self::assertSame(900, $registry->resolve()->breakpointPx('md'));
-        self::assertSame(768, SystemProfile::chameleonDefault()->breakpointPx('md'));
+        self::assertSame(768, SystemProfile::defaultProfile()->breakpointPx('md'));
     }
 }

@@ -87,7 +87,7 @@ final class CssGeneratorTest extends TestCase
     {
         $css = (new CssGenerator())->forTheme(ThemeCatalog::get('semantic'), ThemeTokenSchema::V1_0);
 
-        self::assertStringContainsString('profile:chameleon-default', $css);
+        self::assertStringContainsString('profile:ui-kernel-default', $css);
         self::assertStringContainsString('--ui-z-dropdown:', $css);
         self::assertStringContainsString('@keyframes ui-shimmer', $css);
         self::assertStringNotContainsString('[data-ui-role="button"]', $css);

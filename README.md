@@ -1,20 +1,13 @@
 <div align="center">
 
-# Ui Kernel
+# UI Kernel
 
-### Chameleon UI kernel — design tokens, themes, and slim CSS generation
+### Design tokens, themes, and slim CSS generation for Symfony
 
 [![PHP Version](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat&logo=php&logoColor=white)](composer.json)
 [![Symfony](https://img.shields.io/badge/Symfony-6.4+-343434?style=flat&logo=symfony&logoColor=white)](composer.json)
-
 <br/>
-[![PHPUnit](https://github.com/symfinity/symfinity/actions/workflows/phpunit.yml/badge.svg)](https://github.com/symfinity/symfinity/actions/workflows/phpunit.yml)
-[![Coverage](https://github.com/symfinity/symfinity/actions/workflows/coverage.yml/badge.svg)](https://github.com/symfinity/symfinity/actions/workflows/coverage.yml)
-[![PHPStan](https://github.com/symfinity/symfinity/actions/workflows/phpstan.yml/badge.svg)](https://github.com/symfinity/symfinity/actions/workflows/phpstan.yml)
-<br/>
-[![Psalm](https://github.com/symfinity/symfinity/actions/workflows/psalm.yml/badge.svg)](https://github.com/symfinity/symfinity/actions/workflows/psalm.yml)
-[![Infection](https://github.com/symfinity/symfinity/actions/workflows/infection.yml/badge.svg)](https://github.com/symfinity/symfinity/actions/workflows/infection.yml)
-[![Code Style](https://img.shields.io/badge/code%20style-CS%20Fixer-5c4dbc?style=flat)](https://github.com/symfinity/symfinity/actions/workflows/php-cs-fixer.yml)
+[![CI](https://github.com/symfinity/ui-kernel/actions/workflows/ci.yml/badge.svg)](https://github.com/symfinity/ui-kernel/actions/workflows/ci.yml)
 <br/>
 [![Release](https://img.shields.io/packagist/v/symfinity/ui-kernel.svg?style=flat&logo=packagist&logoColor=white)](https://packagist.org/packages/symfinity/ui-kernel)
 [![Downloads](https://img.shields.io/packagist/dt/symfinity/ui-kernel.svg?style=flat&logo=packagist&logoColor=white)](https://packagist.org/packages/symfinity/ui-kernel)
@@ -22,60 +15,71 @@
 
 </div>
 
----
+> [!NOTE]
+> **Read-only mirror.**
+> See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose changes.
 
-## Documentation
+## Features
 
-| Topic | Page |
-|-------|------|
-| Architecture | [docs/architecture.md](docs/architecture.md) |
-| Configuration | [docs/configuration.md](docs/configuration.md) |
-| Font Manager Pairing | [docs/font-manager-pairing.md](docs/font-manager-pairing.md) |
-| Index | [docs/index.md](docs/index.md) |
-| Installation | [docs/installation.md](docs/installation.md) |
-| Output Channels | [docs/output-channels.md](docs/output-channels.md) |
-| Quickstart | [docs/quickstart.md](docs/quickstart.md) |
-| Reference | [docs/reference.md](docs/reference.md) |
-| Themes | [docs/themes.md](docs/themes.md) |
-| Troubleshooting | [docs/troubleshooting.md](docs/troubleshooting.md) |
-| Upgrade | [docs/upgrade.md](docs/upgrade.md) |
-| Usage | [docs/usage.md](docs/usage.md) |
+- **Design tokens** — `--ui-color-*`, spacing, radius, motion, and focus tokens from YAML themes
+- **Built-in themes** — Balanced, Semantic, and Utility lineages (light + dark variants)
+- **OKLCH palette generator** — shared ramp math; author palette refs, not raw hex, in theme packs
+- **Twig integration** — `ui_kernel_css()`, theme boot script, active theme id, theme shell helper
+- **Slim kernel boundary** — theme CSS only; component `[data-ui-role]` rules live in `ux-blocks-*` packages
 
-**Palette generator revision:** Bundle `generator.palette.revision` (currently `1`) tracks OKLCH ramp math — distinct from theme-token `schema_version: '1.0'`. Integrators author palette **refs** (e.g. `blue.600`); resolved `--ui-color-*` hex may drift on generator revision bumps without a schema change. See [oklch-palette-generator](../../specs/symfinity/symfinity/2-ui-kernel/contracts/oklch-palette-generator.md).
+## Prerequisites
 
-## Requirements
+Add the [symfinity/recipes](https://github.com/symfinity/recipes) Flex endpoint to your project's `composer.json` (see [recipes README](https://github.com/symfinity/recipes/blob/main/README.md)) — recipes are not in Symfony's official recipe repository yet.
 
-- PHP 8.2+
-- Symfony 6.4+ (Flex recipe when available)
-
-## Install
+## Installation
 
 ```bash
 composer require symfinity/ui-kernel
 ```
 
-## Browser demos (dev)
+The Flex recipe registers the bundle for all environments and copies a minimal app config. See [Installation](docs/installation.md).
 
-Kernel ships **tokens + slim CSS only** — no HTTP routes or showcase controllers. Use sibling packages for browser galleries:
+## Quick Start
 
-| Demo | Package | Routes |
-|------|---------|--------|
-| Kernel theme gallery | `symfinity/ux-blocks-demo` | `/kernel`, `/palette` |
-| Per-role showcases | `symfinity/chameleon-showcase` | `/ux-blocks-core/*`, … |
-
-Dogfood: `make dogfood-serve SLUG=ui-lab` or `SLUG=chameleon-showcase`.
-
-## QA
-
-From the product monorepo root (`src/symfinity/`):
-
-```bash
-./sbin/php vendor/bin/mono package:validate packages/ui-kernel/
-./sbin/php vendor/bin/mono qa:test
+```twig
+{# templates/base.html.twig #}
+<head>
+    {{ ui_kernel_theme_boot_script() }}
+    {{ ui_kernel_css()|raw }}
+</head>
 ```
 
-Package-only:
-
-```bash
-cd packages/ui-kernel && composer install && composer test
+```yaml
+# config/packages/symfinity_ui_kernel.yaml
+symfinity_ui_kernel:
+    default_theme: semantic
+    default_variant: semantic
+    schema_version: '1.0'
 ```
+
+See [Quick start](docs/quickstart.md) for the full walkthrough.
+
+## Documentation
+
+- **[Quick start](docs/quickstart.md)** — theme CSS on every page in minutes
+- **[Installation](docs/installation.md)** — Flex, manual setup, Web Profiler (dev)
+- **[Configuration](docs/configuration.md)** — app wiring, user tokens, system profile
+- **[Themes](docs/themes.md)** — built-in lineages, dark mode, layout profiles
+- **[Font Manager pairing](docs/font-manager-pairing.md)** — optional webfonts
+- **[Upgrade](docs/upgrade.md)** — first release and future migrations
+
+## Requirements
+
+- PHP 8.2 or higher
+- Symfony 6.4, 7.x, or 8.x
+- Twig 3.0 or higher
+
+## Support
+
+- [GitHub Issues](https://github.com/symfinity/ui-kernel/issues)
+- [Security](.github/SECURITY.md)
+- [Contributing](CONTRIBUTING.md)
+
+## License
+
+[MIT](LICENSE)

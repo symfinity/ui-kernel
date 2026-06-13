@@ -102,7 +102,7 @@ final class PaletteSsotPolicyTest extends TestCase
     #[Test]
     public function cacheKeyFingerprintChangesOnLineageMutation(): void
     {
-        $profile = SystemProfile::chameleonDefault();
+        $profile = SystemProfile::defaultProfile();
         $semantic = ThemeConfig::get('semantic');
         $utility = ThemeConfig::get('utility');
 
@@ -130,7 +130,7 @@ final class PaletteSsotPolicyTest extends TestCase
     #[Test]
     public function cacheKeyFingerprintChangesOnUserTokenHash(): void
     {
-        $profile = SystemProfile::chameleonDefault();
+        $profile = SystemProfile::defaultProfile();
         $preset = ThemeConfig::get('semantic')->presetHash();
 
         $partsA = CssGenerator::cacheKeyParts('semantic', 'hash-a', ThemeTokenSchema::V1_0, $profile, $preset);

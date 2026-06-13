@@ -33,12 +33,12 @@ final class SystemProfileCssTest extends TestCase
     #[Test]
     public function cacheKeyPartsIncludeProfileIdAndHash(): void
     {
-        $profile = SystemProfile::chameleonDefault();
+        $profile = SystemProfile::defaultProfile();
         $preset = \Symfinity\UiKernel\Token\ThemeConfig::get('semantic')->presetHash();
         $parts = CssGenerator::cacheKeyParts('semantic', 'abc', ThemeTokenSchema::V1_0, $profile, $preset);
 
         self::assertSame('semantic', $parts['themeId']);
-        self::assertSame('chameleon-default', $parts['systemProfileId']);
+        self::assertSame('ui-kernel-default', $parts['systemProfileId']);
         self::assertSame($profile->hash(), $parts['profileHash']);
         self::assertSame($preset, $parts['presetHash']);
         self::assertSame('tokens-only:1', $parts['roleRulesVersion']);

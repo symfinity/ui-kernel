@@ -1,30 +1,31 @@
-# Font-manager pairing (optional)
+# Font Manager pairing (optional)
 
-Normative contract: font-manager-pairing.
-
-## Kernel default
-
-`symfinity/ui-kernel` **does not** require `symfinity/font-manager`. Generated CSS always emits:
+**symfinity/ui-kernel** does **not** require **symfinity/font-manager**. Generated CSS always defines:
 
 - `--ui-font-family-sans`
 - `--ui-font-family-mono`
 
-Values come from [PresetRegistry](../src/Token/PresetRegistry.php) — **system stacks only** (see typography contract).
+Values use system stacks until you wire font-manager.
 
 ## When font-manager is installed
 
-1. Add suggest package: `composer suggest symfinity/font-manager` (already in `composer.json`).
-2. Configure font-manager to export CSS variable names matching kernel tokens (same `--ui-font-family-*` keys).
-3. Let font-manager inject `@font-face` / link tags; kernel continues to emit stack names in theme CSS.
+1. `composer require symfinity/font-manager` (suggested in `composer.json`)
+2. Configure font-manager to export CSS variable names matching kernel tokens (`--ui-font-family-sans`, `--ui-font-family-mono`)
+3. Let font-manager inject `@font-face` rules or link tags; kernel continues to emit the same token names in theme CSS
 
-**MUST NOT** fork token names between packages.
+**Do not** rename tokens between packages.
 
 ## When font-manager is absent
 
-Dogfood `/kernel` and consumer apps **MUST** remain legible with system stacks — no kernel `@font-face`.
+Applications remain legible with system stacks — ui-kernel does not ship `@font-face` rules.
 
-## Non-goals (v1)
+## Non-goals (v0.1)
 
 - Runtime auto-detect of font-manager
 - Flex recipe requiring font-manager
-- font-manager port (see font-manager-intake)
+- Bundled font files inside ui-kernel
+
+## See also
+
+- [Themes](themes.md)
+- [Configuration](configuration.md)

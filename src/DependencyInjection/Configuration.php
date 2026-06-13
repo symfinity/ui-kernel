@@ -38,7 +38,7 @@ final class Configuration implements ConfigurationInterface
                 ->arrayNode('system_profile')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('id')->defaultValue('chameleon-default')->end()
+                        ->scalarNode('id')->defaultValue('ui-kernel-default')->end()
                         ->integerNode('columns')->defaultValue(12)->min(1)->max(24)->end()
                         ->arrayNode('breakpoints')
                             ->normalizeKeys(false)

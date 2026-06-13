@@ -6,7 +6,7 @@ namespace Symfinity\UiKernel\Profile;
 
 final readonly class SystemProfile
 {
-    public const DEFAULT_ID = 'chameleon-default';
+    public const DEFAULT_ID = 'ui-kernel-default';
 
     /** @var array<string, int> */
     private const DEFAULT_BREAKPOINTS = [
@@ -49,7 +49,7 @@ final readonly class SystemProfile
     ) {
     }
 
-    public static function chameleonDefault(): self
+    public static function defaultProfile(): self
     {
         return new self(
             self::DEFAULT_ID,
@@ -69,7 +69,7 @@ final readonly class SystemProfile
      */
     public static function fromConfig(array $config): self
     {
-        $base = self::chameleonDefault();
+        $base = self::defaultProfile();
         $id = $config['id'] ?? $base->id;
         $columns = $config['columns'] ?? $base->columns;
 

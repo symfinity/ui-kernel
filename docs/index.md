@@ -1,17 +1,12 @@
 # Overview
 
-Package handbook for this library.
+Consumer handbook for **symfinity/ui-kernel** — design tokens, built-in themes, and generated CSS.
 
 ## Pages
 
 - [Installation](installation.md)
-- [Quickstart](quickstart.md)
+- [Quick start](quickstart.md)
 - [Configuration](configuration.md)
-- [Usage](usage.md)
-- [Upgrade](upgrade.md)
-- [Troubleshooting](troubleshooting.md)
-- [Reference](reference.md)
-- [Architecture](architecture.md)
-- [Font Manager Pairing](font-manager-pairing.md)
-- [Output Channels](output-channels.md)
 - [Themes](themes.md)
+- [Font Manager pairing](font-manager-pairing.md) (optional)
+- [Upgrade](upgrade.md)

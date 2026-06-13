@@ -11,11 +11,11 @@ use Symfinity\UiKernel\Profile\SystemProfile;
 final class SystemProfileTest extends TestCase
 {
     #[Test]
-    public function chameleonDefaultHasFiveBreakpointsAndTwelveColumns(): void
+    public function defaultProfileHasFiveBreakpointsAndTwelveColumns(): void
     {
-        $profile = SystemProfile::chameleonDefault();
+        $profile = SystemProfile::defaultProfile();
 
-        self::assertSame('chameleon-default', $profile->id);
+        self::assertSame('ui-kernel-default', $profile->id);
         self::assertSame(12, $profile->columns);
         self::assertSame(
             ['sm' => 640, 'md' => 768, 'lg' => 1024, 'xl' => 1280, '2xl' => 1536],
@@ -41,7 +41,7 @@ final class SystemProfileTest extends TestCase
     #[Test]
     public function hashChangesWhenBreakpointsChange(): void
     {
-        $a = SystemProfile::chameleonDefault();
+        $a = SystemProfile::defaultProfile();
         $b = SystemProfile::fromConfig(['breakpoints' => ['md' => 800]]);
 
         self::assertNotSame($a->hash(), $b->hash());
@@ -50,7 +50,7 @@ final class SystemProfileTest extends TestCase
     #[Test]
     public function zIndexLadderMatchesContract(): void
     {
-        $layers = SystemProfile::chameleonDefault()->zIndexLayers();
+        $layers = SystemProfile::defaultProfile()->zIndexLayers();
 
         self::assertSame(1000, $layers['dropdown']);
         self::assertSame(1080, $layers['toast']);

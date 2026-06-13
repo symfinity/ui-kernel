@@ -195,7 +195,7 @@ final class CssGenerator
 
     private function resolveProfile(): SystemProfile
     {
-        return $this->profileRegistry?->resolve() ?? SystemProfile::chameleonDefault();
+        return $this->profileRegistry?->resolve() ?? SystemProfile::defaultProfile();
     }
 
     private function profileGlobals(SystemProfile $profile): string

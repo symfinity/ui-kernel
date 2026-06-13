@@ -1,8 +1,8 @@
 # Installation
 
-## Requirements
+## Prerequisites
 
-PHP 8.2+ and Symfony 6.4.
+Add the [symfinity/recipes](https://github.com/symfinity/recipes) Flex endpoint to your project's `composer.json` (see [recipes README](https://github.com/symfinity/recipes/blob/main/README.md)).
 
 ## Composer
 
@@ -12,27 +12,36 @@ composer require symfinity/ui-kernel
 
 ## Symfony Flex
 
-Describe recipe output: `config/packages/`, routes, assets (if any).
+The recipe applies:
+
+- `config/packages/symfinity_ui_kernel.yaml` from the package default
+- Bundle registration for **all** environments (`all`)
+
+Palette contract, generator settings, and built-in theme YAML stay in the bundle. Your app file should only override wiring options such as `default_theme` and `user_tokens` — see [Configuration](configuration.md).
 
 ## Manual installation
 
-Only when Flex is unavailable: register bundle, copy config skeleton.
+When Flex is unavailable:
+
+1. `composer require symfinity/ui-kernel`
+2. Register `Symfinity\UiKernel\UiKernelBundle` in `config/bundles.php`
+3. Copy `config/packages/symfinity_ui_kernel.yaml` from the package into your project
 
 ## Verify installation
 
 ```bash
-# example: bin/console debug:config symfinity_* 
+php bin/console debug:config symfinity_ui_kernel
 ```
 
 ## Optional: Web Profiler (dev)
 
-For theme/CSS observability in the Symfony debug toolbar and profiler panel, install the profiler bundle in **dev** only:
+For theme and CSS observability in the Symfony debug toolbar, install the profiler bundle in **dev** only:
 
 ```bash
 composer require --dev symfony/web-profiler-bundle
 ```
 
-Ensure `WebProfilerBundle` is registered in `config/bundles.php` for `dev` and `framework.profiler.collect` is enabled. Ui Kernel registers `UiKernelDataCollector` automatically when `kernel.debug` is true and the bundle is present. Details: [profiler.md](profiler.md).
+Ensure `WebProfilerBundle` is registered in `config/bundles.php` for `dev` and that `framework.profiler.collect` is enabled. UI Kernel registers `UiKernelDataCollector` automatically when `kernel.debug` is true and the profiler bundle is present.
 
 ## Next steps
 

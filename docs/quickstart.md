@@ -1,30 +1,102 @@
 # Quick start
 
-## Goal
+Get theme CSS on every page in a few minutes.
 
-After this guide you will have {one sentence outcome}.
+## Installation
 
-## Prerequisites
+```bash
+composer require symfinity/ui-kernel
+```
 
-[Installation](installation.md) completed.
+The Flex recipe registers the bundle and copies a minimal app config file.
 
-## Steps
+## 1. Include kernel head partial
 
-### 1. Configure
+In your base layout `<head>`, emit the boot script and generated CSS **in this order** (boot script first avoids a flash of wrong theme):
 
-Minimal `config/packages/` snippet.
+```twig
+{# templates/base.html.twig #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}My app{% endblock %}</title>
+    {{ ui_kernel_theme_boot_script() }}
+    {{ ui_kernel_css()|raw }}
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    {% block body %}{% endblock %}
+</body>
+</html>
+```
 
-### 2. Use in the app
+The bundle also ships `@UiKernel/_head.html.twig` with the same two calls if you prefer an include:
 
-Minimal route, controller, or template step.
+```twig
+{% include '@UiKernel/_head.html.twig' %}
+```
 
-## Complete example
+## 2. Pick a built-in theme
+
+Set the active theme lineage in your app config:
 
 ```yaml
-# minimal working snippet
+# config/packages/symfinity_ui_kernel.yaml
+symfinity_ui_kernel:
+    default_theme: semantic
+    default_variant: semantic
+    schema_version: '1.0'
 ```
+
+Reload the page — `:root` receives `--ui-*` design tokens for the selected theme. Built-in ids include `default`, `default-dark`, `semantic`, `semantic-dark`, `utility`, and `utility-dark`. See [Themes](themes.md).
+
+## 3. Inspect the active theme (optional)
+
+```twig
+<p>Active theme: {{ ui_kernel_active_theme_id() }}</p>
+```
+
+## Complete minimal example
+
+```yaml
+# config/packages/symfinity_ui_kernel.yaml
+symfinity_ui_kernel:
+    default_theme: default
+    default_variant: default
+    schema_version: '1.0'
+    user_tokens: {}
+```
+
+```twig
+{# templates/demo.html.twig #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ ui_kernel_theme_boot_script() }}
+    {{ ui_kernel_css()|raw }}
+</head>
+<body>
+    <main style="padding: var(--ui-space-lg); font-family: var(--ui-font-family-sans);">
+        <h1 style="color: var(--ui-color-primary);">Hello, UI Kernel</h1>
+        <p style="color: var(--ui-color-text-muted);">Tokens come from ui-kernel CSS.</p>
+    </main>
+</body>
+</html>
+```
+
+## Component styling
+
+UI Kernel emits **theme tokens and structural profile globals only**. `[data-ui-role]` component rules ship in separate `symfinity/ux-blocks-*` packages. Install the tier packages you need alongside ui-kernel.
 
 ## Next steps
 
-- [Usage](usage.md)
-- [Configuration](configuration.md)
+- [Configuration](configuration.md) — `user_tokens`, breakpoints, system profile
+- [Themes](themes.md) — built-in lineages, dark mode, layout profiles
+- [Font Manager pairing](font-manager-pairing.md) — optional webfonts
+
+## See also
+
+- [CHANGELOG.md](../CHANGELOG.md) — version history
+- [CONTRIBUTING.md](../CONTRIBUTING.md) — how to contribute
+- [GitHub Issues](https://github.com/symfinity/ui-kernel/issues) — bug reports

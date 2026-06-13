@@ -1,21 +1,31 @@
 # Changelog
 
-All changes to **symfinity/ui-kernel** are currently on `main` (unreleased, untagged).
+All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Changed
-
-- **Palette generator (OKLCH)** — `generator.palette.interpolation: oklch`, `revision: 1`. HSL path removed. `hue_chroma` retuned for higher in-gamut saturation at level 500 (ΔE ≤ 0.06 vs. prior map). Resolved sRGB for unchanged ref strings may drift; theme-token schema **`1.0`** unchanged. Normative: [oklch-palette-generator](../../specs/symfinity/symfinity/2-ui-kernel/contracts/oklch-palette-generator.md) (**059**).
-- Theme token schema **`1.0` only** — full token set; `ThemeTokenSchema` rejects other versions. Normative: [theme-token-schema](../../specs/symfinity/symfinity/2-ui-kernel/contracts/theme-token-schema.md), [built-in-theme-yaml](../../specs/symfinity/symfinity/2-ui-kernel/contracts/built-in-theme-yaml.md).
-- Bundle palette SSOT: `contract.palette` / `generator.palette` in `config/packages/symfinity_ui_kernel.yaml`. Built-in themes: `symfinity_ui_kernel.themes.{lineage}` in `config/themes/*.yaml` — grouped `tokens`, nested `colors`, variant `extends`.
-- Four shipped theme files; removed `config/palette_ssot.yaml`. Baseline lineage `default.yaml`; public ids `default-dark`, `semantic-dark`, …
-- Chameleon vocabulary — **Flavour** → **Theme**; config `default_theme`; authoring `preset` / `tone`. Spec: [theme-vocabulary](../../specs/symfinity/symfinity/2-ui-kernel/contracts/theme-vocabulary.md) (**031**).
+## [0.1.0] - 2026-06-13
 
 ### Added
 
-- **`PaletteRampSampler`** public port — enumerate grammar-valid refs with OKLCH tuples for import consumers (**055**). See [oklch-palette-generator](../../specs/symfinity/symfinity/2-ui-kernel/contracts/oklch-palette-generator.md).
-- Dev-only Web Profiler `UiKernelDataCollector` — WDT palette badge + profiler panel for theme resolution and CSS metrics ([profiler.md](docs/profiler.md))
-- Symfony bundle `UiKernelBundle` for integration
-- Modules: `Component`, `Css`, `Page`, `Palette`, `Profile`, `Renderer`, `Theme`
-- Package configuration under `config/`; Twig templates for UI integration
+- Initial release of UI Kernel bundle for Symfony
+- Design tokens and generated theme CSS (`--ui-color-*`, spacing, radius, motion, focus)
+- Built-in theme lineages: Balanced (`default`), Semantic, and Utility (light + dark variants)
+- OKLCH palette generator (revision `1`) with theme token schema `1.0`
+- Symfony Flex recipe `0.1` — bundle registered for all environments; default app config copied from package
+- App configuration: `default_theme`, `default_variant`, `user_tokens`, `system_profile`
+- Twig helpers:
+  - `ui_kernel_css()`
+  - `ui_kernel_theme_boot_script()`
+  - `ui_kernel_active_theme_id()`
+  - `ui_kernel_theme_shell()`
+- `@UiKernel/_head.html.twig` partial for document head integration
+- Optional dev Web Profiler data collector when `symfony/web-profiler-bundle` is installed
+- Consumer handbook under `docs/`
+- Symfony 6.4, 7.x, and 8.x compatibility (PHP 8.2+)
+
+### Notes
+
+- UI Kernel emits theme tokens and structural profile globals only — component `[data-ui-role]` CSS ships in separate `symfinity/ux-blocks-*` packages.
+- Split mirror CI: PHP 8.2–8.5 × Symfony 6.4 / 7.4 / 8.0 / 8.1 (see `.github/workflows/ci.yml`).
