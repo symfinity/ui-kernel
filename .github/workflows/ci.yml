@@ -48,6 +48,7 @@ jobs:
             symfony/config:^${{ matrix.symfony }} \
             symfony/dependency-injection:^${{ matrix.symfony }} \
             symfony/framework-bundle:^${{ matrix.symfony }} \
+            symfony/http-foundation:^${{ matrix.symfony }} \
             symfony/http-kernel:^${{ matrix.symfony }} \
             symfony/twig-bundle:^${{ matrix.symfony }} \
             symfony/yaml:^${{ matrix.symfony }}

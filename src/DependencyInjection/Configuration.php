@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use Symfony\Component\Config\Definition\Builder\NodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -13,8 +15,15 @@ final class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder('symfinity_ui_kernel');
 
-        $treeBuilder->getRootNode()
-            ->children()
+        $rootNode = $treeBuilder->getRootNode();
+        if (!$rootNode instanceof ArrayNodeDefinition) {
+            throw new \LogicException('Expected root node to be an ArrayNodeDefinition.');
+        }
+
+        /** @var NodeBuilder $children */
+        $children = $rootNode->children();
+
+        $children
                 ->scalarNode('default_theme')->defaultValue('default')->end()
                 ->scalarNode('default_variant')->defaultValue('default')->end()
                 ->scalarNode('schema_version')->defaultValue('1.0')->end()
