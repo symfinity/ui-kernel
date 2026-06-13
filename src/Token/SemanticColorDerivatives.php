@@ -81,10 +81,10 @@ final class SemanticColorDerivatives
         $boosts = [];
 
         foreach ($tokens as $key => $value) {
-            if (!is_string($key) || !str_starts_with($key, '--ui-color-')) {
+            if (!str_starts_with($key, '--ui-color-')) {
                 continue;
             }
-            if (!is_string($value) || str_contains($value, 'from var(')) {
+            if (str_contains($value, 'from var(')) {
                 continue;
             }
 

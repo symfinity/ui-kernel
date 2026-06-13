@@ -26,7 +26,7 @@ final class OklchColorSpace
             throw new InvalidArgumentException(sprintf('Cannot parse OKLCH colour "%s".', $css));
         }
 
-        $alpha = isset($matches[4]) && $matches[4] !== '' ? (float) $matches[4] : null;
+        $alpha = isset($matches[4]) ? (float) $matches[4] : null;
 
         return new OklchTuple((float) $matches[1], (float) $matches[2], (float) $matches[3], $alpha);
     }

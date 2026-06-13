@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
+use Symfinity\UiKernel\Internal\TypeGuard;
+
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -121,7 +123,7 @@ final class BuiltinThemeCatalog
                     ));
                 }
 
-                foreach (ThemeYamlNormalizer::expandVariants($group, $lineageKey, $path) as $theme) {
+                foreach (ThemeYamlNormalizer::expandVariants(TypeGuard::stringKeyMap($group), $lineageKey, $path) as $theme) {
                     $context = sprintf('%s themes.%s variant %s', $path, $lineageKey, $theme['id']);
                     ThemeTokenMap::assertComplete($theme['tokens'], ThemeTokenSchema::V1_0, $context);
 

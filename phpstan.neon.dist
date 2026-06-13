@@ -7,13 +7,9 @@ parameters:
         - src
         - tests
 
-    checkGenericClassInNonGenericObjectType: true
     reportUnmatchedIgnoredErrors: false
     bootstrapFiles:
         - phpstan-bootstrap.php
-
-    symfony:
-        container_xml_path: null
 
     ignoreErrors:
         -

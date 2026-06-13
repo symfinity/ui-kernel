@@ -67,6 +67,9 @@ final class ConfigurationD2Test extends TestCase
      */
     private function process(array $input): array
     {
-        return (new Processor())->processConfiguration(new Configuration(), [$input]);
+        /** @var array<string, mixed> $result */
+        $result = (new Processor())->processConfiguration(new Configuration(), [$input]);
+
+        return $result;
     }
 }

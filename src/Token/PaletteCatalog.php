@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
+use Symfinity\UiKernel\Internal\TypeGuard;
 use Symfony\Component\Yaml\Yaml;
 
 final class PaletteCatalog
@@ -111,7 +112,12 @@ final class PaletteCatalog
             throw new \InvalidArgumentException(sprintf('Unknown hue chroma for "%s".', $hue));
         }
 
-        return (float) $map[$hue];
+        $value = $map[$hue];
+        if (!is_numeric($value)) {
+            throw new \InvalidArgumentException(sprintf('Hue chroma for "%s" must be numeric.', $hue));
+        }
+
+        return (float) $value;
     }
 
     /**
@@ -146,7 +152,15 @@ final class PaletteCatalog
 
         $curve = [];
         foreach ($levels as $index => $level) {
-            $curve[$level] = (float) $raw[$index];
+            $value = $raw[$index] ?? null;
+            if (!is_numeric($value)) {
+                throw new \RuntimeException(sprintf(
+                    'generator.palette.lightness_curve.%s[%d] must be numeric.',
+                    $key,
+                    $index,
+                ));
+            }
+            $curve[$level] = (float) $value;
         }
 
         return $curve;
@@ -242,11 +256,14 @@ final class PaletteCatalog
             ));
         }
 
-        GeneratorPaletteConfigValidator::validate($contract, $generator);
+        GeneratorPaletteConfigValidator::validate(
+            TypeGuard::stringKeyMap($contract),
+            TypeGuard::stringKeyMap($generator),
+        );
 
         self::$referenceConfig = [
-            'contract' => $contract,
-            'generator' => $generator,
+            'contract' => TypeGuard::stringKeyMap($contract),
+            'generator' => TypeGuard::stringKeyMap($generator),
         ];
 
         return self::$referenceConfig;

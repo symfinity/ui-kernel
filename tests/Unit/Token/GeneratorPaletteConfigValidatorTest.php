@@ -75,7 +75,6 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
         $generator = $this->validGenerator();
         /** @var array<string, list<float>> $lightnessCurve */
         $lightnessCurve = $generator['lightness_curve'];
-        self::assertIsArray($lightnessCurve);
         $lightnessCurve['default'] = [0.89, 0.80];
         $generator['lightness_curve'] = $lightnessCurve;
 
@@ -92,7 +91,6 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
         $generator = $this->validGenerator();
         /** @var array<string, float> $hueChroma */
         $hueChroma = $generator['hue_chroma'];
-        self::assertIsArray($hueChroma);
         $hueChroma['amber'] = 0.12;
         $generator['hue_chroma'] = $hueChroma;
 

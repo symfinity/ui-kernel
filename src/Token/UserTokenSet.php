@@ -15,7 +15,7 @@ final class UserTokenSet
     public function __construct(private readonly array $tokens = [])
     {
         foreach ($tokens as $key => $value) {
-            if (!is_string($key) || !str_starts_with($key, '--ui-')) {
+            if (!str_starts_with($key, '--ui-')) {
                 ThemeErrorCatalog::throw(
                     ThemeErrorCatalog::UNKNOWN_TOKEN_KEY,
                     sprintf('Invalid user token key "%s".', $key),

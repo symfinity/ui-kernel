@@ -58,13 +58,21 @@ final class ThemeRegistryTest extends TestCase
     #[Test]
     public function catalogRejectsIncompleteTokenMaps(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        new \Symfinity\UiKernel\Theme\DefinedTheme(
-            'broken',
-            'Broken',
-            \Symfinity\UiKernel\Token\ThemeTokenSchema::V1_0,
-            \Symfinity\UiKernel\Token\DesignTokenSet::fromArray(['--ui-color-primary' => '#000']),
-        );
+        $created = false;
+
+        try {
+            $theme = new \Symfinity\UiKernel\Theme\DefinedTheme(
+                'broken',
+                'Broken',
+                \Symfinity\UiKernel\Token\ThemeTokenSchema::V1_0,
+                \Symfinity\UiKernel\Token\DesignTokenSet::fromArray(['--ui-color-primary' => '#000']),
+            );
+            $created = $theme->id() !== '';
+        } catch (\InvalidArgumentException) {
+            // expected
+        }
+
+        self::assertFalse($created);
     }
 
     #[Test]

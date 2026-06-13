@@ -37,7 +37,6 @@ final class GeneratorPaletteConfigValidator
             throw new \RuntimeException('generator.palette.interpolation must be "oklch".');
         }
 
-        /** @var list<int>|null $contractLevels */
         $contractLevels = $contractPalette['levels'] ?? null;
         if (!is_array($contractLevels) || $contractLevels === [] || !array_is_list($contractLevels)) {
             throw new \RuntimeException('contract.palette.levels must be a non-empty list.');
@@ -72,12 +71,18 @@ final class GeneratorPaletteConfigValidator
             }
         }
 
-        /** @var list<string> $contractHues */
-        $contractHues = $contractPalette['hues'] ?? [];
-        if (!is_array($contractHues) || $contractHues === []) {
+        $contractHues = $contractPalette['hues'] ?? null;
+        if (!is_array($contractHues) || $contractHues === [] || !array_is_list($contractHues)) {
             throw new \RuntimeException('contract.palette.hues must be a non-empty list.');
         }
 
+        foreach ($contractHues as $hue) {
+            if (!is_string($hue)) {
+                throw new \RuntimeException('contract.palette.hues must contain strings.');
+            }
+        }
+
+        /** @var list<string> $contractHues */
         $hueChroma = $generatorPalette['hue_chroma'] ?? null;
         if (!is_array($hueChroma)) {
             throw new \RuntimeException('generator.palette.hue_chroma must be a mapping.');
