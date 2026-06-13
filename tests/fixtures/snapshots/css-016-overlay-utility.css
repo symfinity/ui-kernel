@@ -1,0 +1,105 @@
+/* ui-kernel schema:1.0 profile:ui-kernel-default */
+[data-theme="utility"] {
+  color-scheme: light;
+  --ui-space-xs: 0.25rem;
+  --ui-space-sm: 0.5rem;
+  --ui-space-md: 0.75rem;
+  --ui-space-lg: 1.5rem;
+  --ui-space-xl: 2.5rem;
+  --ui-space-2xl: 3.5rem;
+  --ui-grid-gap: 0.75rem;
+  --ui-radius-xs: 0.125rem;
+  --ui-radius-sm: 0.125rem;
+  --ui-radius-md: 0.25rem;
+  --ui-radius-lg: 0.5rem;
+  --ui-radius-full: 9999px;
+  --ui-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --ui-shadow-md: 0 4px 8px rgba(15, 23, 42, 0.12);
+  --ui-shadow-lg: 0 10px 20px rgba(15, 23, 42, 0.16);
+  --ui-font-family-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --ui-font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ui-font-size-sm: 0.875rem;
+  --ui-font-size-md: 0.875rem;
+  --ui-font-size-lg: 1.125rem;
+  --ui-font-weight-normal: 400;
+  --ui-font-weight-medium: 500;
+  --ui-font-weight-semibold: 600;
+  --ui-line-height-tight: 1.25;
+  --ui-line-height-normal: 1.5;
+  --ui-line-height-relaxed: 1.625;
+  --ui-motion-duration-fast: 100ms;
+  --ui-motion-duration-normal: 150ms;
+  --ui-motion-duration-slow: 280ms;
+  --ui-motion-duration-skeleton: 1.6s;
+  --ui-motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ui-motion-easing-linear: linear;
+  --ui-focus-ring-width: 0.25rem;
+  --ui-focus-ring-opacity: 0.25;
+  --ui-focus-ring-blur: 0;
+  --ui-color-primary: #51a2ff;
+  --ui-color-secondary: #6a6c6d;
+  --ui-color-tertiary: #8e51ff;
+  --ui-color-surface: #ffffff;
+  --ui-color-surface-elevated: #dadbdb;
+  --ui-color-overlay: rgba(15, 15, 16, 0.4);
+  --ui-color-text: #232425;
+  --ui-color-text-muted: #a0a2a2;
+  --ui-color-border: #bdbebe;
+  --ui-color-danger: #fb2c36;
+  --ui-color-success: #009966;
+  --ui-color-warning: #ff8904;
+  --ui-color-info: #009488;
+  --ui-color-focus: #51a2ff;
+  --ui-color-skeleton-base: #bdbebe;
+  --ui-color-skeleton-shine: #858687;
+  --ui-overlay-surface: #dadbdb;
+  --ui-overlay-border: #bdbebe;
+  --ui-overlay-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+  --ui-backdrop-color: rgba(15, 15, 16, 0.4);
+  --ui-backdrop-blur: 0;
+  --ui-color-on-primary: oklch(1 0 0);
+  --ui-color-primary-hover: oklch(from var(--ui-color-primary) calc(l * 0.88) c h);
+  --ui-color-primary-active: oklch(from var(--ui-color-primary) calc(l * 0.76) c h);
+  --ui-color-on-secondary: oklch(1 0 0);
+  --ui-color-secondary-hover: oklch(from var(--ui-color-secondary) calc(l * 0.88) c h);
+  --ui-color-secondary-active: oklch(from var(--ui-color-secondary) calc(l * 0.76) c h);
+  --ui-color-on-tertiary: oklch(1 0 0);
+  --ui-color-tertiary-hover: oklch(from var(--ui-color-tertiary) calc(l * 0.88) c h);
+  --ui-color-tertiary-active: oklch(from var(--ui-color-tertiary) calc(l * 0.76) c h);
+  --ui-color-on-danger: oklch(1 0 0);
+  --ui-color-danger-hover: oklch(from var(--ui-color-danger) calc(l * 0.88) c h);
+  --ui-color-danger-active: oklch(from var(--ui-color-danger) calc(l * 0.76) c h);
+  --ui-color-on-success: oklch(1 0 0);
+  --ui-color-success-hover: oklch(from var(--ui-color-success) calc(l * 0.88) c h);
+  --ui-color-success-active: oklch(from var(--ui-color-success) calc(l * 0.76) c h);
+  --ui-color-on-warning: oklch(1 0 0);
+  --ui-color-warning-hover: oklch(from var(--ui-color-warning) calc(l * 0.88) c h);
+  --ui-color-warning-active: oklch(from var(--ui-color-warning) calc(l * 0.76) c h);
+  --ui-color-on-info: oklch(1 0 0);
+  --ui-color-info-hover: oklch(from var(--ui-color-info) calc(l * 0.88) c h);
+  --ui-color-info-active: oklch(from var(--ui-color-info) calc(l * 0.76) c h);
+  --ui-color-on-muted: #232425;
+  --ui-color-on-ghost: #232425;
+}
+:root {
+  --ui-z-dropdown: 1000;
+  --ui-z-sticky: 1020;
+  --ui-z-fixed: 1030;
+  --ui-z-modal-backdrop: 1040;
+  --ui-z-modal: 1050;
+  --ui-z-popover: 1060;
+  --ui-z-tooltip: 1070;
+  --ui-z-toast: 1080;
+}
+@keyframes ui-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes ui-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@keyframes ui-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
