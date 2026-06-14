@@ -25,7 +25,7 @@
         "oklch"
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "symfony/config": "^6.4||^7.0||^8.0",
         "symfony/dependency-injection": "^6.4||^7.0||^8.0",
         "symfony/framework-bundle": "^6.4||^7.0||^8.0",
@@ -67,7 +67,8 @@
     },
     "suggest": {
         "symfony/web-profiler-bundle": "Dev-only Web Profiler toolbar and panel for theme/CSS observability (UiKernelDataCollector)",
-        "symfinity/font-manager": "Optional webfont loading — pair css_variables export with --ui-font-family-sans / --ui-font-family-mono (see docs/font-manager-pairing.md)"
+        "symfinity/font-manager": "Optional webfont loading — pair css_variables export with --ui-font-family-sans / --ui-font-family-mono (see docs/font-manager-pairing.md)",
+        "symfinity/ux-blocks-demo": "Browser theme galleries and kernel showcase routes (dev/test only)"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

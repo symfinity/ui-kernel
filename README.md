@@ -66,7 +66,7 @@ See [Quick start](docs/quickstart.md) for the full walkthrough.
 - **[Configuration](docs/configuration.md)** — app wiring, user tokens, system profile
 - **[Themes](docs/themes.md)** — built-in lineages, dark mode, layout profiles
 - **[Font Manager pairing](docs/font-manager-pairing.md)** — optional webfonts
-- **[Upgrade](docs/upgrade.md)** — first release and future migrations
+- **[Upgrade](docs/upgrade.md)** — `v0.1.0` first release and `v0.1.1` patch notes
 
 ## Requirements
 

@@ -43,6 +43,14 @@ composer require --dev symfony/web-profiler-bundle
 
 Ensure `WebProfilerBundle` is registered in `config/bundles.php` for `dev` and that `framework.profiler.collect` is enabled. UI Kernel registers `UiKernelDataCollector` automatically when `kernel.debug` is true and the profiler bundle is present.
 
+## Optional: browser demos (dev/test)
+
+Theme galleries and kernel showcase HTTP routes ship in **symfinity/ux-blocks-demo**, not in ui-kernel. Install only in dev/test:
+
+```bash
+composer require --dev symfinity/ux-blocks-demo
+```
+
 ## Next steps
 
 [Quick start](quickstart.md).

@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-06-14
+
+### Added
+
+- Overlay design tokens (`--ui-overlay-surface`, `--ui-overlay-border`, `--ui-overlay-shadow`, `--ui-backdrop-color`, `--ui-backdrop-blur`) derived from the active theme
+- Theme-tone alignment for mono-based semantic colour refs (warm/cool/pure families stay consistent within a lineage)
+
+### Changed
+
+- Application config rejects non-empty `contract` and `generator` keys — palette contract and generator settings remain bundle SSOT only
+- Slim kernel boundary: no Symfony routes or HTTP controllers in the package; browser theme galleries live in `symfinity/ux-blocks-demo` (Composer `suggest`)
+- Split mirror CI: PHPStan 2.x with `phpstan-symfony` on the maintained PHP × Symfony matrix
+
+### Fixed
+
+- Palette catalog and theme YAML normalisation hardening for type-safe token resolution
+
+### Notes
+
+- Patch release on the `^0.1` Flex recipe line — `composer require symfinity/ui-kernel:^0.1` picks up `0.1.1` automatically
+- PHP 8.2+ and Symfony 6.4 / 7.x / 8.x unchanged from `0.1.0`
+
 ## [0.1.0] - 2026-06-13
 
 ### Added

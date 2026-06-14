@@ -43,7 +43,10 @@ For `prefers-color-scheme: auto`, the bundle can sync with a server endpoint whe
 `CssGenerator` emits:
 
 - Theme tokens (`--ui-color-*`, `--ui-space-*`, `--ui-radius-*`, …)
+- Overlay tokens (`--ui-overlay-surface`, `--ui-overlay-border`, `--ui-overlay-shadow`, `--ui-backdrop-color`, `--ui-backdrop-blur`)
 - Structural profile globals (breakpoints, z-index ladder, layout roles such as grid/stack)
+
+Mono-based semantic colour refs follow the active **theme tone** (warm/cool/pure families) so text and surface roles stay coherent within a lineage.
 
 It does **not** emit `[data-ui-role]` component rules. Install `symfinity/ux-blocks-*` tier packages for component CSS.
 

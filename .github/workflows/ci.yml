@@ -1,7 +1,7 @@
 name: CI
 
 # Matrix: maintained PHP x maintained Symfony (floor 6.4.*).
-# Regenerated 2026-06-13 — refresh: split-mirror-docs/scripts/fetch-ci-matrix.sh --gha-json --package-php='>=8.2'
+# Regenerated 2026-06-14 — refresh: split-mirror-docs/scripts/fetch-ci-matrix.sh --gha-json --package-php='>=8.2'
 
 on:
   push:
