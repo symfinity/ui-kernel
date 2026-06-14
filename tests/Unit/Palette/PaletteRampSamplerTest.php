@@ -49,6 +49,18 @@ final class PaletteRampSamplerTest extends TestCase
     }
 
     #[Test]
+    public function sampleForUsesProvidedRecipeNotBaseline(): void
+    {
+        $semantic = \Symfinity\UiKernel\Token\ThemeConfig::get('semantic')->paletteRecipe()->withoutScaleAnchors();
+        $utility = \Symfinity\UiKernel\Token\ThemeConfig::get('utility')->paletteRecipe()->withoutScaleAnchors();
+
+        $semanticBlue = iterator_to_array($this->sampler->sampleFor($semantic))['blue.500'];
+        $utilityBlue = iterator_to_array($this->sampler->sampleFor($utility))['blue.500'];
+
+        self::assertNotEquals($semanticBlue, $utilityBlue);
+    }
+
+    #[Test]
     public function twoRunsAreDeterministic(): void
     {
         $first = array_keys(iterator_to_array($this->sampler->sampleAll()));

@@ -5,9 +5,9 @@ symfinity_ui_kernel:
   user_tokens: {}
   contract:
     palette:
-      levels: [100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
+      levels: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
       alpha: [0, 5, 10, 15, 25, 40, 50, 60, 75, 100]
-      hues: [red, orange, yellow, lime, green, emerald, teal, cyan, sky, blue, violet, purple, pink]
+      hues: [red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose]
       forbidden_hues: []
       mono_tones: [pure, evil, warm, wood, cool, pope]
   generator:
@@ -16,12 +16,13 @@ symfinity_ui_kernel:
       revision: 1
       # OKLCH L (0–1) per contract.palette.levels index — shared hue curve
       lightness_curve:
-        default: [0.89, 0.80, 0.71, 0.62, 0.53, 0.44, 0.35, 0.26, 0.17, 0.08]
-        pure: [1.00, 0.89, 0.78, 0.67, 0.56, 0.45, 0.34, 0.23, 0.12, 0.00]
+        default: [0.94, 0.90, 0.88, 0.82, 0.74, 0.66, 0.56, 0.46, 0.36, 0.26, 0.14]
+        pure: [1.00, 0.98, 0.97, 0.92, 0.87, 0.71, 0.55, 0.44, 0.37, 0.27, 0.00]
       # Base OKLCH chroma at level 500 — in-gamut targets tuned for BS/TW/Balanced refs (rev 1)
       hue_chroma:
         red: 0.200
         orange: 0.145
+        amber: 0.280
         yellow: 0.280
         lime: 0.200
         green: 0.175
@@ -30,8 +31,11 @@ symfinity_ui_kernel:
         cyan: 0.125
         sky: 0.110
         blue: 0.210
+        indigo: 0.210
         violet: 0.241
         purple: 0.247
+        fuchsia: 0.222
         pink: 0.222
+        rose: 0.222
   dtcg:
     profile_globals_layer: profile-globals.dtcg.yaml

@@ -4,6 +4,7 @@ palette:
   hues:
     red: 25.0
     orange: 47.6
+    amber: 75.0
     yellow: 88.0
     lime: 105.0
     green: 158.0
@@ -12,9 +13,12 @@ palette:
     cyan: 200.0
     sky: 210.0
     blue: 264.0
+    indigo: 265.0
     violet: 270.0
     purple: 275.0
+    fuchsia: 320.0
     pink: 330.0
+    rose: 15.0
   mono:
     pure:
       hue: 0.0

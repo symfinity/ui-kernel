@@ -2,19 +2,23 @@ lineage: default
 design_system_id: chameleon
 palette:
   hues:
-    red: 23.0
-    orange: 43.0
-    yellow: 90.0
-    lime: 100.0
+    red: 25.0
+    orange: 55.0
+    amber: 75.0
+    yellow: 100.0
+    lime: 125.0
     green: 145.0
     emerald: 160.0
-    teal: 182.0
-    cyan: 180.0
-    sky: 210.0
-    blue: 258.0
-    violet: 270.0
+    teal: 180.0
+    cyan: 200.0
+    sky: 250.0
+    blue: 255.0
+    indigo: 265.0
+    violet: 280.0
     purple: 300.0
-    pink: 330.0
+    fuchsia: 320.0
+    pink: 340.0
+    rose: 15.0
   mono:
     pure:
       hue: 0.0
@@ -30,7 +34,7 @@ palette:
       saturation: 7.5
     cool:
       hue: 240.0
-      saturation: 4.5
+      saturation: 7.5
     pope:
       hue: 300.0
       saturation: 7.5

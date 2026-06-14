@@ -38,23 +38,23 @@
   --ui-focus-ring-opacity: 0.25;
   --ui-focus-ring-blur: 0;
   --ui-color-primary: oklch(0.44 0.1629 258);
-  --ui-color-secondary: oklch(0.53 0.0017 240);
+  --ui-color-secondary: oklch(0.53 0.0169 240);
   --ui-color-tertiary: oklch(0.53 0.247 300);
   --ui-color-surface: oklch(1 0 0);
-  --ui-color-surface-elevated: oklch(0.89 0.0004 240);
-  --ui-color-text: oklch(0.17 0.0006 240);
-  --ui-color-text-muted: oklch(0.53 0.0017 240);
-  --ui-color-border: oklch(0.8 0.0007 240);
+  --ui-color-surface-elevated: oklch(0.89 0.0072 240);
+  --ui-color-text: oklch(0.17 0.0072 240);
+  --ui-color-text-muted: oklch(0.53 0.0169 240);
+  --ui-color-border: oklch(0.8 0.0072 240);
   --ui-color-danger: oklch(0.53 0.2 23);
   --ui-color-success: oklch(0.53 0.1667 145);
   --ui-color-warning: oklch(0.53 0.145 43);
   --ui-color-info: oklch(0.53 0.0949 182);
   --ui-color-focus: oklch(0.53 0.1962 258);
   --ui-color-overlay: rgba(15, 15, 16, 0.4);
-  --ui-color-skeleton-base: oklch(0.8 0.0007 240);
-  --ui-color-skeleton-shine: oklch(0.62 0.0014 240);
-  --ui-overlay-surface: oklch(0.89 0.0004 240);
-  --ui-overlay-border: oklch(0.8 0.0007 240);
+  --ui-color-skeleton-base: oklch(0.8 0.0072 240);
+  --ui-color-skeleton-shine: oklch(0.62 0.0137 240);
+  --ui-overlay-surface: oklch(0.89 0.0072 240);
+  --ui-overlay-border: oklch(0.8 0.0072 240);
   --ui-overlay-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
   --ui-backdrop-color: rgba(15, 15, 16, 0.4);
   --ui-backdrop-blur: 0;
@@ -80,7 +80,7 @@
   --ui-color-info-hover: oklch(from var(--ui-color-info) calc(l * 0.88) c h);
   --ui-color-info-active: oklch(from var(--ui-color-info) calc(l * 0.76) c h);
   --ui-color-on-muted: oklch(1 0 0);
-  --ui-color-on-ghost: oklch(0.17 0.0006 240);
+  --ui-color-on-ghost: oklch(0.17 0.0072 240);
 }
 :root {
   color-scheme: light;
@@ -121,23 +121,23 @@
   --ui-focus-ring-opacity: 0.25;
   --ui-focus-ring-blur: 0;
   --ui-color-primary: oklch(0.44 0.1629 258);
-  --ui-color-secondary: oklch(0.53 0.0017 240);
+  --ui-color-secondary: oklch(0.53 0.0169 240);
   --ui-color-tertiary: oklch(0.53 0.247 300);
   --ui-color-surface: oklch(1 0 0);
-  --ui-color-surface-elevated: oklch(0.89 0.0004 240);
-  --ui-color-text: oklch(0.17 0.0006 240);
-  --ui-color-text-muted: oklch(0.53 0.0017 240);
-  --ui-color-border: oklch(0.8 0.0007 240);
+  --ui-color-surface-elevated: oklch(0.89 0.0072 240);
+  --ui-color-text: oklch(0.17 0.0072 240);
+  --ui-color-text-muted: oklch(0.53 0.0169 240);
+  --ui-color-border: oklch(0.8 0.0072 240);
   --ui-color-danger: oklch(0.53 0.2 23);
   --ui-color-success: oklch(0.53 0.1667 145);
   --ui-color-warning: oklch(0.53 0.145 43);
   --ui-color-info: oklch(0.53 0.0949 182);
   --ui-color-focus: oklch(0.53 0.1962 258);
   --ui-color-overlay: rgba(15, 15, 16, 0.4);
-  --ui-color-skeleton-base: oklch(0.8 0.0007 240);
-  --ui-color-skeleton-shine: oklch(0.62 0.0014 240);
-  --ui-overlay-surface: oklch(0.89 0.0004 240);
-  --ui-overlay-border: oklch(0.8 0.0007 240);
+  --ui-color-skeleton-base: oklch(0.8 0.0072 240);
+  --ui-color-skeleton-shine: oklch(0.62 0.0137 240);
+  --ui-overlay-surface: oklch(0.89 0.0072 240);
+  --ui-overlay-border: oklch(0.8 0.0072 240);
   --ui-overlay-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
   --ui-backdrop-color: rgba(15, 15, 16, 0.4);
   --ui-backdrop-blur: 0;
@@ -163,7 +163,7 @@
   --ui-color-info-hover: oklch(from var(--ui-color-info) calc(l * 0.88) c h);
   --ui-color-info-active: oklch(from var(--ui-color-info) calc(l * 0.76) c h);
   --ui-color-on-muted: oklch(1 0 0);
-  --ui-color-on-ghost: oklch(0.17 0.0006 240);
+  --ui-color-on-ghost: oklch(0.17 0.0072 240);
 }
 @media (color-gamut: p3) {
   [data-theme="default"] {

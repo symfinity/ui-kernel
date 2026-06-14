@@ -16,8 +16,11 @@ final class PaletteRampSampler implements PaletteRampSamplerInterface
 
     public function sampleAll(): iterable
     {
-        $recipe = ThemePaletteRecipe::baseline();
+        return $this->sampleFor(ThemePaletteRecipe::baseline());
+    }
 
+    public function sampleFor(ThemePaletteRecipe $recipe): iterable
+    {
         foreach (PaletteCatalog::monoTones() as $tone) {
             foreach (PaletteCatalog::levels() as $level) {
                 $ref = sprintf('mono.%s.%d', $tone, $level);

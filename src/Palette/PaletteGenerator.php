@@ -256,8 +256,8 @@ final class PaletteGenerator
         }
 
         $edgeFactor = 1.0 - abs(2.0 * $lightness - 1.0);
-
-        return ($saturationPercent / 100.0) * 0.04 * max(0.15, $edgeFactor);
+        // Tinted neutrals must read at surface steps (mono.100–200); prior 0.04× floor 0.15 was ~imperceptible.
+        return ($saturationPercent / 100.0) * 0.24 * max(0.40, $edgeFactor);
     }
 
     private function hueChromaForLevel(int $level, float $baseChroma): float

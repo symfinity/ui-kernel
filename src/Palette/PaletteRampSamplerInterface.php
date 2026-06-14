@@ -16,6 +16,9 @@ interface PaletteRampSamplerInterface
     /** @return iterable<string, OklchTuple> ref => tuple */
     public function sampleAll(): iterable;
 
+    /** @return iterable<string, OklchTuple> ref => tuple */
+    public function sampleFor(ThemePaletteRecipe $recipe): iterable;
+
     public function resolveToOklch(string $ref, ?ThemePaletteRecipe $recipe = null): OklchTuple;
 
     public function resolveToSrgb(string $ref, ?ThemePaletteRecipe $recipe = null): string;
