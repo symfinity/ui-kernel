@@ -129,6 +129,36 @@ final class UiKernelDataCollectorTest extends TestCase
         self::assertSame('auto', $collector->getScheme());
     }
 
+    #[Test]
+    public function collectUsesGraphPortWhenProvided(): void
+    {
+        $port = new class implements \Symfinity\UiKernel\Contract\Catalog\GraphVariantCatalogPort {
+            public function semanticColorSlugs(): array
+            {
+                return ['primary', 'accent'];
+            }
+
+            public function layerSignature(): string
+            {
+                return 'kernel-collector-sig';
+            }
+        };
+
+        $this->router->method('generate')->willThrowException(new RouteNotFoundException());
+
+        $collector = new UiKernelDataCollector(
+            $this->activeThemeContext,
+            $this->resolver,
+            $this->themeRegistry,
+            $this->router,
+            $port,
+        );
+        $collector->collect(Request::create('/demo'), new Response());
+
+        self::assertSame(['primary', 'accent'], $collector->getSemanticColorSlugs());
+        self::assertSame('kernel-collector-sig', $collector->getGraphLayerSignature());
+    }
+
     private function createCollector(): UiKernelDataCollector
     {
         return new UiKernelDataCollector(

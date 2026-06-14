@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\DataCollector;
 
+use Symfinity\UiKernel\Contract\Catalog\GraphVariantCatalogPort;
 use Symfinity\UiKernel\Theme\ActiveThemeContext;
 use Symfinity\UiKernel\Theme\ThemePreferenceResolver;
 use Symfinity\UiKernel\Theme\ThemeRegistry;
@@ -17,7 +18,13 @@ final class UiKernelDataCollector extends DataCollector
 {
     public const CSS_BYTES_REQUEST_ATTR = '_symfinity_ui_kernel_css_bytes';
 
-    /** @var list<string> */
+    /**
+     * Best-effort deep links to a kernel/demo gallery if the host app happens to
+     * expose one. The slim kernel does not own these routes; they resolve to null
+     * when absent (see resolveShowcaseUrl), so this is a convenience, not a dependency.
+     *
+     * @var list<string>
+     */
     private const SHOWCASE_ROUTES = ['ui_kernel_showcase', 'ux_blocks_demo_kernel'];
 
     public function __construct(
@@ -25,6 +32,7 @@ final class UiKernelDataCollector extends DataCollector
         private readonly ThemePreferenceResolver $resolver,
         private readonly ThemeRegistry $themeRegistry,
         private readonly UrlGeneratorInterface $router,
+        private readonly ?GraphVariantCatalogPort $variantCatalog = null,
     ) {
     }
 
@@ -47,6 +55,8 @@ final class UiKernelDataCollector extends DataCollector
             'systemPrefersDark' => $this->resolver->resolveSystemPrefersDark($request),
             'cssBytes' => (int) $request->attributes->get(self::CSS_BYTES_REQUEST_ATTR, 0),
             'themeCount' => \count($this->themeRegistry->all()),
+            'semantic_color_slugs' => $this->variantCatalog?->semanticColorSlugs() ?? [],
+            'graph_layer_signature' => $this->variantCatalog?->layerSignature() ?? '',
             'showcaseUrl' => $this->resolveShowcaseUrl(),
         ];
     }
@@ -103,6 +113,24 @@ final class UiKernelDataCollector extends DataCollector
         $url = $this->data['showcaseUrl'] ?? null;
 
         return is_string($url) ? $url : null;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getSemanticColorSlugs(): array
+    {
+        $slugs = $this->data['semantic_color_slugs'] ?? [];
+        if (!\is_array($slugs)) {
+            return [];
+        }
+
+        return array_values(array_filter($slugs, static fn (mixed $slug): bool => \is_string($slug) && $slug !== ''));
+    }
+
+    public function getGraphLayerSignature(): string
+    {
+        return (string) ($this->data['graph_layer_signature'] ?? '');
     }
 
     private function resolveShowcaseUrl(): ?string

@@ -24,7 +24,27 @@ services:
 
   Symfinity\UiKernel\Theme\ThemeRegistry: ~
 
-  Symfinity\UiKernel\Token\ThemeTokenResolver: ~
+  Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry:
+    factory: ['Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry', 'fromDefaultDirectory']
+
+  Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog:
+    factory: ['Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog', 'fromDefaultDirectory']
+
+  Symfinity\UiKernel\Dtcg\ProfileGlobalsLayerRegistry:
+    arguments:
+      $filePath: '%symfinity.ui_kernel.profile_globals_layer_path%'
+
+  Symfinity\UiKernel\Dtcg\LayerStackBuilder: ~
+
+  Symfinity\UiKernel\Dtcg\ThemeDtcgResolver: ~
+
+  Symfinity\UiKernel\Dtcg\AtRulesContributor: ~
+
+  Symfinity\UiKernel\Contract\Emitter\AtRulesContributorInterface: '@Symfinity\UiKernel\Dtcg\AtRulesContributor'
+
+  Symfinity\UiKernel\Css\GraphVariantCatalog: ~
+
+  Symfinity\UiKernel\Contract\Catalog\GraphVariantCatalogPort: '@Symfinity\UiKernel\Css\GraphVariantCatalog'
 
   Symfinity\UiKernel\Palette\PaletteGenerator: ~
 
@@ -41,3 +61,5 @@ services:
   Symfinity\UiKernel\DataCollector\UiKernelDataCollector:
     tags:
       - { name: data_collector, id: 'ui_kernel', template: '@UiKernel/Collector/ui_kernel.html.twig' }
+
+  Symfinity\UiKernel\Preview\InjectedThemeCssProvider: ~

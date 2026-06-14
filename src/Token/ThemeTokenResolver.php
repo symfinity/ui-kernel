@@ -12,7 +12,7 @@ final class ThemeTokenResolver
     ) {
     }
 
-    public function resolve(ThemeConfig $config, ?UserTokenSet $userTokens = null): DesignTokenSet
+    public function resolve(AuthoringThemeConfig $config, ?UserTokenSet $userTokens = null): DesignTokenSet
     {
         $schemaVersion = $config->schemaVersion();
         ThemeTokenSchema::requiredKeys($schemaVersion);
@@ -45,7 +45,7 @@ final class ThemeTokenResolver
      *
      * @return array<string, string>
      */
-    private static function overlayTokens(array $merged, ThemeConfig $config): array
+    private static function overlayTokens(array $merged, AuthoringThemeConfig $config): array
     {
         return [
             '--ui-overlay-surface' => $merged['--ui-color-surface-elevated'],

@@ -6,10 +6,10 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Palette\PaletteGenerator;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
+use Symfinity\UiKernel\Tests\Support\ThemeDtcgResolverFactory;
 use Symfinity\UiKernel\Token\PaletteRefGrammar;
-use Symfinity\UiKernel\Token\ThemeTokenResolver;
+use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class ThemeConfigRefsTest extends TestCase
@@ -62,10 +62,10 @@ final class ThemeConfigRefsTest extends TestCase
     #[Test]
     public function resolverProducesCompleteSemanticMapForEveryTheme(): void
     {
-        $resolver = new ThemeTokenResolver(new \Symfinity\UiKernel\Token\SemanticColorMap(new PaletteGenerator()));
+        $resolver = ThemeDtcgResolverFactory::create();
 
         foreach (ThemeConfig::all() as $config) {
-            $tokens = $resolver->resolve($config)->all();
+            $tokens = $resolver->resolve(ThemeCatalog::variant($config->id()))->all();
             foreach (ThemeTokenSchema::requiredKeys($config->schemaVersion()) as $key) {
                 self::assertArrayHasKey($key, $tokens, $config->id() . ' missing ' . $key);
                 self::assertNotSame('', $tokens[$key], $config->id() . ' empty ' . $key);

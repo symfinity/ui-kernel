@@ -18,6 +18,11 @@ final class CssCacheKeyPolicy
         return self::TOKENS_ONLY_VERSION;
     }
 
+    public static function profileGlobalsRevision(string $revision): string
+    {
+        return 'profile-globals:' . $revision;
+    }
+
     /**
      * @return array{
      *     themeId: string,
@@ -26,7 +31,9 @@ final class CssCacheKeyPolicy
      *     presetHash: string,
      *     roleRulesVersion: string,
      *     systemProfileId: string,
-     *     profileHash: string
+     *     profileHash: string,
+     *     layerSignature: string,
+     *     profileGlobalsRevision: string
      * }
      */
     public static function parts(
@@ -35,6 +42,8 @@ final class CssCacheKeyPolicy
         string $schemaVersion,
         string $presetHash,
         SystemProfile $profile,
+        string $layerSignature = '',
+        string $profileGlobalsRevision = '',
     ): array {
         return [
             'themeId' => $themeId,
@@ -44,6 +53,8 @@ final class CssCacheKeyPolicy
             'roleRulesVersion' => self::roleRulesVersion(),
             'systemProfileId' => $profile->id,
             'profileHash' => $profile->hash(),
+            'layerSignature' => $layerSignature,
+            'profileGlobalsRevision' => self::profileGlobalsRevision($profileGlobalsRevision),
         ];
     }
 

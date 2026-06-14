@@ -1,0 +1,172 @@
+color:
+  primary:
+    $type: color
+    $value: '{color.blue.400}'
+  secondary:
+    $type: color
+    $value: '{color.mono.cool.400}'
+  tertiary:
+    $type: color
+    $value: '{color.violet.400}'
+  surface:
+    base:
+      $type: color
+      $value: '{color.mono.cool.900}'
+    elevated:
+      $type: color
+      $value: '{color.mono.cool.800}'
+  overlay:
+    $type: color
+    $value: 'rgba(15, 15, 16, 0.4)'
+  text:
+    default:
+      $type: color
+      $value: '{color.mono.cool.100}'
+    muted:
+      $type: color
+      $value: '{color.mono.cool.300}'
+  border:
+    default:
+      $type: color
+      $value: '{color.mono.cool.700}'
+  danger:
+    $type: color
+    $value: '{color.red.400}'
+  success:
+    $type: color
+    $value: '{color.emerald.400}'
+  warning:
+    $type: color
+    $value: '{color.orange.400}'
+  info:
+    $type: color
+    $value: '{color.teal.400}'
+  focus:
+    $type: color
+    $value: '{color.blue.300}'
+  skeleton:
+    base:
+      $type: color
+      $value: '{color.mono.cool.600}'
+    shine:
+      $type: color
+      $value: '{color.mono.cool.400}'
+space:
+  xs:
+    $type: dimension
+    $value: 0.25rem
+  sm:
+    $type: dimension
+    $value: 0.5rem
+  md:
+    $type: dimension
+    $value: 0.75rem
+  lg:
+    $type: dimension
+    $value: 1.5rem
+  xl:
+    $type: dimension
+    $value: 2.5rem
+  2xl:
+    $type: dimension
+    $value: 3.5rem
+grid:
+  gap:
+    $type: unknown
+    $value: 0.75rem
+radius:
+  xs:
+    $type: dimension
+    $value: 0.125rem
+  sm:
+    $type: dimension
+    $value: 0.125rem
+  md:
+    $type: dimension
+    $value: 0.25rem
+  lg:
+    $type: dimension
+    $value: 0.5rem
+  full:
+    $type: dimension
+    $value: 9999px
+shadow:
+  sm:
+    $type: unknown
+    $value: '0 1px 2px rgba(15, 23, 42, 0.08)'
+  md:
+    $type: unknown
+    $value: '0 4px 8px rgba(15, 23, 42, 0.12)'
+  lg:
+    $type: unknown
+    $value: '0 10px 20px rgba(15, 23, 42, 0.16)'
+font:
+  family:
+    sans:
+      $type: unknown
+      $value: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif'
+    mono:
+      $type: unknown
+      $value: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+  size:
+    sm:
+      $type: dimension
+      $value: 0.875rem
+    md:
+      $type: dimension
+      $value: 0.875rem
+    lg:
+      $type: dimension
+      $value: 1.125rem
+  weight:
+    normal:
+      $type: number
+      $value: '400'
+    medium:
+      $type: number
+      $value: '500'
+    semibold:
+      $type: number
+      $value: '600'
+line-height:
+  tight:
+    $type: unknown
+    $value: '1.25'
+  normal:
+    $type: unknown
+    $value: '1.5'
+  relaxed:
+    $type: unknown
+    $value: '1.625'
+motion:
+  duration:
+    fast:
+      $type: duration
+      $value: 100ms
+    normal:
+      $type: duration
+      $value: 150ms
+    slow:
+      $type: duration
+      $value: 280ms
+    skeleton:
+      $type: duration
+      $value: 1.6s
+  easing:
+    standard:
+      $type: cubicBezier
+      $value: 'cubic-bezier(0.4, 0, 0.2, 1)'
+    linear:
+      $type: cubicBezier
+      $value: linear
+focus:
+  ring:
+    width:
+      $type: dimension
+      $value: 0.25rem
+    opacity:
+      $type: number
+      $value: '0.25'
+    blur:
+      $type: number
+      $value: '0'

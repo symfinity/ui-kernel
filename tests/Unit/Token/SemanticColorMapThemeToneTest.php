@@ -7,11 +7,13 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Palette\PaletteGenerator;
+use Symfinity\UiKernel\Dtcg\BuiltinThemeVariant;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
+use Symfinity\UiKernel\Tests\Support\ThemeDtcgResolverFactory;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\SemanticColorMap;
 use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemePaletteRecipe;
-use Symfinity\UiKernel\Token\ThemeTokenResolver;
 
 final class SemanticColorMapThemeToneTest extends TestCase
 {
@@ -58,33 +60,30 @@ final class SemanticColorMapThemeToneTest extends TestCase
     #[Test]
     public function resolverUsesThemeConfigTone(): void
     {
-        $semantic = ThemeConfig::get('semantic');
-        $generator = new PaletteGenerator();
-        $refs = $semantic->colorRefs();
+        $semantic = ThemeCatalog::variant('semantic');
+        $resolver = ThemeDtcgResolverFactory::create();
 
-        $coolConfig = new ThemeConfig(
-            'tone-test-cool',
-            'Tone test cool',
-            $semantic->layout(),
-            MonoTone::Cool,
-            $semantic->paletteRecipe(),
-            $refs,
-            $semantic->appearanceTokens(),
-        );
-        $warmConfig = new ThemeConfig(
-            'tone-test-warm',
-            'Tone test warm',
-            $semantic->layout(),
-            MonoTone::Warm,
-            $semantic->paletteRecipe(),
-            $refs,
-            $semantic->appearanceTokens(),
-        );
-
-        $cool = (new ThemeTokenResolver(new SemanticColorMap($generator)))->resolve($coolConfig)->all();
-        $warm = (new ThemeTokenResolver(new SemanticColorMap($generator)))->resolve($warmConfig)->all();
+        $cool = $resolver->resolve(self::variantWithTone($semantic, MonoTone::Cool))->all();
+        $warm = $resolver->resolve(self::variantWithTone($semantic, MonoTone::Warm))->all();
 
         self::assertNotSame($cool['--ui-color-text'], $warm['--ui-color-text']);
         self::assertSame($cool['--ui-color-primary'], $warm['--ui-color-primary']);
+    }
+
+    private static function variantWithTone(BuiltinThemeVariant $base, MonoTone $tone): BuiltinThemeVariant
+    {
+        return new BuiltinThemeVariant(
+            $base->id() . '-' . $tone->value,
+            $base->label(),
+            $base->lineage(),
+            $base->designSystemId(),
+            $base->layout(),
+            $tone,
+            $base->layerPath(),
+            $base->paletteDefinition(),
+            $base->schemaVersion(),
+            $base->scrollMotion(),
+            $base->backdropBlur(),
+        );
     }
 }

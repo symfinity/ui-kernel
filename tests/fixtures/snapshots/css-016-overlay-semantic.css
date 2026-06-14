@@ -42,7 +42,6 @@
   --ui-color-tertiary: #59359a;
   --ui-color-surface: #ffffff;
   --ui-color-surface-elevated: #ffffff;
-  --ui-color-overlay: rgba(15, 15, 16, 0.4);
   --ui-color-text: #0f0f10;
   --ui-color-text-muted: #6a6c6c;
   --ui-color-border: #a1a2a2;
@@ -51,6 +50,7 @@
   --ui-color-warning: #fd9843;
   --ui-color-info: #0dcaf0;
   --ui-color-focus: #0d6efd;
+  --ui-color-overlay: rgba(15, 15, 16, 0.4);
   --ui-color-skeleton-base: #bdbebe;
   --ui-color-skeleton-shine: #858687;
   --ui-overlay-surface: #ffffff;
@@ -103,4 +103,9 @@
 @keyframes ui-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  @keyframes ui-shimmer {
+    from, to { opacity: 1; }
+  }
 }

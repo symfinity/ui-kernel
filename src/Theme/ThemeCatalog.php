@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Theme;
 
-use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Token\ThemeTokenResolver;
+use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
+use Symfinity\UiKernel\Dtcg\BuiltinThemeVariant;
+use Symfinity\UiKernel\Dtcg\ThemeDtcgResolver;
+use Symfinity\UiKernel\Token\DesignTokenSet;
 use Symfinity\UiKernel\Token\UserTokenSet;
 
 /**
@@ -18,10 +20,14 @@ final class ThemeCatalog
     /** @var list<Theme>|null */
     private static ?array $defaultThemes = null;
 
+    private static ?BuiltinDtcgThemeCatalog $dtcgCatalog = null;
+
+    private static ?ThemeDtcgResolver $dtcgResolver = null;
+
     /**
      * @return list<Theme>
      */
-    public static function all(?ThemeTokenResolver $resolver = null, ?UserTokenSet $userTokens = null): array
+    public static function all(?ThemeDtcgResolver $resolver = null, ?UserTokenSet $userTokens = null): array
     {
         $useCache = $resolver === null && ($userTokens === null || $userTokens->isEmpty());
 
@@ -29,12 +35,12 @@ final class ThemeCatalog
             return self::$defaultThemes;
         }
 
-        $resolver ??= new ThemeTokenResolver();
+        $resolver ??= self::dtcgResolver();
         $userTokens ??= new UserTokenSet();
 
         $built = [];
-        foreach (ThemeConfig::all() as $config) {
-            $built[] = DefinedTheme::fromConfig($config, $resolver, $userTokens);
+        foreach (self::dtcgCatalog()->all() as $variant) {
+            $built[] = DefinedTheme::fromVariant($variant, $resolver, $userTokens);
         }
 
         if ($useCache) {
@@ -44,7 +50,7 @@ final class ThemeCatalog
         return $built;
     }
 
-    public static function get(string $id, ?ThemeTokenResolver $resolver = null, ?UserTokenSet $userTokens = null): Theme
+    public static function get(string $id, ?ThemeDtcgResolver $resolver = null, ?UserTokenSet $userTokens = null): Theme
     {
         foreach (self::all($resolver, $userTokens) as $theme) {
             if ($theme->id() === $id) {
@@ -53,5 +59,32 @@ final class ThemeCatalog
         }
 
         throw new \InvalidArgumentException(sprintf('Unknown theme id "%s".', $id));
+    }
+
+    public static function variant(string $id): BuiltinThemeVariant
+    {
+        return self::dtcgCatalog()->get($id);
+    }
+
+    public static function reset(): void
+    {
+        self::$defaultThemes = null;
+        BuiltinDtcgThemeCatalog::reset();
+    }
+
+    private static function dtcgCatalog(): BuiltinDtcgThemeCatalog
+    {
+        return self::$dtcgCatalog ??= new BuiltinDtcgThemeCatalog(BuiltinDtcgThemeCatalog::defaultDirectory());
+    }
+
+    private static function dtcgResolver(): ThemeDtcgResolver
+    {
+        return self::$dtcgResolver ??= new ThemeDtcgResolver(
+            new \Symfinity\UiKernel\Dtcg\LayerStackBuilder(
+                new \Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry(
+                    \Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry::defaultDirectory(),
+                ),
+            ),
+        );
     }
 }

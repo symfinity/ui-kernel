@@ -1,0 +1,50 @@
+lineage: utility
+design_system_id: chameleon
+palette:
+  hues:
+    red: 25.0
+    orange: 47.6
+    yellow: 88.0
+    lime: 105.0
+    green: 158.0
+    emerald: 168.0
+    teal: 182.5
+    cyan: 200.0
+    sky: 210.0
+    blue: 264.0
+    violet: 270.0
+    purple: 275.0
+    pink: 330.0
+  anchor_profile: tailwind-v4
+  mono:
+    pure:
+      hue: 0.0
+      saturation: 0.0
+    evil:
+      hue: 0.0
+      saturation: 7.5
+    warm:
+      hue: 30.0
+      saturation: 7.5
+    wood:
+      hue: 120.0
+      saturation: 7.5
+    cool:
+      hue: 225.0
+      saturation: 8.0
+    pope:
+      hue: 300.0
+      saturation: 7.5
+variants:
+  -
+    id: utility
+    layer_file: utility.dtcg.yaml
+    label: Utility
+    tone: cool
+    mode: light
+  -
+    id: utility-dark
+    layer_file: utility-dark.dtcg.yaml
+    label: 'Utility dark'
+    tone: cool
+    mode: dark

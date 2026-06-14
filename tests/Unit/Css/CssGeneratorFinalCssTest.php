@@ -133,9 +133,16 @@ final class CssGeneratorFinalCssTest extends TestCase
     #[Test]
     public function allThemesIncludeOverlayTokens(): void
     {
+        $resolver = new \Symfinity\UiKernel\Dtcg\ThemeDtcgResolver(
+            new \Symfinity\UiKernel\Dtcg\LayerStackBuilder(
+                new \Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry(
+                    \Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry::defaultDirectory(),
+                ),
+            ),
+        );
+
         foreach (['default', 'default-dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
-            $config = ThemeConfig::get($id);
-            $tokens = (new \Symfinity\UiKernel\Token\ThemeTokenResolver())->resolve($config)->all();
+            $tokens = $resolver->resolve(ThemeCatalog::variant($id))->all();
             foreach (ThemeTokenSchema::OVERLAY_KEYS as $key) {
                 self::assertArrayHasKey($key, $tokens, $id . ' missing ' . $key);
             }

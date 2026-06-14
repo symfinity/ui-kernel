@@ -1,0 +1,54 @@
+lineage: semantic
+design_system_id: chameleon
+palette:
+  hues:
+    red: 29.0
+    orange: 40.0
+    yellow: 92.0
+    lime: 100.0
+    green: 155.0
+    emerald: 162.0
+    teal: 182.0
+    cyan: 192.0
+    sky: 210.0
+    blue: 254.0
+    violet: 270.0
+    purple: 280.0
+    pink: 330.0
+  anchor_profile: bootstrap-5.3
+  mono:
+    pure:
+      hue: 0.0
+      saturation: 0.0
+    evil:
+      hue: 0.0
+      saturation: 7.5
+    warm:
+      hue: 30.0
+      saturation: 7.5
+    wood:
+      hue: 120.0
+      saturation: 7.5
+    cool:
+      hue: 220.0
+      saturation: 5.5
+    pope:
+      hue: 300.0
+      saturation: 7.5
+variants:
+  -
+    id: semantic
+    layer_file: semantic.dtcg.yaml
+    label: Semantic
+    tone: cool
+    mode: light
+    scroll_motion: true
+    backdrop_blur: 6px
+  -
+    id: semantic-dark
+    layer_file: semantic-dark.dtcg.yaml
+    label: 'Semantic dark'
+    tone: cool
+    mode: dark
+    scroll_motion: true
+    backdrop_blur: 6px

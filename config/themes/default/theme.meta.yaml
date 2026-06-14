@@ -1,0 +1,50 @@
+lineage: default
+design_system_id: chameleon
+palette:
+  hues:
+    red: 23.0
+    orange: 43.0
+    yellow: 90.0
+    lime: 100.0
+    green: 145.0
+    emerald: 160.0
+    teal: 182.0
+    cyan: 180.0
+    sky: 210.0
+    blue: 258.0
+    violet: 270.0
+    purple: 300.0
+    pink: 330.0
+  anchor_profile: balanced
+  mono:
+    pure:
+      hue: 0.0
+      saturation: 0.0
+    evil:
+      hue: 0.0
+      saturation: 7.5
+    warm:
+      hue: 30.0
+      saturation: 7.5
+    wood:
+      hue: 120.0
+      saturation: 7.5
+    cool:
+      hue: 240.0
+      saturation: 4.5
+    pope:
+      hue: 300.0
+      saturation: 7.5
+variants:
+  -
+    id: default
+    layer_file: default.dtcg.yaml
+    label: Balanced
+    tone: cool
+    mode: light
+  -
+    id: default-dark
+    layer_file: default-dark.dtcg.yaml
+    label: 'Balanced dark'
+    tone: cool
+    mode: dark

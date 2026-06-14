@@ -6,16 +6,18 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
+use Symfinity\UiKernel\Tests\Support\ThemeDtcgResolverFactory;
 use Symfinity\UiKernel\Token\SemanticColorDerivatives;
 use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Token\ThemeTokenResolver;
 
 final class SemanticColorDerivativesTest extends TestCase
 {
     #[Test]
     public function itDerivesOnHoverAndActiveTokensForSemanticColours(): void
     {
-        $base = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
+        $resolver = ThemeDtcgResolverFactory::create();
+        $base = $resolver->resolve(ThemeCatalog::variant('semantic'))->all();
 
         $derived = (new SemanticColorDerivatives())->derive($base);
 
@@ -32,7 +34,7 @@ final class SemanticColorDerivativesTest extends TestCase
     #[Test]
     public function resolvedThemeIncludesDerivedTokens(): void
     {
-        $tokens = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
+        $tokens = ThemeDtcgResolverFactory::create()->resolve(ThemeCatalog::variant('semantic'))->all();
 
         self::assertArrayHasKey('--ui-color-on-danger', $tokens);
         self::assertArrayHasKey('--ui-color-warning-active', $tokens);
@@ -42,7 +44,7 @@ final class SemanticColorDerivativesTest extends TestCase
     #[Test]
     public function p3BoostsSkipFrozenHexAnchorsToPreserveHue(): void
     {
-        $tokens = (new ThemeTokenResolver())->resolve(ThemeConfig::get('default'))->all();
+        $tokens = ThemeDtcgResolverFactory::create()->resolve(ThemeCatalog::variant('default'))->all();
         $boosts = (new SemanticColorDerivatives())->p3Boosts($tokens);
         $keys = array_column($boosts, 'key');
 

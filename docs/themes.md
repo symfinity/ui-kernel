@@ -2,6 +2,33 @@
 
 Symfony **Twig theme** (`twig.default_path`, FrameworkBundle template paths) is unrelated to **UI Kernel themes** (`data-theme`, `ThemeRegistry`). See [Symfony Twig theming](https://symfony.com/doc/current/templates.html#twig-theme-configuration).
 
+## On-disk layout (077 DTCG)
+
+Built-in themes ship as W3C DTCG token files — not bespoke `symfinity_ui_kernel.themes` YAML:
+
+```text
+config/
+├── design-systems/chameleon.dtcg.yaml   # platform semantic vocabulary (ghost alias, …)
+└── themes/{lineage}/
+    ├── theme.meta.yaml                  # palette recipe + variant registry
+    ├── {variant}.dtcg.yaml              # theme-layer semantic + appearance tokens
+    └── …
+```
+
+| File | Role |
+|------|------|
+| `theme.meta.yaml` | `lineage`, optional `design_system_id`, shared `palette`, `variants[]` with `layer_file`, `tone`, `mode` |
+| `{variant}.dtcg.yaml` | `theme` layer — semantic colour aliases (`color.primary` → `{color.blue.600}`), spacing, radius, motion |
+| `design-systems/{id}.dtcg.yaml` | `design_system` layer — cross-theme vocabulary extensions |
+
+### `design_system_id`
+
+Each lineage **SHOULD** set `design_system_id: chameleon` in `theme.meta.yaml` (default when omitted). The registry loads `config/design-systems/{id}.dtcg.yaml`. Unknown ids fail at stack-build time with `UnknownDesignSystemException`.
+
+Runtime resolution: `base` (OKLCH palette DTCG from generator) ⊕ `design_system` ⊕ `theme` → `LayeredTokenResolver` → `--ui-*` CSS.
+
+**ui-themer consumer themes** (dogfood `var/themes/zinc/`, export YAML) stay on the bespoke `preset` / `tone` / `semantics` schema via `AuthoringThemeConfig` — they do **not** register in `config/themes/`. See [DTCG token core](dtcg-token-core.md) and the **077** `ui-themer-theme-boundary` contract in the private specs tree.
+
 ## Built-in theme ids
 
 | Id | Label | Notes |
@@ -49,6 +76,10 @@ For `prefers-color-scheme: auto`, the bundle can sync with a server endpoint whe
 Mono-based semantic colour refs follow the active **theme tone** (warm/cool/pure families) so text and surface roles stay coherent within a lineage.
 
 It does **not** emit `[data-ui-role]` component rules. Install `symfinity/ux-blocks-*` tier packages for component CSS.
+
+### ui-themer boundary {#ui-themer-boundary}
+
+Consumer themes authored in **ui-themer** (dogfood zinc, export YAML) use `AuthoringThemeConfig` + `ThemeTokenResolver` — **not** the built-in DTCG catalog. See [ui-themer theme boundary](../../../specs/symfinity/symfinity/077-ui-kernel-dtcg-theme-migration/contracts/ui-themer-theme-boundary.md).
 
 ## User token overrides
 

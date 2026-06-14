@@ -6,17 +6,30 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Token\ThemeTokenResolver;
+use Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry;
+use Symfinity\UiKernel\Dtcg\LayerStackBuilder;
+use Symfinity\UiKernel\Dtcg\ThemeDtcgResolver;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 use Symfinity\UiKernel\Token\UserTokenSet;
 
 final class ThemeTokenResolverTest extends TestCase
 {
+    private ThemeDtcgResolver $resolver;
+
+    protected function setUp(): void
+    {
+        $this->resolver = new ThemeDtcgResolver(new LayerStackBuilder(
+            new DesignSystemLayerRegistry(DesignSystemLayerRegistry::defaultDirectory()),
+        ));
+        ThemeCatalog::reset();
+    }
+
     #[Test]
     public function itResolvesAllSchemaOneKeysForSemanticTheme(): void
     {
-        $tokens = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
+        $variant = ThemeCatalog::variant('semantic');
+        $tokens = $this->resolver->resolve($variant)->all();
 
         foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
             self::assertArrayHasKey($key, $tokens, $key);
@@ -28,10 +41,7 @@ final class ThemeTokenResolverTest extends TestCase
     public function userTokenOverrideMergesOverTheme(): void
     {
         $override = new UserTokenSet(['--ui-color-primary' => '#112233']);
-        $tokens = (new ThemeTokenResolver())->resolve(
-            ThemeConfig::get('semantic'),
-            $override,
-        )->all();
+        $tokens = $this->resolver->resolve(ThemeCatalog::variant('semantic'), $override)->all();
 
         self::assertSame('#112233', $tokens['--ui-color-primary']);
     }
@@ -50,7 +60,7 @@ final class ThemeTokenResolverTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $override = new UserTokenSet(['--ui-not-a-real-token' => '#112233']);
-        $base = (new ThemeTokenResolver())->resolve(ThemeConfig::get('semantic'))->all();
+        $base = $this->resolver->resolve(ThemeCatalog::variant('semantic'))->all();
         $override->merge($base, ThemeTokenSchema::V1_0);
     }
 }

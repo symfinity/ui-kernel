@@ -78,4 +78,9 @@
     {% if collector.showcaseUrl %}
         <p><a href="{{ collector.showcaseUrl }}">Open theme showcase</a></p>
     {% endif %}
+
+    {% if collector.semanticColorSlugs is not empty %}
+        <h3>Semantic colour slugs</h3>
+        <p><code>{{ collector.semanticColorSlugs|join(', ') }}</code></p>
+    {% endif %}
 {% endblock %}

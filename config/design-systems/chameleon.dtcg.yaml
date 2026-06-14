@@ -1,0 +1,17 @@
+color:
+  ghost:
+    $type: color
+    $value: '{color.text.muted}'
+    $description: 'Ghost variant maps to muted text (060 vocabulary parity)'
+$extensions:
+  symfinity:
+    design_system_id: chameleon
+    semantic_colors:
+      - primary
+      - secondary
+      - tertiary
+      - success
+      - danger
+      - info
+      - warning
+      - ghost

@@ -11,10 +11,11 @@ use Symfinity\UiKernel\Token\BuiltinThemeCatalog;
 use Symfinity\UiKernel\Token\MaterializedPaletteAnchors;
 use Symfinity\UiKernel\Token\PaletteAnchorProfiles;
 use Symfinity\UiKernel\Token\PaletteCatalog;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
+use Symfinity\UiKernel\Tests\Support\ThemeDtcgResolverFactory;
 use Symfinity\UiKernel\Token\SemanticColorDerivatives;
 use Symfinity\UiKernel\Token\SemanticColorMap;
 use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Token\ThemeTokenResolver;
 
 /** Guards palette-freeze revision 1 — frozen anchor hex values must not drift. */
 final class PaletteFreezeTest extends TestCase
@@ -86,7 +87,7 @@ final class PaletteFreezeTest extends TestCase
     #[Test]
     public function frozenHexSemanticTokensAreNotP3Boosted(): void
     {
-        $tokens = (new ThemeTokenResolver())->resolve(ThemeConfig::get('default'))->all();
+        $tokens = ThemeDtcgResolverFactory::create()->resolve(ThemeCatalog::variant('default'))->all();
         $keys = array_column((new SemanticColorDerivatives())->p3Boosts($tokens), 'key');
 
         foreach (['--ui-color-primary', '--ui-color-danger', '--ui-color-success', '--ui-color-warning'] as $key) {

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Theme;
 
 use InvalidArgumentException;
+use Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry;
+use Symfinity\UiKernel\Dtcg\LayerStackBuilder;
+use Symfinity\UiKernel\Dtcg\ThemeDtcgResolver;
 use Symfinity\UiKernel\Token\RegistryResolutionPolicy;
-use Symfinity\UiKernel\Token\ThemeTokenResolver;
 use Symfinity\UiKernel\Token\UserTokenSet;
 
 final class ThemeRegistry
@@ -14,13 +16,15 @@ final class ThemeRegistry
     /** @var array<string, Theme> */
     private array $themes = [];
 
-    private ThemeTokenResolver $resolver;
+    private ThemeDtcgResolver $resolver;
 
     private UserTokenSet $userTokens;
 
-    public function __construct(?ThemeTokenResolver $resolver = null, ?UserTokenSet $userTokens = null)
+    public function __construct(?ThemeDtcgResolver $resolver = null, ?UserTokenSet $userTokens = null)
     {
-        $this->resolver = $resolver ?? new ThemeTokenResolver();
+        $this->resolver = $resolver ?? new ThemeDtcgResolver(new LayerStackBuilder(
+            new DesignSystemLayerRegistry(DesignSystemLayerRegistry::defaultDirectory()),
+        ));
         $this->userTokens = $userTokens ?? new UserTokenSet();
 
         foreach (ThemeCatalog::all($this->resolver, $this->userTokens) as $theme) {

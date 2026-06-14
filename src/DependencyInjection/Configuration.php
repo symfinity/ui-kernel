@@ -61,6 +61,15 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('dtcg')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('profile_globals_layer')
+                            ->defaultValue('profile-globals.dtcg.yaml')
+                            ->cannotBeEmpty()
+                        ->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

@@ -33,3 +33,5 @@ symfinity_ui_kernel:
         violet: 0.241
         purple: 0.247
         pink: 0.222
+  dtcg:
+    profile_globals_layer: profile-globals.dtcg.yaml

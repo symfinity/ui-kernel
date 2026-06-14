@@ -4,19 +4,46 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Css;
 
+use Symfinity\UiKernel\Contract\Emitter\AtRulesContributorInterface;
+use Symfinity\UiKernel\Contract\Resolver\ResolvedGraphInterface;
+use Symfinity\UiKernel\Dtcg\AtRulesContributor;
+use Symfinity\UiKernel\Dtcg\ProfileGlobalsLayerRegistry;
 use Symfinity\UiKernel\Theme\Theme;
 use Symfinity\UiKernel\Theme\ThemeLineageCatalog;
 use Symfinity\UiKernel\Profile\SystemProfile;
 use Symfinity\UiKernel\Profile\SystemProfileRegistry;
 use Symfinity\UiKernel\Token\DesignTokenSet;
 use Symfinity\UiKernel\Token\SemanticColorDerivatives;
+use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class CssGenerator
 {
     public function __construct(
         private readonly ?SystemProfileRegistry $profileRegistry = null,
         private readonly SemanticColorDerivatives $semanticColorDerivatives = new SemanticColorDerivatives(),
+        private readonly CssVariableSet $cssVariableSet = new CssVariableSet(),
+        private readonly ?AtRulesContributorInterface $atRulesContributor = null,
+        private readonly ?ProfileGlobalsLayerRegistry $profileGlobalsLayerRegistry = null,
     ) {
+    }
+
+    /**
+     * Emit `--ui-*` CSS from a resolved DTCG graph behind the existing token API (076 US1).
+     *
+     * Bridges the graph onto a {@see DesignTokenSet} and reuses {@see forResolvedTokens()},
+     * preserving output parity with {@see forTheme()} for built-in themes.
+     */
+    public function forResolvedGraph(
+        ResolvedGraphInterface $graph,
+        string $themeId,
+        ?string $schemaVersion = null,
+        ?SystemProfile $profile = null,
+        bool $scrollMotion = false,
+    ): string {
+        $schemaVersion ??= ThemeTokenSchema::V1_0;
+        $tokens = new DesignTokenSet($this->cssVariableSet->fromResolvedGraph($graph), $schemaVersion);
+
+        return $this->forResolvedTokens($themeId, $tokens, $schemaVersion, $profile, $scrollMotion, $graph);
     }
 
     public function forTheme(Theme $theme, ?string $schemaVersion = null): string
@@ -38,6 +65,7 @@ final class CssGenerator
         ?string $schemaVersion = null,
         ?SystemProfile $profile = null,
         bool $scrollMotion = false,
+        ?ResolvedGraphInterface $graph = null,
     ): string {
         $schemaVersion ??= $tokens->schemaVersion();
         $profile ??= $this->resolveProfile();
@@ -69,7 +97,7 @@ final class CssGenerator
         $selectors = $themeId === 'default' ? [$selector, ':root'] : [$selector];
         $lines = [...$lines, ...$this->p3GamutOverrides($selectors, $tokenMap)];
 
-        $lines[] = $this->profileGlobals($profile);
+        $lines[] = $this->profileGlobalsCss($graph);
 
         return implode("\n", $lines);
     }
@@ -135,7 +163,7 @@ final class CssGenerator
         $lightSelectors = $anchorId === 'default' ? [$selector, ':root'] : [$selector];
         $lines = [...$lines, ...$this->p3GamutOverrides($lightSelectors, $light->tokens()->all())];
 
-        $lines[] = $this->profileGlobals($profile);
+        $lines[] = $this->profileGlobalsCss($graph);
 
         return implode("\n", $lines);
     }
@@ -176,7 +204,9 @@ final class CssGenerator
      *     presetHash: string,
      *     roleRulesVersion: string,
      *     systemProfileId: string,
-     *     profileHash: string
+     *     profileHash: string,
+     *     layerSignature: string,
+     *     profileGlobalsRevision: string
      * }
      */
     public static function cacheKeyParts(
@@ -185,6 +215,8 @@ final class CssGenerator
         string $schemaVersion,
         SystemProfile $profile,
         string $presetHash = '',
+        string $layerSignature = '',
+        string $profileGlobalsRevision = '',
     ): array {
         return CssCacheKeyPolicy::parts(
             $themeId,
@@ -192,6 +224,8 @@ final class CssGenerator
             $schemaVersion,
             $presetHash,
             $profile,
+            $layerSignature,
+            $profileGlobalsRevision,
         );
     }
 
@@ -200,29 +234,42 @@ final class CssGenerator
         return $this->profileRegistry?->resolve() ?? SystemProfile::defaultProfile();
     }
 
-    private function profileGlobals(SystemProfile $profile): string
+    private function profileGlobalsCss(?ResolvedGraphInterface $graph = null): string
     {
-        $lines = [':root {'];
-        foreach ($profile->zIndexLayers() as $layer => $value) {
-            $lines[] = sprintf('  --ui-z-%s: %d;', $layer, $value);
+        $globalsGraph = $this->resolveProfileGlobalsGraph($graph);
+
+        return $this->atRulesContributor()->emitZIndexVars($globalsGraph)
+            . "\n"
+            . $this->atRulesContributor()->contribute($globalsGraph);
+    }
+
+    private function atRulesContributor(): AtRulesContributorInterface
+    {
+        return $this->atRulesContributor ?? new AtRulesContributor();
+    }
+
+    private function profileGlobalsRegistry(): ProfileGlobalsLayerRegistry
+    {
+        return $this->profileGlobalsLayerRegistry ?? ProfileGlobalsLayerRegistry::fromDefaultPath();
+    }
+
+    private function resolveProfileGlobalsGraph(?ResolvedGraphInterface $graph): ResolvedGraphInterface
+    {
+        if ($graph !== null && $this->graphHasProfileGlobals($graph)) {
+            return $graph;
         }
-        $lines[] = '}';
 
-        $lines[] = <<<'CSS'
-@keyframes ui-shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-@keyframes ui-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
-}
-@keyframes ui-fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-CSS;
+        return $this->profileGlobalsRegistry()->resolvedGraph();
+    }
 
-        return implode("\n", $lines);
+    private function graphHasProfileGlobals(ResolvedGraphInterface $graph): bool
+    {
+        foreach ($graph->all() as $path => $token) {
+            if (str_starts_with($path, 'zIndex.') || str_starts_with($path, 'keyframes.')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

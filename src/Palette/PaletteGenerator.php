@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Palette;
 
 use InvalidArgumentException;
+use Symfinity\UiKernel\Dtcg\DtcgDocument;
+use Symfinity\UiKernel\Dtcg\DtcgTreeBuilder;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\PaletteCatalog;
 use Symfinity\UiKernel\Token\PaletteRefGrammar;
@@ -123,8 +125,56 @@ final class PaletteGenerator
     }
 
     /**
-     * @return array<int, string> level => resolved colour
+     * Materialize palette ramps as a W3C DTCG document for the base layer (077).
      */
+    public function materializeDtcgDocument(
+        ThemePaletteRecipe $recipe,
+        string $lineageId = 'default',
+        ?string $anchorProfile = null,
+    ): DtcgDocument {
+        $colorTree = [];
+
+        foreach (PaletteCatalog::hueFamilies() as $hue) {
+            foreach (PaletteCatalog::levels() as $level) {
+                $ref = sprintf('%s.%d', $hue, $level);
+                $colorTree[$hue][(string) $level] = [
+                    '$type' => 'color',
+                    '$value' => $this->resolveToCss($ref, $recipe),
+                ];
+            }
+        }
+
+        $monoTree = [];
+        foreach (PaletteCatalog::monoTones() as $toneName) {
+            foreach (PaletteCatalog::levels() as $level) {
+                $ref = sprintf('mono.%s.%d', $toneName, $level);
+                $monoTree[$toneName][(string) $level] = [
+                    '$type' => 'color',
+                    '$value' => $this->resolveToCss($ref, $recipe),
+                ];
+            }
+        }
+
+        $colorTree['mono'] = $monoTree;
+
+        $extensions = [
+            'freeze' => 'COLOR_FREEZE_v1',
+            'lineage' => $lineageId,
+        ];
+        if ($anchorProfile !== null && $anchorProfile !== '') {
+            $extensions['anchor_profile'] = $anchorProfile;
+        }
+
+        $tree = [
+            'color' => $colorTree,
+            '$extensions' => [
+                'symfinity' => $extensions,
+            ],
+        ];
+
+        return (new DtcgTreeBuilder())->build($tree);
+    }
+
     public function rampPreview(string $family, ThemePaletteRecipe $recipe, ?MonoTone $spice = null): array
     {
         if ($family === 'mono') {

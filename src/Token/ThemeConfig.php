@@ -4,25 +4,24 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
+use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
+use Symfinity\UiKernel\Dtcg\BuiltinThemeVariant;
 use Symfinity\UiKernel\Theme\LayoutProfile;
 
 /**
- * Built-in theme definitions — palette refs only (no hex).
+ * Built-in theme definitions — palette recipe access for tests and palette tooling.
+ *
+ * Runtime theme resolution uses {@see \Symfinity\UiKernel\Dtcg\ThemeDtcgResolver} (077).
  */
 final class ThemeConfig
 {
-    /**
-     * @param array<string, string>              $colorRefs        semantic role => palette ref
-     * @param array<string, string>              $appearanceTokens CSS var => value (from YAML tokens)
-     */
     public function __construct(
         private readonly string $id,
         private readonly string $label,
         private readonly LayoutProfile $layout,
         private readonly MonoTone $tone,
         private readonly ThemePaletteRecipe $paletteRecipe,
-        private readonly array $colorRefs,
-        private readonly array $appearanceTokens,
+        private readonly string $layerPath,
         private readonly string $schemaVersion = ThemeTokenSchema::V1_0,
         private readonly bool $scrollMotion = false,
         private readonly string $backdropBlur = '0',
@@ -59,22 +58,6 @@ final class ThemeConfig
         return $this->schemaVersion;
     }
 
-    /**
-     * @return array<string, string>
-     */
-    public function colorRefs(): array
-    {
-        return $this->colorRefs;
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function appearanceTokens(): array
-    {
-        return $this->appearanceTokens;
-    }
-
     public function scrollMotion(): bool
     {
         return $this->scrollMotion;
@@ -83,6 +66,35 @@ final class ThemeConfig
     public function backdropBlur(): string
     {
         return $this->backdropBlur;
+    }
+
+    /**
+     * @return array<string, string> semantic role => palette ref
+     */
+    public function colorRefs(): array
+    {
+        return (new \Symfinity\UiKernel\Dtcg\DtcgLayerReader())->colorRefsFromLayer($this->layerPath);
+    }
+
+    /**
+     * @return array<string, string> short appearance token keys => CSS value
+     */
+    public function appearanceTokens(): array
+    {
+        $document = (new \Symfinity\UiKernel\Dtcg\DtcgYamlReader())->read($this->layerPath);
+        $short = [];
+        foreach ($document->flatten() as $path => $token) {
+            if (str_starts_with($path, 'color.')) {
+                continue;
+            }
+            $cssKey = '--ui-' . str_replace('.', '-', $path);
+            $value = $token->value();
+            if (\is_string($value)) {
+                $short[\Symfinity\UiKernel\Token\ThemeTokenMap::cssVarToShortKey($cssKey)] = $value;
+            }
+        }
+
+        return $short;
     }
 
     public function presetHash(): string
@@ -96,8 +108,6 @@ final class ThemeConfig
             'hueChroma' => $recipe->hueChromaOverrides(),
             'scaleAnchors' => $recipe->scaleAnchors(),
             'monoTones' => $recipe->monoTones(),
-            'colorRefs' => $this->colorRefs,
-            'appearanceTokens' => $this->appearanceTokens,
         ], JSON_THROW_ON_ERROR));
     }
 
@@ -107,82 +117,33 @@ final class ThemeConfig
     public static function all(): array
     {
         return array_map(
-            static fn (array $definition): self => new self(
-                $definition['id'],
-                $definition['label'],
-                $definition['layout'],
-                $definition['tone'],
-                $definition['paletteRecipe'],
-                $definition['colors'],
-                $definition['appearanceTokens'],
-                $definition['schemaVersion'] ?? ThemeTokenSchema::V1_0,
-                $definition['scrollMotion'] ?? false,
-                $definition['backdropBlur'] ?? '0',
-            ),
-            self::definitions(),
+            static fn (BuiltinThemeVariant $variant): self => self::fromVariant($variant),
+            self::catalog()->all(),
         );
     }
 
     public static function get(string $id): self
     {
-        foreach (self::all() as $config) {
-            if ($config->id() === $id) {
-                return $config;
-            }
-        }
-
-        throw new \InvalidArgumentException(sprintf('Unknown theme id "%s".', $id));
+        return self::fromVariant(self::catalog()->get($id));
     }
 
-    /**
-     * @return list<array{id: string, label: string, layout: LayoutProfile, tone: MonoTone, paletteRecipe: ThemePaletteRecipe, colors: array<string, string>, appearanceTokens: array<string, string>, schemaVersion?: string, scrollMotion?: bool, backdropBlur?: string}>
-     */
-    private static function definitions(): array
+    public static function fromVariant(BuiltinThemeVariant $variant): self
     {
-        $definitions = [];
-
-        foreach (BuiltinThemeCatalog::themes() as $theme) {
-            $definitions[] = [
-                'id' => $theme['id'],
-                'label' => $theme['label'],
-                'layout' => self::layoutProfile($theme['layout']),
-                'tone' => MonoTone::from($theme['tone']),
-                'paletteRecipe' => self::recipeFromTheme($theme),
-                'colors' => $theme['colors'],
-                'appearanceTokens' => ThemeTokenMap::toCssVariables($theme['tokens']),
-                'schemaVersion' => ThemeTokenSchema::V1_0,
-                'scrollMotion' => $theme['scroll_motion'] ?? false,
-                'backdropBlur' => $theme['backdrop_blur'] ?? '0',
-            ];
-        }
-
-        return $definitions;
-    }
-
-    /**
-     * @param array{
-     *     hue_base: array<string, float>,
-     *     mono_tones: array<string, array{hue: float, saturation: float}>,
-     *     hue_chroma?: array<string, float>,
-     *     scale_anchors?: array<string, string>
-     * } $theme
-     */
-    private static function recipeFromTheme(array $theme): ThemePaletteRecipe
-    {
-        return ThemePaletteRecipe::fromPaletteDefinition(
-            $theme['hue_base'],
-            $theme['mono_tones'],
-            $theme['hue_chroma'] ?? [],
-            $theme['scale_anchors'] ?? [],
+        return new self(
+            $variant->id(),
+            $variant->label(),
+            $variant->layout(),
+            $variant->tone(),
+            $variant->paletteRecipe(),
+            $variant->layerPath(),
+            $variant->schemaVersion(),
+            $variant->scrollMotion(),
+            $variant->backdropBlur(),
         );
     }
 
-    private static function layoutProfile(string $value): LayoutProfile
+    private static function catalog(): BuiltinDtcgThemeCatalog
     {
-        return match ($value) {
-            'Semantic' => LayoutProfile::Semantic,
-            'Utility' => LayoutProfile::Utility,
-            default => throw new \InvalidArgumentException(sprintf('Unknown layout profile "%s".', $value)),
-        };
+        return new BuiltinDtcgThemeCatalog(BuiltinDtcgThemeCatalog::defaultDirectory());
     }
 }

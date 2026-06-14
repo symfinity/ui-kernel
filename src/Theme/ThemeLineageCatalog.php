@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Theme;
 
 use InvalidArgumentException;
-use Symfinity\UiKernel\Token\BuiltinThemeCatalog;
+use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
 
 /**
  * Maps lineage keys to light/dark public theme ids (registry SSOT).
@@ -38,14 +38,9 @@ final class ThemeLineageCatalog
 
     public static function lineageForThemeId(string $themeId): string
     {
-        foreach (BuiltinThemeCatalog::themes() as $theme) {
-            if ($theme['id'] === $themeId) {
-                $lineage = $theme['lineage'] ?? null;
-                if (!is_string($lineage) || $lineage === '') {
-                    break;
-                }
-
-                return $lineage;
+        foreach (self::dtcgCatalog()->all() as $variant) {
+            if ($variant->id() === $themeId) {
+                return $variant->lineage();
             }
         }
 
@@ -83,13 +78,9 @@ final class ThemeLineageCatalog
         /** @var array<string, array{light?: string, dark?: string}> $building */
         $building = [];
 
-        foreach (BuiltinThemeCatalog::themes() as $theme) {
-            $lineage = $theme['lineage'] ?? null;
-            if (!is_string($lineage) || $lineage === '') {
-                continue;
-            }
-
-            $id = $theme['id'];
+        foreach (self::dtcgCatalog()->all() as $variant) {
+            $lineage = $variant->lineage();
+            $id = $variant->id();
             $slot = str_ends_with($id, '-dark') ? 'dark' : 'light';
             $building[$lineage][$slot] = $id;
         }
@@ -113,5 +104,11 @@ final class ThemeLineageCatalog
     public static function reset(): void
     {
         self::$pairs = null;
+        BuiltinDtcgThemeCatalog::reset();
+    }
+
+    private static function dtcgCatalog(): BuiltinDtcgThemeCatalog
+    {
+        return new BuiltinDtcgThemeCatalog(BuiltinDtcgThemeCatalog::defaultDirectory());
     }
 }

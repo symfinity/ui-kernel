@@ -24,6 +24,9 @@ final class RegisterProfilerCollectorPass implements CompilerPassInterface
             return;
         }
 
+        // The collector's panel/toolbar templates extend @WebProfiler, so it is
+        // only useful when WebProfilerBundle is installed. It is intentionally
+        // dropped otherwise (e.g. CLI/API profiling without the web toolbar).
         if (!class_exists(WebProfilerBundle::class)) {
             $container->removeDefinition($collectorId);
         }

@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
-use Symfinity\UiKernel\Internal\TypeGuard;
-
-use Symfony\Component\Yaml\Yaml;
+use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
+use Symfinity\UiKernel\Dtcg\DtcgYamlReader;
 
 /**
- * Built-in UI Kernel themes — {@see symfinity_ui_kernel.themes} in config/themes/*.yaml (schema 1.0).
+ * Built-in UI Kernel themes — legacy array facade over DTCG on-disk layout (077).
+ *
+ * @deprecated Prefer {@see BuiltinDtcgThemeCatalog} for new code.
  */
 final class BuiltinThemeCatalog
 {
@@ -77,71 +78,55 @@ final class BuiltinThemeCatalog
     {
         self::$themes = null;
         self::$lineageDonors = null;
+        BuiltinDtcgThemeCatalog::reset();
     }
 
     private static function load(): void
     {
-        $directory = dirname(__DIR__, 2) . '/config/themes';
-        if (!is_dir($directory)) {
-            throw new \RuntimeException(sprintf('Built-in theme directory "%s" is missing.', $directory));
-        }
-
-        $paths = glob($directory . '/*.yaml') ?: [];
-        sort($paths);
-
+        $catalog = new BuiltinDtcgThemeCatalog(BuiltinDtcgThemeCatalog::defaultDirectory());
         $themes = [];
-        $lineageDonors = [];
-
-        foreach ($paths as $path) {
-            $basename = basename($path, '.yaml');
-            if ($basename === 'README' || str_starts_with($basename, '_')) {
-                continue;
-            }
-
-            /** @var mixed $parsed */
-            $parsed = Yaml::parseFile($path);
-            if (!is_array($parsed)) {
-                throw new \InvalidArgumentException(sprintf('Theme file "%s" must be a YAML mapping.', $path));
-            }
-
-            /** @var array<string, mixed> $kernel */
-            $kernel = $parsed['symfinity_ui_kernel'] ?? $parsed;
-            $themeMap = $kernel['themes'] ?? null;
-            if (!is_array($themeMap) || $themeMap === []) {
-                throw new \InvalidArgumentException(sprintf(
-                    'Theme file "%s" must define symfinity_ui_kernel.themes with at least one entry (schema 1.0).',
-                    $path,
-                ));
-            }
-
-            foreach ($themeMap as $lineageKey => $group) {
-                if (!is_string($lineageKey) || !is_array($group)) {
-                    throw new \InvalidArgumentException(sprintf(
-                        'Theme file "%s": symfinity_ui_kernel.themes.%s must be a mapping.',
-                        $path,
-                        is_string($lineageKey) ? $lineageKey : (string) $lineageKey,
-                    ));
-                }
-
-                foreach (ThemeYamlNormalizer::expandVariants(TypeGuard::stringKeyMap($group), $lineageKey, $path) as $theme) {
-                    $context = sprintf('%s themes.%s variant %s', $path, $lineageKey, $theme['id']);
-                    ThemeTokenMap::assertComplete($theme['tokens'], ThemeTokenSchema::V1_0, $context);
-
-                    $lineage = $theme['lineage'];
-                    if (!isset($lineageDonors[$lineage])) {
-                        $lineageDonors[$lineage] = $theme['id'];
-                    }
-
-                    $themes[] = $theme;
-                }
-            }
-        }
-
-        if ($themes === []) {
-            throw new \RuntimeException(sprintf('No built-in themes found in "%s".', $directory));
+        foreach ($catalog->all() as $variant) {
+            $palette = $variant->paletteDefinition();
+            $themes[] = [
+                'id' => $variant->id(),
+                'label' => $variant->label(),
+                'layout' => $variant->layout()->name,
+                'tone' => $variant->tone()->value,
+                'colors' => [],
+                'hue_base' => $palette['hue_base'],
+                'mono_tones' => $palette['mono_tones'],
+                'hue_chroma' => $palette['hue_chroma'] ?? [],
+                'scale_anchors' => $palette['scale_anchors'] ?? [],
+                'tokens' => self::shortTokensFromLayer($variant->layerPath()),
+                'lineage' => $variant->lineage(),
+                'scroll_motion' => $variant->scrollMotion(),
+                'backdrop_blur' => $variant->backdropBlur(),
+            ];
         }
 
         self::$themes = $themes;
-        self::$lineageDonors = $lineageDonors;
+        self::$lineageDonors = $catalog->lineageDonors();
+    }
+
+    /**
+     * @return array<string, string> short token keys from a variant DTCG layer (appearance only)
+     */
+    private static function shortTokensFromLayer(string $layerPath): array
+    {
+        $document = (new DtcgYamlReader())->read($layerPath);
+        $short = [];
+        foreach ($document->flatten() as $path => $token) {
+            if (str_starts_with($path, 'color.')) {
+                continue;
+            }
+            $cssKey = '--ui-' . str_replace('.', '-', $path);
+            $shortKey = ThemeTokenMap::cssVarToShortKey($cssKey);
+            $value = $token->value();
+            if (\is_string($value)) {
+                $short[$shortKey] = $value;
+            }
+        }
+
+        return $short;
     }
 }
