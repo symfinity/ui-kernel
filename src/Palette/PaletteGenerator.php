@@ -24,6 +24,8 @@ final class PaletteGenerator
 
     private readonly PaletteRampMath $rampMath;
 
+    private readonly WarmHueRampPolicy $warmHuePolicy;
+
     /** @var array<string, string> */
     private readonly array $scaleAnchors;
 
@@ -34,10 +36,12 @@ final class PaletteGenerator
         ?array $scaleAnchors = null,
         ?OklchColorSpace $colorSpace = null,
         ?PaletteRampMath $rampMath = null,
+        ?WarmHueRampPolicy $warmHuePolicy = null,
     ) {
         $this->scaleAnchors = $scaleAnchors ?? PaletteScaleAnchors::all();
         $this->colorSpace = $colorSpace ?? new OklchColorSpace();
         $this->rampMath = $rampMath ?? PaletteRampMath::fromCatalog();
+        $this->warmHuePolicy = $warmHuePolicy ?? new WarmHueRampPolicy();
     }
 
     public function resolve(string $ref, ThemePaletteRecipe $recipe): string
@@ -149,7 +153,7 @@ final class PaletteGenerator
         }
 
         $monoTree = [];
-        foreach (PaletteCatalog::monoTones() as $toneName) {
+        foreach (PaletteCatalog::monoGrammarTones() as $toneName) {
             foreach (PaletteCatalog::levels() as $level) {
                 $ref = sprintf('mono.%s.%d', $toneName, $level);
                 $monoTree[$toneName][(string) $level] = [
@@ -185,7 +189,7 @@ final class PaletteGenerator
     public function rampPreview(string $family, ThemePaletteRecipe $recipe, ?MonoTone $spice = null): array
     {
         if ($family === 'mono') {
-            $spice ??= MonoTone::Pure;
+            $spice ??= MonoTone::Neutral;
             $steps = [];
             foreach (PaletteCatalog::levels() as $level) {
                 $steps[$level] = $this->monoHex($spice, $level, $recipe);
@@ -218,7 +222,7 @@ final class PaletteGenerator
 
     public function monoOklch(MonoTone $spice, int $level, ThemePaletteRecipe $recipe): OklchTuple
     {
-        $pure = $spice === MonoTone::Pure;
+        $pure = $spice === MonoTone::Neutral;
         $lightness = $this->rampMath->lightnessForLevel($level, $pure);
 
         if ($pure) {
@@ -235,6 +239,7 @@ final class PaletteGenerator
     public function hueOklch(string $hue, int $level, ThemePaletteRecipe $recipe): OklchTuple
     {
         $lightness = $this->rampMath->lightnessForLevel($level);
+        $lightness = $this->warmHuePolicy->adjustLightness($hue, $level, $lightness);
         $hueDegrees = $recipe->hueDegrees($hue);
         $chroma = $this->rampMath->chromaForHueStep(
             $level,
@@ -243,6 +248,10 @@ final class PaletteGenerator
             $this->colorSpace,
             $recipe->hueChromaOverride($hue),
         );
+        $floor = $this->warmHuePolicy->chromaFloor($level);
+        if ($floor > 0.0 && $this->warmHuePolicy->isWarmFamily($hue)) {
+            $chroma = max($chroma, $floor);
+        }
 
         return new OklchTuple($lightness, $chroma, $hueDegrees);
     }

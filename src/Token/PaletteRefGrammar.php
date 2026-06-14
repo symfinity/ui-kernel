@@ -11,6 +11,16 @@ namespace Symfinity\UiKernel\Token;
  */
 final class PaletteRefGrammar
 {
+    /** @var array<string, string> legacy id => new id */
+    private const LEGACY_MONO_MAP = [
+        'pure' => 'neutral',
+        'cool' => 'slate',
+        'warm' => 'stone',
+        'wood' => 'sage',
+        'pope' => 'mauve',
+        'evil' => 'rust',
+    ];
+
     public static function assertValid(string $ref): void
     {
         if ($ref === '') {
@@ -56,8 +66,20 @@ final class PaletteRefGrammar
         }
 
         if (preg_match('/^mono\.([a-z]+)\.(\d+)$/', $base, $matches) === 1) {
+            $toneId = $matches[1];
+            if (isset(self::LEGACY_MONO_MAP[$toneId])) {
+                ThemeErrorCatalog::throw(
+                    ThemeErrorCatalog::INVALID_PALETTE_REF,
+                    sprintf(
+                        'Legacy mono tone "%s" in ref "%s"; use "%s" instead. Map: pure→neutral, cool→slate, warm→stone, wood→sage, pope→mauve, evil→rust.',
+                        $toneId,
+                        $ref,
+                        self::LEGACY_MONO_MAP[$toneId],
+                    ),
+                );
+            }
             try {
-                MonoTone::from($matches[1]);
+                MonoTone::from($toneId);
             } catch (\ValueError) {
                 ThemeErrorCatalog::throw(
                     ThemeErrorCatalog::INVALID_PALETTE_REF,

@@ -65,7 +65,7 @@ final class PaletteRampMathTest extends TestCase
         $recipe = ThemePaletteRecipe::baseline();
 
         foreach (PaletteCatalog::levels() as $level) {
-            $tuple = $generator->resolveToOklch(sprintf('mono.pure.%d', $level), $recipe);
+            $tuple = $generator->resolveToOklch(sprintf('mono.neutral.%d', $level), $recipe);
             self::assertSame(0.0, $tuple->c, 'level ' . $level);
         }
     }

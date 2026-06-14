@@ -4,31 +4,31 @@ color:
     $value: '{color.blue.600}'
   secondary:
     $type: color
-    $value: '{color.mono.cool.500}'
+    $value: '{color.mono.slate.500}'
   tertiary:
     $type: color
     $value: '{color.purple.500}'
   surface:
     base:
       $type: color
-      $value: '{color.mono.pure.100}'
+      $value: '{color.mono.neutral.100}'
     elevated:
       $type: color
-      $value: '{color.mono.cool.100}'
+      $value: '{color.mono.slate.100}'
   overlay:
     $type: color
     $value: 'rgba(15, 15, 16, 0.4)'
   text:
     default:
       $type: color
-      $value: '{color.mono.cool.900}'
+      $value: '{color.mono.slate.900}'
     muted:
       $type: color
-      $value: '{color.mono.cool.500}'
+      $value: '{color.mono.slate.500}'
   border:
     default:
       $type: color
-      $value: '{color.mono.cool.200}'
+      $value: '{color.mono.slate.200}'
   danger:
     $type: color
     $value: '{color.red.500}'
@@ -47,10 +47,10 @@ color:
   skeleton:
     base:
       $type: color
-      $value: '{color.mono.cool.200}'
+      $value: '{color.mono.slate.200}'
     shine:
       $type: color
-      $value: '{color.mono.cool.400}'
+      $value: '{color.mono.slate.400}'
 space:
   xs:
     $type: dimension

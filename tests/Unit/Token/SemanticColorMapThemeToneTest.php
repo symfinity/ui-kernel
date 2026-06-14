@@ -20,20 +20,20 @@ final class SemanticColorMapThemeToneTest extends TestCase
     #[Test]
     public function applyThemeToneRewritesTintedMonoRefs(): void
     {
-        self::assertSame('mono.warm.900', SemanticColorMap::applyThemeTone('mono.cool.900', MonoTone::Warm));
-        self::assertSame('mono.warm.900@40', SemanticColorMap::applyThemeTone('mono.cool.900@40', MonoTone::Warm));
+        self::assertSame('mono.stone.900', SemanticColorMap::applyThemeTone('mono.slate.900', MonoTone::Stone));
+        self::assertSame('mono.stone.900@40', SemanticColorMap::applyThemeTone('mono.slate.900@40', MonoTone::Stone));
     }
 
     #[Test]
     public function applyThemeTonePreservesPureMono(): void
     {
-        self::assertSame('mono.pure.100', SemanticColorMap::applyThemeTone('mono.pure.100', MonoTone::Warm));
+        self::assertSame('mono.neutral.100', SemanticColorMap::applyThemeTone('mono.neutral.100', MonoTone::Stone));
     }
 
     #[Test]
     public function applyThemeToneLeavesHueRefsUntouched(): void
     {
-        self::assertSame('blue.600', SemanticColorMap::applyThemeTone('blue.600', MonoTone::Warm));
+        self::assertSame('blue.600', SemanticColorMap::applyThemeTone('blue.600', MonoTone::Stone));
     }
 
     #[Test]
@@ -44,13 +44,13 @@ final class SemanticColorMapThemeToneTest extends TestCase
         $map = new SemanticColorMap($generator);
 
         $refs = [
-            'text' => 'mono.cool.900',
-            'surface' => 'mono.pure.100',
+            'text' => 'mono.slate.900',
+            'surface' => 'mono.neutral.100',
             'primary' => 'blue.600',
         ];
 
-        $cool = $map->resolve($refs, $recipe, MonoTone::Cool);
-        $warm = $map->resolve($refs, $recipe, MonoTone::Warm);
+        $cool = $map->resolve($refs, $recipe, MonoTone::Slate);
+        $warm = $map->resolve($refs, $recipe, MonoTone::Stone);
 
         self::assertNotSame($cool['--ui-color-text'], $warm['--ui-color-text']);
         self::assertSame($cool['--ui-color-surface'], $warm['--ui-color-surface']);
@@ -63,8 +63,8 @@ final class SemanticColorMapThemeToneTest extends TestCase
         $semantic = ThemeCatalog::variant('semantic');
         $resolver = ThemeDtcgResolverFactory::create();
 
-        $cool = $resolver->resolve(self::variantWithTone($semantic, MonoTone::Cool))->all();
-        $warm = $resolver->resolve(self::variantWithTone($semantic, MonoTone::Warm))->all();
+        $cool = $resolver->resolve(self::variantWithTone($semantic, MonoTone::Slate))->all();
+        $warm = $resolver->resolve(self::variantWithTone($semantic, MonoTone::Stone))->all();
 
         self::assertNotSame($cool['--ui-color-text'], $warm['--ui-color-text']);
         self::assertSame($cool['--ui-color-primary'], $warm['--ui-color-primary']);

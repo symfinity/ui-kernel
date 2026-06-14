@@ -25,8 +25,8 @@ final class PaletteRefGrammarTest extends TestCase
      */
     public static function validRefsProvider(): iterable
     {
-        yield 'mono warm' => ['mono.warm.500'];
-        yield 'mono with alpha' => ['mono.cool.950@40'];
+        yield 'mono warm' => ['mono.stone.500'];
+        yield 'mono with alpha' => ['mono.slate.950@40'];
         yield 'hue' => ['blue.600'];
         yield 'hue alpha' => ['red.500@25'];
     }
@@ -46,9 +46,11 @@ final class PaletteRefGrammarTest extends TestCase
     {
         yield 'suffix u' => ['red.500u'];
         yield 'suffix t' => ['sky.500t'];
-        yield 'suffix s' => ['mono.cool.200s'];
-        yield 'non-contract level 0' => ['mono.warm.0'];
-        yield 'non-contract level 975' => ['mono.warm.975'];
+        yield 'suffix s' => ['mono.slate.200s'];
+        yield 'non-contract level 0' => ['mono.stone.0'];
+        yield 'non-contract level 975' => ['mono.stone.975'];
         yield 'invalid alpha' => ['blue.500@33'];
+        yield 'legacy cool' => ['mono.cool.500'];
+        yield 'legacy pure' => ['mono.pure.100'];
     }
 }

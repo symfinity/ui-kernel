@@ -35,7 +35,7 @@ final class MonoSpiceChromaVisibilityTest extends TestCase
     {
         $recipe = ThemeConfig::get('semantic')->paletteRecipe();
 
-        foreach ([MonoTone::Cool, MonoTone::Warm, MonoTone::Wood] as $tone) {
+        foreach ([MonoTone::Slate, MonoTone::Stone, MonoTone::Sage] as $tone) {
             $tuple = $this->generator->monoOklch($tone, 100, $recipe);
             self::assertGreaterThanOrEqual(
                 0.005,
@@ -53,15 +53,15 @@ final class MonoSpiceChromaVisibilityTest extends TestCase
             ThemeConfig::get('semantic')->paletteRecipe()->monoTones(),
         );
 
-        $cool = $this->generator->monoOklch(MonoTone::Cool, 100, $recipe);
-        $warm = $this->generator->monoOklch(MonoTone::Warm, 100, $recipe);
+        $cool = $this->generator->monoOklch(MonoTone::Slate, 100, $recipe);
+        $warm = $this->generator->monoOklch(MonoTone::Stone, 100, $recipe);
 
         self::assertGreaterThan(30.0, abs($cool->h - $warm->h));
         self::assertGreaterThanOrEqual(0.005, $cool->c);
         self::assertGreaterThanOrEqual(0.005, $warm->c);
         self::assertNotSame(
-            $this->generator->monoHex(MonoTone::Cool, 100, $recipe),
-            $this->generator->monoHex(MonoTone::Warm, 100, $recipe),
+            $this->generator->monoHex(MonoTone::Slate, 100, $recipe),
+            $this->generator->monoHex(MonoTone::Stone, 100, $recipe),
         );
     }
 }

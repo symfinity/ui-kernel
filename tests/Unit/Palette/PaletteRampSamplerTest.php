@@ -40,7 +40,7 @@ final class PaletteRampSamplerTest extends TestCase
     public function resolveToOklchMatchesGenerator(): void
     {
         $generator = new PaletteGenerator();
-        $ref = 'mono.cool.600';
+        $ref = 'mono.slate.600';
 
         self::assertEquals(
             $generator->resolveToOklch($ref, \Symfinity\UiKernel\Token\ThemePaletteRecipe::baseline()),

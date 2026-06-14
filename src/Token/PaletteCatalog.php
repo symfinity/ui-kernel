@@ -78,6 +78,45 @@ final class PaletteCatalog
     }
 
     /**
+     * @return array<string, float> tinted mono hue degrees from bundle
+     */
+    public static function monoHues(): array
+    {
+        $hues = self::generator()['mono_hues'] ?? null;
+        if (!is_array($hues)) {
+            throw new \RuntimeException('generator.palette.mono_hues must be defined.');
+        }
+
+        $normalized = [];
+        foreach ($hues as $tone => $degrees) {
+            if (!is_string($tone) || !is_numeric($degrees)) {
+                throw new \RuntimeException('generator.palette.mono_hues must be tone => float degrees.');
+            }
+            $normalized[$tone] = (float) $degrees;
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * @return list<string> all mono ref tone ids including achromatic neutral
+     */
+    public static function monoGrammarTones(): array
+    {
+        return [...self::monoTones(), 'neutral'];
+    }
+
+    public static function darkTailLEnd(): float
+    {
+        $end = self::generator()['dark_tail_l_end'] ?? null;
+        if (is_numeric($end)) {
+            return (float) $end;
+        }
+
+        return 0.09;
+    }
+
+    /**
      * @return array{0: float, 1: float} [min L, max L]
      */
     public static function lBounds(): array
@@ -92,6 +131,9 @@ final class PaletteCatalog
 
     /**
      * @return array{0: float, 1: float} [L at index 0, L at index n-1]
+     */
+    /**
+     * Achromatic mono.neutral.* L endpoints (081: was pure_l_bounds for mono.pure.*).
      */
     public static function pureLBounds(): array
     {

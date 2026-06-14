@@ -24,7 +24,7 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
             'alpha' => [0, 5, 10, 15, 25, 40, 50, 60, 75, 100],
             'hues' => ['red', 'orange', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'violet', 'purple', 'pink'],
             'forbidden_hues' => [],
-            'mono_tones' => ['pure', 'evil', 'warm', 'wood', 'cool', 'pope'],
+            'mono_tones' => ['slate', 'stone', 'sage', 'mauve', 'rust'],
         ];
     }
 
@@ -35,6 +35,13 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     {
         return [
             'revision' => 1,
+            'mono_hues' => [
+                'slate' => 240.0,
+                'stone' => 30.0,
+                'sage' => 120.0,
+                'mauve' => 300.0,
+                'rust' => 0.0,
+            ],
         ];
     }
 
@@ -43,7 +50,7 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     {
         $generator = $this->validGenerator();
 
-        self::assertSame(['revision'], array_keys($generator));
+        self::assertSame(['revision', 'mono_hues'], array_keys($generator));
 
         GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
         $this->addToAssertionCount(1);
@@ -54,6 +61,13 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     {
         $generator = [
             'revision' => 1,
+            'mono_hues' => [
+                'slate' => 240.0,
+                'stone' => 30.0,
+                'sage' => 120.0,
+                'mauve' => 300.0,
+                'rust' => 0.0,
+            ],
             'l_bounds' => [0.01, 0.99],
             'pure_l_bounds' => [1.0, 0.0],
             'chroma_percent' => 85.0,

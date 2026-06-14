@@ -1,6 +1,7 @@
 lineage: utility
 design_system_id: chameleon
 palette:
+  mono_saturation: 8.0
   hues:
     red: 25.0
     orange: 47.6
@@ -19,35 +20,16 @@ palette:
     fuchsia: 320.0
     pink: 330.0
     rose: 15.0
-  mono:
-    pure:
-      hue: 0.0
-      saturation: 0.0
-    evil:
-      hue: 0.0
-      saturation: 7.5
-    warm:
-      hue: 30.0
-      saturation: 7.5
-    wood:
-      hue: 120.0
-      saturation: 7.5
-    cool:
-      hue: 225.0
-      saturation: 8.0
-    pope:
-      hue: 300.0
-      saturation: 7.5
 variants:
   -
     id: utility
     layer_file: utility.dtcg.yaml
     label: Utility
-    tone: cool
+    tone: slate
     mode: light
   -
     id: utility-dark
     layer_file: utility-dark.dtcg.yaml
     label: 'Utility dark'
-    tone: cool
+    tone: slate
     mode: dark

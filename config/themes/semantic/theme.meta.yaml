@@ -1,6 +1,7 @@
 lineage: semantic
 design_system_id: chameleon
 palette:
+  mono_saturation: 10.0
   hues:
     red: 25.0
     orange: 45.0
@@ -19,31 +20,12 @@ palette:
     fuchsia: 320.0
     pink: 330.0
     rose: 15.0
-  mono:
-    pure:
-      hue: 0.0
-      saturation: 0.0
-    evil:
-      hue: 0.0
-      saturation: 10.0
-    warm:
-      hue: 30.0
-      saturation: 10.0
-    wood:
-      hue: 120.0
-      saturation: 10.0
-    cool:
-      hue: 220.0
-      saturation: 10.0
-    pope:
-      hue: 300.0
-      saturation: 10.0
 variants:
   -
     id: semantic
     layer_file: semantic.dtcg.yaml
     label: Semantic
-    tone: cool
+    tone: slate
     mode: light
     scroll_motion: true
     backdrop_blur: 6px
@@ -51,7 +33,7 @@ variants:
     id: semantic-dark
     layer_file: semantic-dark.dtcg.yaml
     label: 'Semantic dark'
-    tone: cool
+    tone: slate
     mode: dark
     scroll_motion: true
     backdrop_blur: 6px

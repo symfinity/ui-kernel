@@ -52,6 +52,17 @@ final class BuiltinThemeCatalogTest extends TestCase
         self::assertNotContains('ref', $ids);
     }
 
+    public function testLineageMetaUsesMonoSaturationNotLegacyBlocks(): void
+    {
+        $themesDir = dirname(__DIR__, 3) . '/config/themes';
+        foreach (glob($themesDir . '/*/theme.meta.yaml') ?: [] as $metaPath) {
+            $contents = file_get_contents($metaPath);
+            self::assertIsString($contents, $metaPath);
+            self::assertStringContainsString('mono_saturation:', $contents, $metaPath);
+            self::assertDoesNotMatchRegularExpression('/^\s+mono:\s*$/m', $contents, $metaPath);
+        }
+    }
+
     public function testPaletteCatalogThemesDelegatesToBuiltinCatalog(): void
     {
         self::assertSame(BuiltinThemeCatalog::themes(), PaletteCatalog::themes());

@@ -52,7 +52,7 @@ final class PaletteGeneratorOklchTest extends TestCase
         $recipe = ThemePaletteRecipe::baseline();
 
         foreach (PaletteCatalog::levels() as $level) {
-            $hex = $this->generator->resolve(sprintf('mono.cool.%d', $level), $recipe);
+            $hex = $this->generator->resolve(sprintf('mono.slate.%d', $level), $recipe);
             self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $hex, 'level ' . $level);
         }
     }
@@ -84,7 +84,7 @@ final class PaletteGeneratorOklchTest extends TestCase
 
         self::assertMatchesRegularExpression(
             '/^rgba\(\d+, \d+, \d+, 0\.4\)$/',
-            $this->generator->resolve('mono.cool.900@40', $recipe),
+            $this->generator->resolve('mono.slate.900@40', $recipe),
         );
     }
 
@@ -97,7 +97,7 @@ final class PaletteGeneratorOklchTest extends TestCase
             $default->monoTones(),
         );
 
-        $cool500 = $this->generator->resolveToOklch('mono.cool.500', $recipe);
+        $cool500 = $this->generator->resolveToOklch('mono.slate.500', $recipe);
         $blue600 = $this->generator->resolveToOklch('blue.600', $recipe);
 
         self::assertGreaterThan(0.0, $cool500->l);
@@ -115,7 +115,7 @@ final class PaletteGeneratorOklchTest extends TestCase
     {
         $recipe = ThemePaletteRecipe::baseline();
 
-        self::assertSame('#ffffff', $this->generator->monoHex(MonoTone::Pure, 50, $recipe));
-        self::assertSame('#000000', $this->generator->monoHex(MonoTone::Pure, 950, $recipe));
+        self::assertSame('#ffffff', $this->generator->monoHex(MonoTone::Neutral, 50, $recipe));
+        self::assertSame('#000000', $this->generator->monoHex(MonoTone::Neutral, 950, $recipe));
     }
 }

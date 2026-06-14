@@ -18,12 +18,12 @@ final class ThemePaletteRecipeTest extends TestCase
         $hueBase = $baseline->hueBase();
         $hueBase['blue'] = 217.0;
         $monoTones = $baseline->monoTones();
-        $monoTones['warm']['saturation'] = 9.0;
+        $monoTones['stone']['saturation'] = 9.0;
 
         $recipe = ThemePaletteRecipe::fromPaletteDefinition($hueBase, $monoTones);
 
         self::assertSame(217.0, $recipe->hueDegrees('blue'));
-        self::assertSame(9.0, $recipe->monoTones()['warm']['saturation']);
+        self::assertSame(9.0, $recipe->monoTones()['stone']['saturation']);
         self::assertSame($baseline->hueDegrees('red'), $recipe->hueDegrees('red'));
     }
 

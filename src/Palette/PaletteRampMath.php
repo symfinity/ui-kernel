@@ -64,7 +64,24 @@ final class PaletteRampMath
             throw new InvalidArgumentException(sprintf('Unknown level %d.', $level));
         }
 
-        return $this->lightnessForIndex($index, count($levels), $pure);
+        $count = count($levels);
+        $linear = $this->lightnessForIndex($index, $count, $pure);
+
+        if ($pure) {
+            return $linear;
+        }
+
+        $index600 = array_search(600, $levels, true);
+        $index950 = array_search(950, $levels, true);
+        if ($index600 === false || $index950 === false || $index < $index600) {
+            return $linear;
+        }
+
+        $l600 = $this->lightnessForIndex($index600, $count, false);
+        $lEnd = PaletteCatalog::darkTailLEnd();
+        $t = ($index - $index600) / ($index950 - $index600);
+
+        return $lEnd + ($l600 - $lEnd) * (1.0 - $t) * (1.0 - $t);
     }
 
     public function chromaForHueStep(

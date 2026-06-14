@@ -58,7 +58,7 @@ final class SemanticColorMap
     /**
      * Rewrites tinted mono refs to the theme's active tone.
      *
-     * `mono.pure.*` stays achromatic — built-ins use it for explicit neutral surfaces.
+     * `mono.neutral.*` stays achromatic — built-ins use it for explicit neutral surfaces.
      */
     public static function applyThemeTone(string $ref, MonoTone $themeTone): string
     {
@@ -66,7 +66,7 @@ final class SemanticColorMap
             return $ref;
         }
 
-        if ($matches[1] === MonoTone::Pure->value) {
+        if ($matches[1] === MonoTone::Neutral->value) {
             return $ref;
         }
 

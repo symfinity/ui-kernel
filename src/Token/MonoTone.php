@@ -6,10 +6,15 @@ namespace Symfinity\UiKernel\Token;
 
 enum MonoTone: string
 {
-    case Pure = 'pure';
-    case Evil = 'evil';
-    case Warm = 'warm';
-    case Wood = 'wood';
-    case Cool = 'cool';
-    case Pope = 'pope';
+    case Slate = 'slate';
+    case Stone = 'stone';
+    case Sage = 'sage';
+    case Mauve = 'mauve';
+    case Rust = 'rust';
+    case Neutral = 'neutral';
+
+    public function isAchromatic(): bool
+    {
+        return $this === self::Neutral;
+    }
 }

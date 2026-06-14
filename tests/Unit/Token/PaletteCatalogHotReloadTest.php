@@ -34,11 +34,19 @@ final class PaletteCatalogHotReloadTest extends TestCase
         PaletteCatalog::lBounds();
 
         $mutated = preg_replace(
-            '/l_bounds:\s*\[[^\]]+\]/',
+            '/(?<![_a-z])l_bounds:\s*\[[^\]]+\]/',
             'l_bounds: [0.01, 0.75]',
             $original,
             1,
         );
+        if ($mutated === $original) {
+            $mutated = preg_replace(
+                '/(\n  generator:\n    palette:\n      revision: 1\n)/',
+                "$1      l_bounds: [0.01, 0.75]\n",
+                $original,
+                1,
+            );
+        }
         self::assertIsString($mutated);
 
         file_put_contents($this->configPath, $mutated);

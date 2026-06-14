@@ -23,14 +23,16 @@ final class ThemePaletteMetaNormalizer
      */
     public static function normalize(array $palette): array
     {
+        GeneratorPaletteConfigValidator::validateThemeMetaPalette($palette);
+
         $hues = $palette['hues'] ?? null;
-        $mono = $palette['mono'] ?? null;
         $chroma = $palette['chroma'] ?? [];
         $anchors = $palette['anchors'] ?? [];
         $anchorProfile = $palette['anchor_profile'] ?? null;
+        $monoSaturation = (float) ($palette['mono_saturation'] ?? 0);
 
-        if (!is_array($hues) || !is_array($mono) || $hues === [] || $mono === []) {
-            throw new \InvalidArgumentException('Theme palette must define hues and mono.');
+        if (!is_array($hues) || $hues === []) {
+            throw new \InvalidArgumentException('Theme palette must define hues.');
         }
 
         $hueBase = [];
@@ -41,14 +43,15 @@ final class ThemePaletteMetaNormalizer
             $hueBase[(string) $name] = (float) $value;
         }
 
+        $bundleHues = PaletteCatalog::monoHues();
         $monoTones = [];
-        foreach ($mono as $name => $tone) {
-            if (!is_array($tone)) {
-                throw new \InvalidArgumentException(sprintf('Mono tone "%s" must be a mapping with hue and saturation.', (string) $name));
+        foreach (PaletteCatalog::monoTones() as $tone) {
+            if (!isset($bundleHues[$tone])) {
+                throw new \InvalidArgumentException(sprintf('Bundle mono_hues missing tone "%s".', $tone));
             }
-            $monoTones[(string) $name] = [
-                'hue' => TypeGuard::numericFloat($tone['hue'] ?? 0),
-                'saturation' => TypeGuard::numericFloat($tone['saturation'] ?? 0),
+            $monoTones[$tone] = [
+                'hue' => $bundleHues[$tone],
+                'saturation' => $monoSaturation,
             ];
         }
 

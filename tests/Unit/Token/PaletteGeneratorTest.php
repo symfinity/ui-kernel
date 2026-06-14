@@ -34,7 +34,7 @@ final class PaletteGeneratorTest extends TestCase
         $generator = new PaletteGenerator();
         $recipe = ThemePaletteRecipe::baseline();
 
-        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $generator->resolve('mono.warm.900', $recipe));
+        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $generator->resolve('mono.stone.900', $recipe));
         self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $generator->resolve('blue.600', $recipe));
     }
 
@@ -57,12 +57,12 @@ final class PaletteGeneratorTest extends TestCase
         $generator = new PaletteGenerator();
         $recipe = ThemePaletteRecipe::baseline();
 
-        self::assertSame('#ffffff', $generator->monoHex(MonoTone::Pure, 50, $recipe));
-        self::assertSame('#000000', $generator->monoHex(MonoTone::Pure, 950, $recipe));
+        self::assertSame('#ffffff', $generator->monoHex(MonoTone::Neutral, 50, $recipe));
+        self::assertSame('#000000', $generator->monoHex(MonoTone::Neutral, 950, $recipe));
 
         self::assertNotSame(
-            $generator->monoHex(MonoTone::Pure, 500, $recipe),
-            $generator->monoHex(MonoTone::Warm, 500, $recipe),
+            $generator->monoHex(MonoTone::Neutral, 500, $recipe),
+            $generator->monoHex(MonoTone::Stone, 500, $recipe),
         );
     }
 
@@ -72,8 +72,8 @@ final class PaletteGeneratorTest extends TestCase
         $generator = new PaletteGenerator();
         $recipe = ThemePaletteRecipe::baseline();
 
-        $light = $generator->monoHex(MonoTone::Cool, 100, $recipe);
-        $dark = $generator->monoHex(MonoTone::Cool, 950, $recipe);
+        $light = $generator->monoHex(MonoTone::Slate, 100, $recipe);
+        $dark = $generator->monoHex(MonoTone::Slate, 950, $recipe);
 
         self::assertNotSame($light, $dark);
     }
@@ -85,8 +85,8 @@ final class PaletteGeneratorTest extends TestCase
         $recipe = ThemePaletteRecipe::baseline();
 
         self::assertNotSame(
-            $generator->monoHex(MonoTone::Pure, 500, $recipe),
-            $generator->monoHex(MonoTone::Warm, 500, $recipe),
+            $generator->monoHex(MonoTone::Neutral, 500, $recipe),
+            $generator->monoHex(MonoTone::Stone, 500, $recipe),
         );
     }
 
@@ -98,7 +98,7 @@ final class PaletteGeneratorTest extends TestCase
 
         self::assertMatchesRegularExpression(
             '/^rgba\(\d+, \d+, \d+, 0\.4\)$/',
-            $generator->resolve('mono.cool.900@40', $recipe),
+            $generator->resolve('mono.slate.900@40', $recipe),
         );
     }
 
@@ -119,7 +119,7 @@ final class PaletteGeneratorTest extends TestCase
         $generator = new PaletteGenerator();
         $recipe = ThemePaletteRecipe::baseline();
 
-        $mono = $generator->rampPreview('mono', $recipe, MonoTone::Warm);
+        $mono = $generator->rampPreview('mono', $recipe, MonoTone::Stone);
         $blue = $generator->rampPreview('blue', $recipe);
 
         self::assertCount(11, $mono);

@@ -60,7 +60,7 @@ final class MonoToneThemeLayerRewriter
             return $path;
         }
 
-        if ($matches[1] === MonoTone::Pure->value) {
+        if ($matches[1] === MonoTone::Neutral->value) {
             return $path;
         }
 

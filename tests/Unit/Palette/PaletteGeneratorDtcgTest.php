@@ -19,7 +19,7 @@ final class PaletteGeneratorDtcgTest extends TestCase
         $flat = $document->flatten();
 
         self::assertArrayHasKey('color.blue.600', $flat);
-        self::assertArrayHasKey('color.mono.cool.500', $flat);
+        self::assertArrayHasKey('color.mono.slate.500', $flat);
         self::assertSame('color', $flat['color.blue.600']->type()->value);
     }
 

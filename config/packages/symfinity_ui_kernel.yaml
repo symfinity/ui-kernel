@@ -9,10 +9,17 @@ symfinity_ui_kernel:
       alpha: [0, 5, 10, 15, 25, 40, 50, 60, 75, 100]
       hues: [red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose]
       forbidden_hues: []
-      mono_tones: [pure, evil, warm, wood, cool, pope]
+      mono_tones: [slate, stone, sage, mauve, rust]
   generator:
     palette:
       revision: 1
-      l_bounds: [0.0025, 0.92]
+      mono_hues:
+        slate: 240.0
+        stone: 30.0
+        sage: 120.0
+        mauve: 300.0
+        rust: 0.0
+      pure_l_bounds: [1.0, 0.0]
+      dark_tail_l_end: 0.09
   dtcg:
     profile_globals_layer: profile-globals.dtcg.yaml

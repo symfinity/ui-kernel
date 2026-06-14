@@ -7,6 +7,7 @@ namespace Symfinity\UiKernel\Dtcg;
 use Symfinity\UiKernel\Dtcg\Exception\InvalidThemeSchemaException;
 use Symfinity\UiKernel\Internal\TypeGuard;
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Token\GeneratorPaletteConfigValidator;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\ThemePaletteMetaNormalizer;
 use Symfony\Component\Yaml\Yaml;
@@ -122,15 +123,22 @@ final class BuiltinDtcgThemeCatalog
                 throw new \InvalidArgumentException(sprintf('Theme meta "%s" must define palette.', $metaPath));
             }
 
-            $paletteNorm = ThemePaletteMetaNormalizer::normalize(TypeGuard::stringKeyMap($palette));
-            $designSystemId = is_string($meta['design_system_id'] ?? null) && $meta['design_system_id'] !== ''
-                ? $meta['design_system_id']
-                : DesignSystemLayerRegistry::DEFAULT_ID;
-
             $variantList = $meta['variants'] ?? null;
             if (!is_array($variantList) || $variantList === []) {
                 throw new \InvalidArgumentException(sprintf('Theme meta "%s" must define variants.', $metaPath));
             }
+
+            $paletteNorm = ThemePaletteMetaNormalizer::normalize(TypeGuard::stringKeyMap($palette));
+            $variantEntries = [];
+            foreach ($variantList as $entry) {
+                if (is_array($entry)) {
+                    $variantEntries[] = $entry;
+                }
+            }
+            GeneratorPaletteConfigValidator::validateVariantTones($variantEntries);
+            $designSystemId = is_string($meta['design_system_id'] ?? null) && $meta['design_system_id'] !== ''
+                ? $meta['design_system_id']
+                : DesignSystemLayerRegistry::DEFAULT_ID;
 
             $layout = self::layoutForLineage($lineage);
 
@@ -164,7 +172,7 @@ final class BuiltinDtcgThemeCatalog
                     $lineage,
                     $designSystemId,
                     $layout,
-                    MonoTone::from(TypeGuard::string($entry['tone'] ?? 'cool')),
+                    MonoTone::from(TypeGuard::string($entry['tone'] ?? 'slate')),
                     $layerPath,
                     $paletteNorm,
                     scrollMotion: (bool) ($entry['scroll_motion'] ?? false),
