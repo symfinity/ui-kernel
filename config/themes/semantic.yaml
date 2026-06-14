@@ -104,8 +104,8 @@ symfinity_ui_kernel:
               elevated: mono.pure.100
               overlay: mono.cool.900@40
             text:
-              default: mono.cool.800
-              muted: mono.cool.300
+              default: mono.cool.900
+              muted: mono.cool.500
             border:
               default: mono.cool.300
             state:

@@ -1,6 +1,7 @@
 /* ui-kernel schema:1.0 profile:ui-kernel-default */
 [data-theme="default"] {
   color-scheme: light;
+  color: var(--ui-color-text);
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;
   --ui-space-md: 1rem;
@@ -42,8 +43,8 @@
   --ui-color-surface: #ffffff;
   --ui-color-surface-elevated: #dadbdb;
   --ui-color-overlay: rgba(15, 15, 16, 0.4);
-  --ui-color-text: #242424;
-  --ui-color-text-muted: #a1a1a2;
+  --ui-color-text: #0f0f10;
+  --ui-color-text-muted: #6b6c6d;
   --ui-color-border: #bdbebe;
   --ui-color-danger: #ec313e;
   --ui-color-success: #0da852;
@@ -78,11 +79,12 @@
   --ui-color-on-info: oklch(1 0 0);
   --ui-color-info-hover: oklch(from var(--ui-color-info) calc(l * 0.88) c h);
   --ui-color-info-active: oklch(from var(--ui-color-info) calc(l * 0.76) c h);
-  --ui-color-on-muted: #242424;
-  --ui-color-on-ghost: #242424;
+  --ui-color-on-muted: oklch(1 0 0);
+  --ui-color-on-ghost: #0f0f10;
 }
 :root {
   color-scheme: light;
+  color: var(--ui-color-text);
   --ui-space-xs: 0.25rem;
   --ui-space-sm: 0.5rem;
   --ui-space-md: 1rem;
@@ -124,8 +126,8 @@
   --ui-color-surface: #ffffff;
   --ui-color-surface-elevated: #dadbdb;
   --ui-color-overlay: rgba(15, 15, 16, 0.4);
-  --ui-color-text: #242424;
-  --ui-color-text-muted: #a1a1a2;
+  --ui-color-text: #0f0f10;
+  --ui-color-text-muted: #6b6c6d;
   --ui-color-border: #bdbebe;
   --ui-color-danger: #ec313e;
   --ui-color-success: #0da852;
@@ -160,8 +162,8 @@
   --ui-color-on-info: oklch(1 0 0);
   --ui-color-info-hover: oklch(from var(--ui-color-info) calc(l * 0.88) c h);
   --ui-color-info-active: oklch(from var(--ui-color-info) calc(l * 0.76) c h);
-  --ui-color-on-muted: #242424;
-  --ui-color-on-ghost: #242424;
+  --ui-color-on-muted: oklch(1 0 0);
+  --ui-color-on-ghost: #0f0f10;
 }
 :root {
   --ui-z-dropdown: 1000;

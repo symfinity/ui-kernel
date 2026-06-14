@@ -20,12 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Light mode text contrast — built-in themes use `mono.*.900` / `mono.*.500` for default and muted copy; generated theme CSS sets `color: var(--ui-color-text)` on `:root` / `[data-theme]`
 - Palette catalog and theme YAML normalisation hardening for type-safe token resolution
-
-### Notes
-
-- Patch release on the `^0.1` Flex recipe line — `composer require symfinity/ui-kernel:^0.1` picks up `0.1.1` automatically
-- PHP 8.2+ and Symfony 6.4 / 7.x / 8.x unchanged from `0.1.0`
 
 ## [0.1.0] - 2026-06-13
 
@@ -51,3 +47,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - UI Kernel emits theme tokens and structural profile globals only — component `[data-ui-role]` CSS ships in separate `symfinity/ux-blocks-*` packages.
 - Split mirror CI: PHP 8.2–8.5 × Symfony 6.4 / 7.4 / 8.0 / 8.1 (see `.github/workflows/ci.yml`).
+

@@ -34,7 +34,7 @@ If you tracked `dev-main` before `v0.1.0`:
 2. Run `php bin/console debug:config symfinity_ui_kernel`
 3. Clear Symfony cache in each environment
 
-## Upgrading from `v0.1.0` to `v0.1.1`
+## Upgrading from `v0.1.0` to `v0.1.2`
 
 ```bash
 composer update symfinity/ui-kernel
@@ -46,6 +46,7 @@ No Flex recipe bump — the `0.1` recipe and `^0.1` constraint are unchanged.
 
 - **Overlay tokens** — `--ui-overlay-*` and `--ui-backdrop-*` are emitted with theme CSS; useful for modals and drawers without extra app CSS
 - **Theme-tone mono refs** — mono-based semantic roles (e.g. `mono.cool.900` for text) align to the active lineage tone (warm themes rewrite cool-tinted mono refs)
+- **Light mode text** — default body copy uses darker `mono.*.900` tokens; muted secondary copy uses `mono.*.500` instead of `.300`
 - **Config guard** — remove any `contract:` or `generator:` blocks from your app `symfinity_ui_kernel.yaml`; non-empty values now fail at compile time
 - **No kernel HTTP routes** — if you relied on in-bundle demo or scheme-switch routes, install `symfinity/ux-blocks-demo` for browser galleries
 
@@ -53,7 +54,7 @@ No Flex recipe bump — the `0.1` recipe and `^0.1` constraint are unchanged.
 
 1. Run `php bin/console debug:config symfinity_ui_kernel` and clear cache
 2. Spot-check pages that use overlay/backdrop tokens or warm/cool mono lineages
-3. See [CHANGELOG.md](../CHANGELOG.md) for the full `0.1.1` note
+3. See [CHANGELOG.md](../CHANGELOG.md) for the full `0.1.2` note
 
 ## Future releases
 

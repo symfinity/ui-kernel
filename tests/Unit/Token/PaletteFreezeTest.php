@@ -16,9 +16,7 @@ use Symfinity\UiKernel\Token\SemanticColorMap;
 use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemeTokenResolver;
 
-/**
- * Guards palette-freeze v1 — see specs/.../2-ui-kernel/contracts/palette-freeze.md.
- */
+/** Guards palette-freeze revision 1 — frozen anchor hex values must not drift. */
 final class PaletteFreezeTest extends TestCase
 {
     private const FROZEN_REVISION = 1;

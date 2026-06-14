@@ -46,6 +46,7 @@ final class CssGenerator
         $lines[] = sprintf('/* ui-kernel schema:%s profile:%s */', $schemaVersion, $profile->id);
         $lines[] = $selector . ' {';
         $lines[] = sprintf('  color-scheme: %s;', ThemeLineageCatalog::nativeColorScheme($themeId));
+        $lines[] = '  color: var(--ui-color-text);';
 
         foreach ($tokens->all() as $key => $value) {
             $lines[] = sprintf('  %s: %s;', $key, $value);
@@ -58,6 +59,7 @@ final class CssGenerator
         if ($themeId === 'default') {
             $lines[] = ':root {';
             $lines[] = sprintf('  color-scheme: %s;', ThemeLineageCatalog::nativeColorScheme($themeId));
+            $lines[] = '  color: var(--ui-color-text);';
             foreach ($tokenMap as $key => $value) {
                 $lines[] = sprintf('  %s: %s;', $key, $value);
             }

@@ -41,7 +41,7 @@ symfinity_ui_kernel:
 
 **Do not** put `contract.palette`, `generator.palette`, or full built-in theme trees in the app file unless you maintain a private fork of the bundle.
 
-Applications **cannot** override `contract` or `generator` keys — the extension rejects non-empty values at compile time (enforced since `v0.1.1`).
+Applications **cannot** override `contract` or `generator` keys — the extension rejects non-empty values at compile time (enforced since `v0.1.2`).
 
 ## Palette generator (bundle SSOT)
 
