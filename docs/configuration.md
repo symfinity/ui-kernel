@@ -41,13 +41,15 @@ symfinity_ui_kernel:
 
 **Do not** put `contract.palette`, `generator.palette`, or full built-in theme trees in the app file unless you maintain a private fork of the bundle.
 
-Applications **cannot** override `contract` or `generator` keys — the extension rejects non-empty values at compile time (enforced since `v0.1.2`).
+Applications **cannot** override `contract` or `generator` keys — the extension rejects non-empty values at compile time (enforced since `v0.1.0`).
 
 ## Palette generator (bundle SSOT)
 
 The bundle ships an OKLCH palette generator (`generator.palette.revision`) shared by all built-in themes. Theme YAML supplies hue angles and mono spice; the generator resolves palette refs such as `blue.600` into `--ui-color-*` values.
 
 Integrators author **palette refs** in custom theme packs, not raw hex in built-in lineage files.
+
+Custom packs (ui-themer, agency YAML) resolve ramps via **live OKLCH** — they do not inherit built-in `anchor_profile` frozen hex. Built-in lineages keep stallion anchors per [palette-freeze](../../specs/symfinity/symfinity/2-ui-kernel/contracts/palette-freeze.md).
 
 ## Custom brand themes
 

@@ -37,3 +37,7 @@ services:
 
   Symfinity\UiKernel\Twig\ThemeShellTwigExtension:
     tags: ['twig.extension']
+
+  Symfinity\UiKernel\DataCollector\UiKernelDataCollector:
+    tags:
+      - { name: data_collector, id: 'ui_kernel', template: '@UiKernel/Collector/ui_kernel.html.twig' }

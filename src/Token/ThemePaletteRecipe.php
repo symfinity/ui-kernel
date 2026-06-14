@@ -72,6 +72,21 @@ final class ThemePaletteRecipe
         return $this->scaleAnchors;
     }
 
+    /**
+     * Live OKLCH generation — no stallion-frozen ramp hex overrides.
+     *
+     * Used by ui-themer custom packs (061 lift): built-in lineages keep anchors;
+     * author/export paths for brand packs MUST use this recipe shape.
+     */
+    public function withoutScaleAnchors(): self
+    {
+        if ($this->scaleAnchors === []) {
+            return $this;
+        }
+
+        return new self($this->hueBase, $this->monoTones, $this->hueChroma, []);
+    }
+
     public function monoHue(MonoTone $spice): float
     {
         return $this->monoTones[$spice->value]['hue'];

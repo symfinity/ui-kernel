@@ -1,0 +1,81 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+
+{% block toolbar %}
+    {% set icon %}
+        {{ source('@UiKernel/Collector/icon.svg') }}
+        <span class="sf-toolbar-value">{{ collector.themeId|default('n/a') }}</span>
+    {% endset %}
+
+    {% set text %}
+        <div class="sf-toolbar-info-piece">
+            <b>Theme</b>
+            <span>{{ collector.themeId|default('n/a') }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Lineage</b>
+            <span>{{ collector.lineage|default('n/a') }}</span>
+        </div>
+        <div class="sf-toolbar-info-piece">
+            <b>Scheme</b>
+            <span>{{ collector.scheme|default('n/a') }}</span>
+        </div>
+    {% endset %}
+
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', {
+        link: profiler_url,
+        status: collector.themeId ? '' : 'disabled',
+        name: 'ui_kernel',
+        icon: icon,
+        text: text,
+    }) }}
+{% endblock %}
+
+{% block menu %}
+    <span class="label">
+        <span class="icon">{{ source('@UiKernel/Collector/icon.svg') }}</span>
+        <strong>UI Kernel</strong>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    <h2>UI Kernel</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th scope="col" class="key">Property</th>
+                <th scope="col">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Resolved theme</th>
+                <td>{{ collector.themeId|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>Lineage</th>
+                <td>{{ collector.lineage|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>Scheme</th>
+                <td>{{ collector.scheme|default('n/a') }}</td>
+            </tr>
+            <tr>
+                <th>System prefers dark</th>
+                <td>{{ collector.systemPrefersDark ? 'yes' : 'no' }}</td>
+            </tr>
+            <tr>
+                <th>CSS bytes (request)</th>
+                <td>{{ collector.cssBytes }}</td>
+            </tr>
+            <tr>
+                <th>Registered themes</th>
+                <td>{{ collector.themeCount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% if collector.showcaseUrl %}
+        <p><a href="{{ collector.showcaseUrl }}">Open theme showcase</a></p>
+    {% endif %}
+{% endblock %}

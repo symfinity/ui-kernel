@@ -8,5 +8,6 @@ Consumer handbook for **symfinity/ui-kernel** — design tokens, built-in themes
 - [Quick start](quickstart.md)
 - [Configuration](configuration.md)
 - [Themes](themes.md)
+- [Web Profiler (dev)](profiler.md)
 - [Font Manager pairing](font-manager-pairing.md) (optional)
 - [Upgrade](upgrade.md)

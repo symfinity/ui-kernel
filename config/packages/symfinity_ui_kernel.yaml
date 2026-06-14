@@ -1,4 +1,3 @@
-# COLOR FREEZE v1 (2026-06-12) — palette generator revision locked until maintainer lift
 symfinity_ui_kernel:
   schema_version: '1.0'
   default_theme: default
@@ -14,7 +13,6 @@ symfinity_ui_kernel:
   generator:
     palette:
       interpolation: oklch
-      # FROZEN — built-in lineages use materialized anchor_profile; lift only per palette-freeze.md
       revision: 1
       # OKLCH L (0–1) per contract.palette.levels index — shared hue curve
       lightness_curve:
