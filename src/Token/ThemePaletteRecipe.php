@@ -47,13 +47,9 @@ final class ThemePaletteRecipe
         return $this->hueBase[$hue];
     }
 
-    public function hueChromaBase(string $hue): float
+    public function hueChromaOverride(string $hue): ?float
     {
-        if (isset($this->hueChroma[$hue])) {
-            return $this->hueChroma[$hue];
-        }
-
-        return PaletteCatalog::hueChroma($hue);
+        return $this->hueChroma[$hue] ?? null;
     }
 
     /**

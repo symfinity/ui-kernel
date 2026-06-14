@@ -22,6 +22,8 @@ final class PaletteGenerator
 {
     private readonly OklchColorSpace $colorSpace;
 
+    private readonly PaletteRampMath $rampMath;
+
     /** @var array<string, string> */
     private readonly array $scaleAnchors;
 
@@ -31,9 +33,11 @@ final class PaletteGenerator
     public function __construct(
         ?array $scaleAnchors = null,
         ?OklchColorSpace $colorSpace = null,
+        ?PaletteRampMath $rampMath = null,
     ) {
         $this->scaleAnchors = $scaleAnchors ?? PaletteScaleAnchors::all();
         $this->colorSpace = $colorSpace ?? new OklchColorSpace();
+        $this->rampMath = $rampMath ?? PaletteRampMath::fromCatalog();
     }
 
     public function resolve(string $ref, ThemePaletteRecipe $recipe): string
@@ -214,11 +218,10 @@ final class PaletteGenerator
 
     public function monoOklch(MonoTone $spice, int $level, ThemePaletteRecipe $recipe): OklchTuple
     {
-        $curveKey = $spice === MonoTone::Pure ? 'pure' : 'default';
-        $lightness = PaletteCatalog::oklchLightnessCurve($curveKey)[$level]
-            ?? throw new InvalidArgumentException(sprintf('Unknown level %d.', $level));
+        $pure = $spice === MonoTone::Pure;
+        $lightness = $this->rampMath->lightnessForLevel($level, $pure);
 
-        if ($spice === MonoTone::Pure) {
+        if ($pure) {
             return new OklchTuple($lightness, 0.0, 0.0);
         }
 
@@ -231,12 +234,15 @@ final class PaletteGenerator
 
     public function hueOklch(string $hue, int $level, ThemePaletteRecipe $recipe): OklchTuple
     {
-        $lightness = PaletteCatalog::oklchLightnessCurve('default')[$level]
-            ?? throw new InvalidArgumentException(sprintf('Unknown level %d.', $level));
-        $baseChroma = $recipe->hueChromaBase($hue);
-        $chroma = $this->hueChromaForLevel($level, $baseChroma);
+        $lightness = $this->rampMath->lightnessForLevel($level);
         $hueDegrees = $recipe->hueDegrees($hue);
-        $chroma = $this->colorSpace->maxInGamutChroma($lightness, $hueDegrees, $chroma);
+        $chroma = $this->rampMath->chromaForHueStep(
+            $level,
+            $lightness,
+            $hueDegrees,
+            $this->colorSpace,
+            $recipe->hueChromaOverride($hue),
+        );
 
         return new OklchTuple($lightness, $chroma, $hueDegrees);
     }
@@ -258,15 +264,6 @@ final class PaletteGenerator
         $edgeFactor = 1.0 - abs(2.0 * $lightness - 1.0);
         // Tinted neutrals must read at surface steps (mono.100–200); prior 0.04× floor 0.15 was ~imperceptible.
         return ($saturationPercent / 100.0) * 0.24 * max(0.40, $edgeFactor);
-    }
-
-    private function hueChromaForLevel(int $level, float $baseChroma): float
-    {
-        $distance = abs($level - 500) / 450.0;
-        // Floor 0.48 keeps 100–300 ramps vivid enough for BS/TW warning + success refs.
-        $scale = max(0.48, 1.0 - $distance * 0.55);
-
-        return $baseChroma * $scale;
     }
 
     /**

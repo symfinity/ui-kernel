@@ -12,6 +12,8 @@ final class PaletteCatalog
     /** @var array{contract: array<string, mixed>, generator: array<string, mixed>}|null */
     private static ?array $referenceConfig = null;
 
+    private static ?int $referenceConfigMtime = null;
+
     /**
      * @return list<int>
      */
@@ -76,18 +78,44 @@ final class PaletteCatalog
     }
 
     /**
-     * @return array<int, float>
+     * @return array{0: float, 1: float} [min L, max L]
      */
-    public static function oklchLightnessCurve(string $key): array
+    public static function lBounds(): array
     {
-        return self::oklchLightnessCurveInternal($key);
+        $bounds = self::generator()['l_bounds'] ?? null;
+        if (is_array($bounds) && array_is_list($bounds) && count($bounds) === 2) {
+            return [(float) $bounds[0], (float) $bounds[1]];
+        }
+
+        return [0.0025, 0.92];
+    }
+
+    /**
+     * @return array{0: float, 1: float} [L at index 0, L at index n-1]
+     */
+    public static function pureLBounds(): array
+    {
+        $bounds = self::generator()['pure_l_bounds'] ?? null;
+        if (is_array($bounds) && array_is_list($bounds) && count($bounds) === 2) {
+            return [(float) $bounds[0], (float) $bounds[1]];
+        }
+
+        return [1.0, 0.0];
+    }
+
+    public static function chromaPercent(): float
+    {
+        $percent = self::generator()['chroma_percent'] ?? null;
+        if (is_numeric($percent)) {
+            return (float) $percent;
+        }
+
+        return 100.0;
     }
 
     public static function interpolation(): string
     {
-        $interpolation = self::generator()['interpolation'] ?? 'oklch';
-
-        return is_string($interpolation) ? $interpolation : 'oklch';
+        return 'oklch';
     }
 
     public static function revision(): int
@@ -103,67 +131,6 @@ final class PaletteCatalog
         }
 
         return 1;
-    }
-
-    public static function hueChroma(string $hue): float
-    {
-        $map = self::generator()['hue_chroma'] ?? null;
-        if (!is_array($map) || !isset($map[$hue])) {
-            throw new \InvalidArgumentException(sprintf('Unknown hue chroma for "%s".', $hue));
-        }
-
-        $value = $map[$hue];
-        if (!is_numeric($value)) {
-            throw new \InvalidArgumentException(sprintf('Hue chroma for "%s" must be numeric.', $hue));
-        }
-
-        return (float) $value;
-    }
-
-    /**
-     * @return array<int, float>
-     */
-    private static function oklchLightnessCurveInternal(string $key): array
-    {
-        $lightness = self::generator()['lightness_curve'] ?? null;
-        if (!is_array($lightness)) {
-            throw new \RuntimeException('generator.palette.lightness_curve must be a mapping.');
-        }
-
-        $raw = $lightness[$key] ?? null;
-        if (!is_array($raw) || $raw === []) {
-            throw new \RuntimeException(sprintf('generator.palette.lightness_curve.%s must be a non-empty list.', $key));
-        }
-
-        if (!array_is_list($raw)) {
-            /** @var array<int, float> $raw */
-            return $raw;
-        }
-
-        $levels = self::levels();
-        if (count($raw) !== count($levels)) {
-            throw new \RuntimeException(sprintf(
-                'generator.palette.lightness_curve.%s length (%d) must match contract.palette.levels (%d).',
-                $key,
-                count($raw),
-                count($levels),
-            ));
-        }
-
-        $curve = [];
-        foreach ($levels as $index => $level) {
-            $value = $raw[$index] ?? null;
-            if (!is_numeric($value)) {
-                throw new \RuntimeException(sprintf(
-                    'generator.palette.lightness_curve.%s[%d] must be numeric.',
-                    $key,
-                    $index,
-                ));
-            }
-            $curve[$level] = (float) $value;
-        }
-
-        return $curve;
     }
 
     /**
@@ -185,6 +152,7 @@ final class PaletteCatalog
     public static function reset(): void
     {
         self::$referenceConfig = null;
+        self::$referenceConfigMtime = null;
         BuiltinThemeCatalog::reset();
     }
 
@@ -219,11 +187,18 @@ final class PaletteCatalog
      */
     private static function referenceConfig(): array
     {
-        if (self::$referenceConfig !== null) {
+        $configPath = dirname(__DIR__, 2) . '/config/packages/symfinity_ui_kernel.yaml';
+        $mtime = filemtime($configPath);
+        if ($mtime === false) {
+            throw new \RuntimeException(sprintf('Bundle config "%s" is not readable.', $configPath));
+        }
+
+        if (self::$referenceConfig !== null && self::$referenceConfigMtime === $mtime) {
             return self::$referenceConfig;
         }
 
-        $configPath = dirname(__DIR__, 2) . '/config/packages/symfinity_ui_kernel.yaml';
+        self::$referenceConfig = null;
+        self::$referenceConfigMtime = $mtime;
         /** @var array<string, mixed> $parsed */
         $parsed = Yaml::parseFile($configPath);
 

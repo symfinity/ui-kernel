@@ -25,19 +25,19 @@ palette:
       saturation: 0.0
     evil:
       hue: 0.0
-      saturation: 7.5
+      saturation: 10.0
     warm:
       hue: 30.0
-      saturation: 7.5
+      saturation: 10.0
     wood:
       hue: 120.0
-      saturation: 7.5
+      saturation: 10.0
     cool:
       hue: 220.0
-      saturation: 7.5
+      saturation: 10.0
     pope:
       hue: 300.0
-      saturation: 7.5
+      saturation: 10.0
 variants:
   -
     id: semantic

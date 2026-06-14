@@ -12,30 +12,7 @@ symfinity_ui_kernel:
       mono_tones: [pure, evil, warm, wood, cool, pope]
   generator:
     palette:
-      interpolation: oklch
       revision: 1
-      # OKLCH L (0–1) per contract.palette.levels index — shared hue curve
-      lightness_curve:
-        default: [0.94, 0.90, 0.88, 0.82, 0.74, 0.66, 0.56, 0.46, 0.36, 0.26, 0.14]
-        pure: [1.00, 0.98, 0.97, 0.92, 0.87, 0.71, 0.55, 0.44, 0.37, 0.27, 0.00]
-      # Base OKLCH chroma at level 500 — in-gamut targets tuned for BS/TW/Balanced refs (rev 1)
-      hue_chroma:
-        red: 0.200
-        orange: 0.145
-        amber: 0.280
-        yellow: 0.280
-        lime: 0.200
-        green: 0.175
-        emerald: 0.168
-        teal: 0.140
-        cyan: 0.125
-        sky: 0.110
-        blue: 0.210
-        indigo: 0.210
-        violet: 0.241
-        purple: 0.247
-        fuchsia: 0.222
-        pink: 0.222
-        rose: 0.222
+      l_bounds: [0.0025, 0.92]
   dtcg:
     profile_globals_layer: profile-globals.dtcg.yaml

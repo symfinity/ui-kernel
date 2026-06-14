@@ -6,13 +6,28 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Symfinity\UiKernel\Token\ThemePaletteRecipe;
-use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Palette\PaletteGenerator;
+use Symfinity\UiKernel\Token\MonoTone;
+use Symfinity\UiKernel\Token\PaletteCatalog;
+use Symfinity\UiKernel\Token\ThemeConfig;
+use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 
 final class PaletteGeneratorTest extends TestCase
 {
+    #[Test]
+    public function blue500UsesComputedMidpointLightness(): void
+    {
+        $generator = new PaletteGenerator();
+        $recipe = ThemePaletteRecipe::fromPaletteDefinition(
+            ThemePaletteRecipe::baseline()->hueBase(),
+            ThemePaletteRecipe::baseline()->monoTones(),
+        );
+        $tuple = $generator->resolveToOklch('blue.500', $recipe);
+        [$min, $max] = PaletteCatalog::lBounds();
+
+        self::assertEqualsWithDelta(($min + $max) / 2.0, $tuple->l, 1e-6);
+    }
+
     #[Test]
     public function itResolvesGeneratedMonoAndHueRefs(): void
     {
@@ -42,14 +57,12 @@ final class PaletteGeneratorTest extends TestCase
         $generator = new PaletteGenerator();
         $recipe = ThemePaletteRecipe::baseline();
 
-        self::assertSame('#ffffff', $generator->monoHex(MonoTone::Pure, 100, $recipe));
+        self::assertSame('#ffffff', $generator->monoHex(MonoTone::Pure, 50, $recipe));
         self::assertSame('#000000', $generator->monoHex(MonoTone::Pure, 950, $recipe));
 
-        self::assertNotSame('#ffffff', $generator->monoHex(MonoTone::Warm, 100, $recipe));
-        self::assertNotSame('#000000', $generator->monoHex(MonoTone::Warm, 950, $recipe));
         self::assertNotSame(
-            $generator->monoHex(MonoTone::Pure, 100, $recipe),
-            $generator->monoHex(MonoTone::Wood, 100, $recipe),
+            $generator->monoHex(MonoTone::Pure, 500, $recipe),
+            $generator->monoHex(MonoTone::Warm, 500, $recipe),
         );
     }
 
@@ -109,8 +122,8 @@ final class PaletteGeneratorTest extends TestCase
         $mono = $generator->rampPreview('mono', $recipe, MonoTone::Warm);
         $blue = $generator->rampPreview('blue', $recipe);
 
-        self::assertCount(10, $mono);
-        self::assertCount(10, $blue);
+        self::assertCount(11, $mono);
+        self::assertCount(11, $blue);
         self::assertArrayHasKey(500, $mono);
         self::assertArrayHasKey(950, $blue);
     }

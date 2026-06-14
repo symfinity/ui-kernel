@@ -107,7 +107,7 @@ final class PaletteGeneratorOklchTest extends TestCase
 
         self::assertGreaterThan(0.0, $blue600->l);
         self::assertGreaterThan(0.0, $blue600->c);
-        self::assertSame(258.0, $blue600->h);
+        self::assertSame(255.0, $blue600->h);
     }
 
     #[Test]
@@ -115,7 +115,7 @@ final class PaletteGeneratorOklchTest extends TestCase
     {
         $recipe = ThemePaletteRecipe::baseline();
 
-        self::assertSame('#ffffff', $this->generator->monoHex(MonoTone::Pure, 100, $recipe));
+        self::assertSame('#ffffff', $this->generator->monoHex(MonoTone::Pure, 50, $recipe));
         self::assertSame('#000000', $this->generator->monoHex(MonoTone::Pure, 950, $recipe));
     }
 }

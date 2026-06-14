@@ -6,7 +6,11 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Symfinity\UiKernel\Palette\PaletteGenerator;
+use Symfinity\UiKernel\Palette\PaletteRampMath;
 use Symfinity\UiKernel\Token\GeneratorPaletteConfigValidator;
+use Symfinity\UiKernel\Token\PaletteCatalog;
+use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 
 final class GeneratorPaletteConfigValidatorTest extends TestCase
 {
@@ -30,72 +34,55 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     private function validGenerator(): array
     {
         return [
-            'interpolation' => 'oklch',
             'revision' => 1,
-            'lightness_curve' => [
-                'default' => [0.89, 0.80, 0.71, 0.62, 0.53, 0.44, 0.35, 0.26, 0.17, 0.08],
-                'pure' => [1.00, 0.89, 0.78, 0.67, 0.56, 0.45, 0.34, 0.23, 0.12, 0.00],
-            ],
-            'hue_chroma' => [
-                'red' => 0.177,
-                'orange' => 0.169,
-                'yellow' => 0.156,
-                'lime' => 0.181,
-                'green' => 0.199,
-                'emerald' => 0.142,
-                'teal' => 0.140,
-                'cyan' => 0.179,
-                'sky' => 0.189,
-                'blue' => 0.199,
-                'violet' => 0.189,
-                'purple' => 0.185,
-                'pink' => 0.168,
-            ],
         ];
     }
 
     #[Test]
-    public function bundleConfigKeysMatchAllowedSet(): void
+    public function minimalGeneratorConfigIsValid(): void
     {
         $generator = $this->validGenerator();
 
-        self::assertSame(
-            ['interpolation', 'revision', 'lightness_curve', 'hue_chroma'],
-            array_keys($generator),
-        );
+        self::assertSame(['revision'], array_keys($generator));
 
         GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
         $this->addToAssertionCount(1);
     }
 
     #[Test]
-    public function invalidLightnessCurveLengthIncludesCurveName(): void
+    public function optionalSparseOverridesAreAllowed(): void
     {
-        /** @var array<string, mixed> $generator */
+        $generator = [
+            'revision' => 1,
+            'l_bounds' => [0.01, 0.99],
+            'pure_l_bounds' => [1.0, 0.0],
+            'chroma_percent' => 85.0,
+        ];
+
+        GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
+        $this->addToAssertionCount(1);
+    }
+
+    #[Test]
+    public function legacyLightnessCurveKeyIsRejected(): void
+    {
         $generator = $this->validGenerator();
-        /** @var array<string, list<float>> $lightnessCurve */
-        $lightnessCurve = $generator['lightness_curve'];
-        $lightnessCurve['default'] = [0.89, 0.80];
-        $generator['lightness_curve'] = $lightnessCurve;
+        $generator['lightness_curve'] = ['default' => [0.9, 0.8]];
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('generator.palette.lightness_curve.default length (2) must match contract.palette.levels (10).');
+        $this->expectExceptionMessage('generator.palette.lightness_curve is not allowed');
 
         GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
     }
 
     #[Test]
-    public function unknownHueChromaKeyFailsValidation(): void
+    public function legacyHueChromaKeyIsRejected(): void
     {
-        /** @var array<string, mixed> $generator */
         $generator = $this->validGenerator();
-        /** @var array<string, float> $hueChroma */
-        $hueChroma = $generator['hue_chroma'];
-        $hueChroma['amber'] = 0.12;
-        $generator['hue_chroma'] = $hueChroma;
+        $generator['hue_chroma'] = ['red' => 0.2];
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('generator.palette.hue_chroma has unknown keys: amber.');
+        $this->expectExceptionMessage('generator.palette.hue_chroma is not allowed');
 
         GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
     }
@@ -113,13 +100,13 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
     }
 
     #[Test]
-    public function forbiddenRampLevelsKeyIsRejected(): void
+    public function forbiddenInterpolationKeyIsRejected(): void
     {
         $generator = $this->validGenerator();
-        $generator['ramp_levels'] = [100, 500];
+        $generator['interpolation'] = 'oklch';
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('generator.palette.ramp_levels is not allowed');
+        $this->expectExceptionMessage('generator.palette.interpolation is not allowed');
 
         GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
     }

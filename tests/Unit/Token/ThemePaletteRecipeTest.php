@@ -28,7 +28,7 @@ final class ThemePaletteRecipeTest extends TestCase
     }
 
     #[Test]
-    public function hueChromaOverrideFallsBackToBundleCatalog(): void
+    public function hueChromaOverrideReturnsNullWithoutLineageValue(): void
     {
         PaletteCatalog::reset();
         $baseline = ThemePaletteRecipe::baseline();
@@ -38,7 +38,7 @@ final class ThemePaletteRecipeTest extends TestCase
             ['yellow' => 0.42],
         );
 
-        self::assertSame(0.42, $recipe->hueChromaBase('yellow'));
-        self::assertSame(PaletteCatalog::hueChroma('blue'), $recipe->hueChromaBase('blue'));
+        self::assertSame(0.42, $recipe->hueChromaOverride('yellow'));
+        self::assertNull($recipe->hueChromaOverride('blue'));
     }
 }

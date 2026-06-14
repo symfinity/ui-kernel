@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Token;
 
 /**
- * Validates bundle generator.palette shape (OKLCH curves + hue_chroma only).
+ * Validates bundle generator.palette shape (minimal computed-ramp policy only).
  */
 final class GeneratorPaletteConfigValidator
 {
     private const ALLOWED_KEYS = [
-        'interpolation',
         'revision',
-        'lightness_curve',
-        'hue_chroma',
+        'l_bounds',
+        'pure_l_bounds',
+        'chroma_percent',
     ];
 
     /**
@@ -32,43 +32,14 @@ final class GeneratorPaletteConfigValidator
             }
         }
 
-        $interpolation = $generatorPalette['interpolation'] ?? null;
-        if ($interpolation !== 'oklch') {
-            throw new \RuntimeException('generator.palette.interpolation must be "oklch".');
+        $revision = $generatorPalette['revision'] ?? null;
+        if ($revision !== 1 && $revision !== '1') {
+            throw new \RuntimeException('generator.palette.revision must be 1.');
         }
 
         $contractLevels = $contractPalette['levels'] ?? null;
         if (!is_array($contractLevels) || $contractLevels === [] || !array_is_list($contractLevels)) {
             throw new \RuntimeException('contract.palette.levels must be a non-empty list.');
-        }
-
-        $levelCount = count($contractLevels);
-
-        $lightnessCurve = $generatorPalette['lightness_curve'] ?? null;
-        if (!is_array($lightnessCurve)) {
-            throw new \RuntimeException('generator.palette.lightness_curve must be a mapping.');
-        }
-
-        foreach ($lightnessCurve as $curveName => $values) {
-            if (!is_string($curveName)) {
-                throw new \RuntimeException('generator.palette.lightness_curve keys must be strings.');
-            }
-
-            if (!is_array($values) || !array_is_list($values)) {
-                throw new \RuntimeException(sprintf(
-                    'generator.palette.lightness_curve.%s must be a list.',
-                    $curveName,
-                ));
-            }
-
-            if (count($values) !== $levelCount) {
-                throw new \RuntimeException(sprintf(
-                    'generator.palette.lightness_curve.%s length (%d) must match contract.palette.levels (%d).',
-                    $curveName,
-                    count($values),
-                    $levelCount,
-                ));
-            }
         }
 
         $contractHues = $contractPalette['hues'] ?? null;
@@ -82,31 +53,32 @@ final class GeneratorPaletteConfigValidator
             }
         }
 
-        /** @var list<string> $contractHues */
-        $hueChroma = $generatorPalette['hue_chroma'] ?? null;
-        if (!is_array($hueChroma)) {
-            throw new \RuntimeException('generator.palette.hue_chroma must be a mapping.');
+        self::validateBoundsPair($generatorPalette['l_bounds'] ?? null, 'l_bounds');
+        self::validateBoundsPair($generatorPalette['pure_l_bounds'] ?? null, 'pure_l_bounds');
+
+        $chromaPercent = $generatorPalette['chroma_percent'] ?? null;
+        if ($chromaPercent !== null && !is_numeric($chromaPercent)) {
+            throw new \RuntimeException('generator.palette.chroma_percent must be numeric.');
+        }
+    }
+
+    /**
+     * @param mixed $bounds
+     */
+    private static function validateBoundsPair(mixed $bounds, string $key): void
+    {
+        if ($bounds === null) {
+            return;
         }
 
-        $chromaKeys = array_keys($hueChroma);
-        sort($contractHues);
-        $sortedChromaKeys = $chromaKeys;
-        sort($sortedChromaKeys);
+        if (!is_array($bounds) || !array_is_list($bounds) || count($bounds) !== 2) {
+            throw new \RuntimeException(sprintf('generator.palette.%s must be a two-float list.', $key));
+        }
 
-        if ($sortedChromaKeys !== $contractHues) {
-            $unknown = array_diff($chromaKeys, $contractHues);
-            if ($unknown !== []) {
-                throw new \RuntimeException(sprintf(
-                    'generator.palette.hue_chroma has unknown keys: %s.',
-                    implode(', ', $unknown),
-                ));
+        foreach ($bounds as $index => $value) {
+            if (!is_numeric($value)) {
+                throw new \RuntimeException(sprintf('generator.palette.%s[%d] must be numeric.', $key, $index));
             }
-
-            $missing = array_diff($contractHues, $chromaKeys);
-            throw new \RuntimeException(sprintf(
-                'generator.palette.hue_chroma missing keys for contract hues: %s.',
-                implode(', ', $missing),
-            ));
         }
     }
 }

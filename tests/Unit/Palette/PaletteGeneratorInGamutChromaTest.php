@@ -32,11 +32,11 @@ final class PaletteGeneratorInGamutChromaTest extends TestCase
     }
 
     #[Test]
-    public function generatorRevisionUsesPerHueInGamutChromaTargets(): void
+    public function generatorRevisionUsesComputedRampPolicy(): void
     {
         self::assertSame(1, PaletteCatalog::revision());
-        self::assertGreaterThan(0.25, PaletteCatalog::hueChroma('yellow'));
-        self::assertGreaterThan(0.2, PaletteCatalog::hueChroma('purple'));
+        self::assertSame([0.0025, 0.92], PaletteCatalog::lBounds());
+        self::assertSame(100.0, PaletteCatalog::chromaPercent());
     }
 
     #[Test]

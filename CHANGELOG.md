@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Computed palette ramps (079)** — `PaletteRampMath` replaces bundle `lightness_curve` / `hue_chroma`; default config is `generator.palette.revision: 1` only. Linear OKLCH L across `contract.palette.levels`; gamut-relative chroma (`chroma_percent` default 100); optional lineage `palette.chroma` overrides. Parity fixtures regenerated; `generator.palette.revision` stays `1`.
 - **Mono tone visibility** — `PaletteGenerator::monoSpiceChroma` multiplier raised (`0.04` → `0.24`, lightness floor `0.40`) so tinted neutrals read on surface steps (`mono.100`–`200`); semantic/default `cool` saturation aligned to `7.5` with other spices. `generator.palette.revision` stays `1`.
-- **Palette-freeze lift** — built-in lineages (`default`, `semantic`, `utility`) no longer use `palette.anchor_profile` stallion frozen ramps; hue/mono resolve via live OKLCH (`generator.palette.revision` stays `1`). Tuning `lightness_curve` / `hue_chroma` in bundle config now affects built-in themes immediately. `MaterializedPaletteAnchors` retained as maintainer REF only.
+- **Palette-freeze lift** — built-in lineages (`default`, `semantic`, `utility`) no longer use `palette.anchor_profile` stallion frozen ramps; hue/mono resolve via live OKLCH (`generator.palette.revision` stays `1`). `MaterializedPaletteAnchors` retained as maintainer REF only.
 
 ## [0.1.0] - 2026-06-14
 
