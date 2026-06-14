@@ -15,7 +15,6 @@ palette:
     violet: 270.0
     purple: 275.0
     pink: 330.0
-  anchor_profile: tailwind-v4
   mono:
     pure:
       hue: 0.0

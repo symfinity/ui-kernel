@@ -158,10 +158,13 @@ final class PaletteGenerator
         $colorTree['mono'] = $monoTree;
 
         $extensions = [
-            'freeze' => 'COLOR_FREEZE_v1',
+            'generation' => 'live',
+            'revision' => PaletteCatalog::revision(),
             'lineage' => $lineageId,
         ];
         if ($anchorProfile !== null && $anchorProfile !== '') {
+            $extensions['generation'] = 'frozen';
+            $extensions['freeze'] = 'COLOR_FREEZE_v1';
             $extensions['anchor_profile'] = $anchorProfile;
         }
 

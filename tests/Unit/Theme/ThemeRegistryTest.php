@@ -80,7 +80,7 @@ final class ThemeRegistryTest extends TestCase
     {
         $tokens = ThemeCatalog::get('default')->tokens()->all();
 
-        self::assertMatchesRegularExpression('/^#[0-9a-f]{6}$/', $tokens['--ui-color-primary']);
+        self::assertMatchesRegularExpression('/^(oklch\([^)]+\)|#[0-9a-f]{6})$/', $tokens['--ui-color-primary']);
         self::assertMatchesRegularExpression('/^(oklch\(|#[0-9a-f]{6}$)/', $tokens['--ui-color-secondary']);
         self::assertMatchesRegularExpression('/^(oklch\(|#[0-9a-f]{6}$)/', $tokens['--ui-color-surface']);
         self::assertNotSame($tokens['--ui-color-primary'], $tokens['--ui-color-secondary']);

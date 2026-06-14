@@ -12,21 +12,17 @@ use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 final class ThemePaletteRecipeWithoutAnchorsTest extends TestCase
 {
     #[Test]
-    public function withoutScaleAnchorsStripsFrozenRefs(): void
+    public function builtInLineagesShipWithoutFrozenScaleAnchors(): void
     {
         $recipe = ThemeConfig::get('semantic')->paletteRecipe();
-        self::assertNotSame([], $recipe->scaleAnchors());
-
-        $live = $recipe->withoutScaleAnchors();
-        self::assertSame([], $live->scaleAnchors());
-        self::assertSame($recipe->hueBase(), $live->hueBase());
-        self::assertSame($recipe->monoTones(), $live->monoTones());
+        self::assertSame([], $recipe->scaleAnchors());
     }
 
     #[Test]
-    public function withoutScaleAnchorsIsIdempotent(): void
+    public function withoutScaleAnchorsIsIdempotentForBuiltIns(): void
     {
         $live = ThemePaletteRecipe::baseline()->withoutScaleAnchors();
+        self::assertSame([], $live->scaleAnchors());
         self::assertSame($live, $live->withoutScaleAnchors());
     }
 }

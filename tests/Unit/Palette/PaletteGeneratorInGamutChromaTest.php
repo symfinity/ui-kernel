@@ -103,7 +103,7 @@ final class PaletteGeneratorInGamutChromaTest extends TestCase
         self::assertStringContainsString('--ui-color-surface:', $css);
         self::assertStringNotContainsString('--ui-color-surface: #ff0000;', $css);
         self::assertMatchesRegularExpression('/--ui-color-surface: (#[0-9a-f]{6}|oklch\([^;]+\));/', $css);
-        self::assertMatchesRegularExpression('/--ui-color-primary: #[0-9a-f]{6};/', $css);
-        self::assertStringNotContainsString('@media (color-gamut: p3)', $css);
+        self::assertMatchesRegularExpression('/--ui-color-primary: (oklch\([^;]+\)|#[0-9a-f]{6});/', $css);
+        self::assertStringContainsString('@media (color-gamut: p3)', $css);
     }
 }

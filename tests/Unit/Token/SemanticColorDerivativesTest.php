@@ -42,15 +42,12 @@ final class SemanticColorDerivativesTest extends TestCase
     }
 
     #[Test]
-    public function p3BoostsSkipFrozenHexAnchorsToPreserveHue(): void
+    public function p3BoostsApplyToLiveOklchSemanticColours(): void
     {
-        $tokens = ThemeDtcgResolverFactory::create()->resolve(ThemeCatalog::variant('default'))->all();
-        $boosts = (new SemanticColorDerivatives())->p3Boosts($tokens);
-        $keys = array_column($boosts, 'key');
+        $tokens = ThemeDtcgResolverFactory::create()->resolve(ThemeCatalog::variant('semantic'))->all();
+        $keys = array_column((new SemanticColorDerivatives())->p3Boosts($tokens), 'key');
 
-        self::assertNotContains('--ui-color-primary', $keys);
-        self::assertNotContains('--ui-color-danger', $keys);
-        self::assertNotContains('--ui-color-success', $keys);
-        self::assertNotContains('--ui-color-warning', $keys);
+        self::assertContains('--ui-color-primary', $keys);
+        self::assertContains('--ui-color-danger', $keys);
     }
 }

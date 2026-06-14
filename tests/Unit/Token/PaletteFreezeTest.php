@@ -8,28 +8,13 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Palette\PaletteGenerator;
 use Symfinity\UiKernel\Token\BuiltinThemeCatalog;
-use Symfinity\UiKernel\Token\MaterializedPaletteAnchors;
-use Symfinity\UiKernel\Token\PaletteAnchorProfiles;
 use Symfinity\UiKernel\Token\PaletteCatalog;
-use Symfinity\UiKernel\Theme\ThemeCatalog;
-use Symfinity\UiKernel\Tests\Support\ThemeDtcgResolverFactory;
-use Symfinity\UiKernel\Token\SemanticColorDerivatives;
-use Symfinity\UiKernel\Token\SemanticColorMap;
 use Symfinity\UiKernel\Token\ThemeConfig;
 
-/** Guards palette-freeze revision 1 — frozen anchor hex values must not drift. */
+/** Guards palette-freeze lift — built-in lineages use live OKLCH ramps. */
 final class PaletteFreezeTest extends TestCase
 {
-    private const FROZEN_REVISION = 1;
-
-    /** @var array<string, string> */
-    private const BALANCED_STATE_HEX = [
-        'blue.500' => '#1c77fe',
-        'blue.600' => '#105be3',
-        'red.500' => '#ec313e',
-        'green.500' => '#0da852',
-        'orange.500' => '#fe740a',
-    ];
+    private const GENERATOR_REVISION = 1;
 
     protected function setUp(): void
     {
@@ -44,68 +29,43 @@ final class PaletteFreezeTest extends TestCase
     }
 
     #[Test]
-    public function generatorRevisionIsFrozen(): void
+    public function generatorRevisionIsLiveAfterLift(): void
     {
-        self::assertSame(self::FROZEN_REVISION, PaletteCatalog::revision());
+        self::assertSame(self::GENERATOR_REVISION, PaletteCatalog::revision());
     }
 
     #[Test]
-    public function materializedBalancedProfileHasOneHundredNinetyRefs(): void
+    public function shippedLineagesHaveNoFrozenScaleAnchors(): void
     {
-        self::assertCount(190, MaterializedPaletteAnchors::BALANCED);
-        self::assertCount(60, MaterializedPaletteAnchors::BOOTSTRAP_53_MONO);
-        self::assertCount(60, MaterializedPaletteAnchors::TAILWIND_V4_MONO);
-    }
-
-    #[Test]
-    public function balancedStateHueAnchorsMatchFreezeTable(): void
-    {
-        $balanced = MaterializedPaletteAnchors::BALANCED;
-
-        foreach (self::BALANCED_STATE_HEX as $ref => $hex) {
-            self::assertArrayHasKey($ref, $balanced, $ref);
-            self::assertSame($hex, $balanced[$ref], $ref);
+        foreach (['default', 'semantic', 'utility'] as $themeId) {
+            self::assertSame([], ThemeConfig::get($themeId)->paletteRecipe()->scaleAnchors(), $themeId);
         }
     }
 
     #[Test]
-    public function defaultThemeSemanticRolesResolveToFrozenHex(): void
+    public function builtInLineagesResolveRampsViaLiveOklch(): void
     {
         $generator = new PaletteGenerator();
-        $config = ThemeConfig::get('default');
-        $resolved = (new SemanticColorMap($generator))->resolve(
-            $config->colorRefs(),
-            $config->paletteRecipe(),
-        );
 
-        self::assertSame('#105be3', $resolved['--ui-color-primary']);
-        self::assertSame('#ec313e', $resolved['--ui-color-danger']);
-        self::assertSame('#0da852', $resolved['--ui-color-success']);
-        self::assertSame('#fe740a', $resolved['--ui-color-warning']);
-    }
+        foreach (['default', 'semantic', 'utility'] as $themeId) {
+            $recipe = ThemeConfig::get($themeId)->paletteRecipe();
+            $css = $generator->resolveToCss('blue.500', $recipe);
 
-    #[Test]
-    public function frozenHexSemanticTokensAreNotP3Boosted(): void
-    {
-        $tokens = ThemeDtcgResolverFactory::create()->resolve(ThemeCatalog::variant('default'))->all();
-        $keys = array_column((new SemanticColorDerivatives())->p3Boosts($tokens), 'key');
-
-        foreach (['--ui-color-primary', '--ui-color-danger', '--ui-color-success', '--ui-color-warning'] as $key) {
-            self::assertNotContains($key, $keys, $key);
+            self::assertMatchesRegularExpression('/^(oklch\([^)]+\)|#[0-9a-f]{6})$/', $css, $themeId);
         }
     }
 
     #[Test]
-    public function shippedLineagesUseFrozenAnchorProfiles(): void
+    public function materializeDtcgDocumentMarksLiveGeneration(): void
     {
-        foreach (['default' => 'balanced', 'semantic' => 'bootstrap-5.3', 'utility' => 'tailwind-v4'] as $themeId => $profile) {
-            $anchors = ThemeConfig::get($themeId)->paletteRecipe()->scaleAnchors();
-            self::assertCount(190, $anchors, $themeId);
-            self::assertSame(
-                PaletteAnchorProfiles::get($profile),
-                $anchors,
-                $themeId . ' anchor profile',
-            );
-        }
+        $recipe = ThemeConfig::get('default')->paletteRecipe();
+        $extensions = (new PaletteGenerator())
+            ->materializeDtcgDocument($recipe, 'default')
+            ->extensions()['symfinity'] ?? null;
+
+        self::assertIsArray($extensions);
+        self::assertSame('live', $extensions['generation'] ?? null);
+        self::assertSame(self::GENERATOR_REVISION, $extensions['revision'] ?? null);
+        self::assertArrayNotHasKey('anchor_profile', $extensions);
     }
 }

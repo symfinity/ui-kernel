@@ -15,7 +15,7 @@ final class PaletteGeneratorDtcgTest extends TestCase
     public function materializeDtcgDocumentEmitsNativeColorPrimitives(): void
     {
         $recipe = ThemeConfig::get('default')->paletteRecipe();
-        $document = (new PaletteGenerator())->materializeDtcgDocument($recipe, 'default', 'balanced');
+        $document = (new PaletteGenerator())->materializeDtcgDocument($recipe, 'default');
         $flat = $document->flatten();
 
         self::assertArrayHasKey('color.blue.600', $flat);
@@ -24,24 +24,26 @@ final class PaletteGeneratorDtcgTest extends TestCase
     }
 
     #[Test]
-    public function materializeDtcgDocumentIncludesFreezeExtensions(): void
+    public function materializeDtcgDocumentIncludesLiveGenerationExtensions(): void
     {
         $recipe = ThemeConfig::get('semantic')->paletteRecipe();
-        $document = (new PaletteGenerator())->materializeDtcgDocument($recipe, 'semantic', 'bootstrap-5.3');
+        $document = (new PaletteGenerator())->materializeDtcgDocument($recipe, 'semantic');
         $extensions = $document->extensions()['symfinity'] ?? null;
 
         self::assertIsArray($extensions);
-        self::assertSame('COLOR_FREEZE_v1', $extensions['freeze'] ?? null);
+        self::assertSame('live', $extensions['generation'] ?? null);
+        self::assertSame(1, $extensions['revision'] ?? null);
         self::assertSame('semantic', $extensions['lineage'] ?? null);
-        self::assertSame('bootstrap-5.3', $extensions['anchor_profile'] ?? null);
+        self::assertArrayNotHasKey('anchor_profile', $extensions);
     }
 
     #[Test]
-    public function materializeDtcgDocumentMatchesKnownBalancedAnchorCss(): void
+    public function materializeDtcgDocumentUsesLiveBlue600ForDefaultLineage(): void
     {
         $recipe = ThemeConfig::get('default')->paletteRecipe();
         $flat = (new PaletteGenerator())->materializeDtcgDocument($recipe)->flatten();
 
-        self::assertSame('#105be3', $flat['color.blue.600']->value());
+        self::assertMatchesRegularExpression('/^(oklch\([^)]+\)|#[0-9a-f]{6})$/', (string) $flat['color.blue.600']->value());
+        self::assertNotSame('#105be3', $flat['color.blue.600']->value());
     }
 }
