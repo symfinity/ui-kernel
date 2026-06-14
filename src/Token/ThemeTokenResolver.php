@@ -17,7 +17,11 @@ final class ThemeTokenResolver
         $schemaVersion = $config->schemaVersion();
         ThemeTokenSchema::requiredKeys($schemaVersion);
 
-        $colors = $this->semanticColorMap->resolve($config->colorRefs(), $config->paletteRecipe());
+        $colors = $this->semanticColorMap->resolve(
+            $config->colorRefs(),
+            $config->paletteRecipe(),
+            $config->tone(),
+        );
 
         $appearance = $config->appearanceTokens();
         if ($appearance === []) {

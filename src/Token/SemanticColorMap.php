@@ -41,16 +41,35 @@ final class SemanticColorMap
      *
      * @return array<string, string> --ui-color-* => value
      */
-    public function resolve(array $roleRefs, ThemePaletteRecipe $recipe): array
+    public function resolve(array $roleRefs, ThemePaletteRecipe $recipe, ?MonoTone $themeTone = null): array
     {
         $colors = [];
         foreach ($roleRefs as $role => $ref) {
             if (!isset(self::ROLE_TO_CSS[$role])) {
                 throw new \InvalidArgumentException(sprintf('Unknown semantic colour role "%s".', $role));
             }
-            $colors[self::ROLE_TO_CSS[$role]] = $this->palette->resolveToCss($ref, $recipe);
+            $resolvedRef = $themeTone !== null ? self::applyThemeTone($ref, $themeTone) : $ref;
+            $colors[self::ROLE_TO_CSS[$role]] = $this->palette->resolveToCss($resolvedRef, $recipe);
         }
 
         return $colors;
+    }
+
+    /**
+     * Rewrites tinted mono refs to the theme's active tone.
+     *
+     * `mono.pure.*` stays achromatic — built-ins use it for explicit neutral surfaces.
+     */
+    public static function applyThemeTone(string $ref, MonoTone $themeTone): string
+    {
+        if (preg_match('/^mono\.([a-z]+)\.(\d+)(@\d+)?$/', $ref, $matches) !== 1) {
+            return $ref;
+        }
+
+        if ($matches[1] === MonoTone::Pure->value) {
+            return $ref;
+        }
+
+        return sprintf('mono.%s.%s%s', $themeTone->value, $matches[2], $matches[3] ?? '');
     }
 }
