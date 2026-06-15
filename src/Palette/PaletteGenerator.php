@@ -248,7 +248,7 @@ final class PaletteGenerator
             $this->colorSpace,
             $recipe->hueChromaOverride($hue),
         );
-        $floor = $this->warmHuePolicy->chromaFloor($level);
+        $floor = $this->warmHuePolicy->chromaFloor($hue, $level);
         if ($floor > 0.0 && $this->warmHuePolicy->isWarmFamily($hue)) {
             $chroma = max($chroma, $floor);
         }

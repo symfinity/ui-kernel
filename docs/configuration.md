@@ -49,7 +49,7 @@ The bundle ships an OKLCH palette generator (`generator.palette.revision`) share
 
 Integrators author **palette refs** in custom theme packs, not raw hex in built-in lineage files.
 
-Custom packs (ui-themer, agency YAML) resolve ramps via **live OKLCH** — they do not inherit built-in `anchor_profile` frozen hex. Built-in lineages also use **live OKLCH** after palette-freeze lift (`generator.palette.revision` stays `1`); optional sparse `palette.anchors` in `theme.meta.yaml` still override individual refs. Historical stallion tables remain in `MaterializedPaletteAnchors` for maintainer scripts — see [palette-freeze](../../specs/symfinity/symfinity/2-ui-kernel/contracts/palette-freeze.md).
+Custom packs (ui-themer, agency YAML) resolve ramps via **live OKLCH** — they do not inherit frozen hex anchor tables. Built-in lineages use the same live OKLCH generator (`generator.palette.revision` stays `1`); optional sparse `palette.anchors` in `theme.meta.yaml` still override individual refs.
 
 ## Custom brand themes
 

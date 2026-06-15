@@ -2,7 +2,7 @@
 
 Symfony **Twig theme** (`twig.default_path`, FrameworkBundle template paths) is unrelated to **UI Kernel themes** (`data-theme`, `ThemeRegistry`). See [Symfony Twig theming](https://symfony.com/doc/current/templates.html#twig-theme-configuration).
 
-## On-disk layout (077 DTCG)
+## On-disk layout
 
 Built-in themes ship as W3C DTCG token files — not bespoke `symfinity_ui_kernel.themes` YAML:
 
@@ -27,7 +27,7 @@ Each lineage **SHOULD** set `design_system_id: chameleon` in `theme.meta.yaml` (
 
 Runtime resolution: `base` (OKLCH palette DTCG from generator) ⊕ `design_system` ⊕ `theme` → `LayeredTokenResolver` → `--ui-*` CSS.
 
-**ui-themer consumer themes** (dogfood `var/themes/zinc/`, export YAML) stay on the bespoke `preset` / `tone` / `semantics` schema via `AuthoringThemeConfig` — they do **not** register in `config/themes/`. See [DTCG token core](dtcg-token-core.md) and the **077** `ui-themer-theme-boundary` contract in the private specs tree.
+**ui-themer consumer themes** (export YAML from symfinity/ui-themer) stay on the bespoke `preset` / `tone` / `semantics` schema via `AuthoringThemeConfig` — they do **not** register in `config/themes/`. See [DTCG token core](dtcg-token-core.md) and the ui-themer boundary below.
 
 ## Built-in theme ids
 
@@ -79,7 +79,7 @@ It does **not** emit `[data-ui-role]` component rules. Install `symfinity/ux-blo
 
 ### ui-themer boundary {#ui-themer-boundary}
 
-Consumer themes authored in **ui-themer** (dogfood zinc, export YAML) use `AuthoringThemeConfig` + `ThemeTokenResolver` — **not** the built-in DTCG catalog. See [ui-themer theme boundary](../../../specs/symfinity/symfinity/077-ui-kernel-dtcg-theme-migration/contracts/ui-themer-theme-boundary.md).
+Consumer themes authored in **ui-themer** (export YAML) use `AuthoringThemeConfig` + `ThemeTokenResolver` — **not** the built-in DTCG catalog. ui-themer packs live outside `config/themes/` and resolve through the authoring pipeline, not `BuiltinDtcgThemeCatalog`.
 
 ## User token overrides
 

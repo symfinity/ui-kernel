@@ -37,7 +37,7 @@ final class WarmHueRampOracleTest extends TestCase
 
         self::assertGreaterThanOrEqual(85.0, $tuple->h);
         self::assertLessThanOrEqual(110.0, $tuple->h);
-        self::assertGreaterThanOrEqual(0.08, $tuple->c);
+        self::assertGreaterThanOrEqual(0.04, $tuple->c, '50% strength → C floor 0.04 at 500');
     }
 
     #[Test]
@@ -47,7 +47,7 @@ final class WarmHueRampOracleTest extends TestCase
 
         self::assertGreaterThanOrEqual(60.0, $tuple->h);
         self::assertLessThanOrEqual(95.0, $tuple->h);
-        self::assertGreaterThanOrEqual(0.08, $tuple->c);
+        self::assertGreaterThanOrEqual(0.04, $tuple->c, '50% strength → C floor 0.04 at 500');
     }
 
     #[Test]
@@ -57,7 +57,7 @@ final class WarmHueRampOracleTest extends TestCase
         $lime = $this->generator->resolveToOklch('lime.500', $this->recipe);
 
         self::assertNotEquals($yellow->h, $lime->h);
-        self::assertGreaterThanOrEqual(0.08, $lime->c);
+        self::assertGreaterThanOrEqual(0.02, $lime->c, '25% strength → C floor 0.02 at 500');
     }
 
     #[Test]
@@ -72,5 +72,34 @@ final class WarmHueRampOracleTest extends TestCase
 
         $green = $this->generator->resolveToOklch('green.500', $this->recipe);
         self::assertEqualsWithDelta($baseL, $green->l, 0.01);
+    }
+
+    #[Test]
+    public function yellow500To600LightnessDropIsGradual(): void
+    {
+        $l500 = $this->generator->resolveToOklch('yellow.500', $this->recipe)->l;
+        $l600 = $this->generator->resolveToOklch('yellow.600', $this->recipe)->l;
+
+        $yellowDrop = $l500 - $l600;
+
+        self::assertLessThan(0.30, $yellowDrop, '500→600 drop softer than pre-taper cliff (~0.41)');
+        self::assertGreaterThan(0.40, $l600, '600 retains 25% warm blend lift over base ~0.37');
+    }
+
+    #[Test]
+    public function strengthTableMatchesOperatorTaper(): void
+    {
+        $policy = new WarmHueRampPolicy();
+
+        self::assertEqualsWithDelta(0.50, $policy->strength('orange', 400), 0.001);
+        self::assertEqualsWithDelta(0.25, $policy->strength('orange', 500), 0.001);
+        self::assertSame(0.0, $policy->strength('orange', 600));
+
+        self::assertEqualsWithDelta(1.00, $policy->strength('yellow', 200), 0.001);
+        self::assertEqualsWithDelta(0.50, $policy->strength('yellow', 500), 0.001);
+        self::assertEqualsWithDelta(0.25, $policy->strength('yellow', 600), 0.001);
+
+        self::assertEqualsWithDelta(0.50, $policy->strength('lime', 300), 0.001);
+        self::assertSame(0.0, $policy->strength('lime', 600));
     }
 }

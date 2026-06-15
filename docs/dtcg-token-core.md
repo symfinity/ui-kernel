@@ -1,6 +1,6 @@
 # DTCG token core
 
-Since the DTCG re-core baseline (`0.1.0`), the kernel models design tokens internally with the
+The kernel models design tokens internally with the
 [W3C Design Tokens (DTCG) format](https://www.designtokens.org/) and resolves them through a
 layered resolver. The public CSS-generation API is unchanged and built-in themes emit equivalent
 CSS — the change is in how tokens are modelled and resolved, not in the values produced.
@@ -18,7 +18,7 @@ CSS — the change is in how tokens are modelled and resolved, not in the values
 ## Namespaces
 
 - `Symfinity\UiKernel\Contract\` — dependency-free SPI (token model, layers, resolver, exceptions).
-  Depends on no Symfony/Twig/HTTP component, so it can later be extracted as `ui-kernel-contracts`.
+  Depends on no Symfony/Twig/HTTP component, so it can later be extracted as a standalone contracts package.
 - `Symfinity\UiKernel\Dtcg\` — concrete model, JSON/YAML readers, and the `LayeredTokenResolver`.
 - `Symfinity\UiKernel\Css\CssVariableSet` + `CssGenerator::forResolvedGraph()` — emit `--ui-*` from
   a resolved graph (path `color.primary` maps to `--ui-color-primary`).
@@ -46,19 +46,8 @@ token path:
 - `ReferenceCycleException` — alias cycle (`a → b → a`).
 - `TokenTypeMismatchException` — alias resolves to an incompatible `$type`.
 
-## Contracts
+## Related topics
 
-- [DTCG token model](../../../../specs/symfinity/symfinity/076-ui-kernel-dtcg-token-core/contracts/dtcg-token-model.md)
-- [Layered resolver](../../../../specs/symfinity/symfinity/076-ui-kernel-dtcg-token-core/contracts/layered-resolver.md)
-- [CSS emitter parity](../../../../specs/symfinity/symfinity/076-ui-kernel-dtcg-token-core/contracts/css-emitter-parity.md)
-- [Contract/ namespace boundary](../../../../specs/symfinity/symfinity/076-ui-kernel-dtcg-token-core/contracts/contract-namespace-boundary.md)
-
-## Scope and follow-on
-
-This baseline delivers the resolution core behind the existing API with parity. Deferred to
-follow-on features:
-
-- **077** — migrate theme YAML off the bespoke `semantics:/preset/tone` schema, remove the
-  `SemanticVariant` enum (graph-authoritative variants), generator-native DTCG emission.
-- **078** — move hardcoded globals (`@keyframes`, `--ui-z-*`) to tokens + an at-rules contributor,
-  finish the role-CSS eviction tail, and `ux-workshop` / `ui-profiler` graph discovery.
+- [Themes](themes.md) — built-in DTCG on-disk layout and `design_system_id`
+- [DTCG profile globals and graph consumers](dtcg-globals-consumers.md) — z-index ladder, `@keyframes`, variant catalog
+- [Configuration](configuration.md) — app wiring and palette generator SSOT

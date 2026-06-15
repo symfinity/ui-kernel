@@ -2,15 +2,9 @@
 
 UI Kernel ships a Symfony **DataCollector** for dev-only theme and CSS observability. It requires `symfony/web-profiler-bundle` as an optional dev dependency — see [installation.md](installation.md).
 
-## Contracts
+## What you get
 
-| Topic | Path |
-|-------|------|
-| Collector behaviour | [web-profiler-data-collector.md](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/web-profiler-data-collector.md) |
-| Twig templates + icon | [collector-templates.md](../../../../specs/symfinity/symfinity/2-ui-kernel/contracts/collector-templates.md) |
-| Ownership vs ui-profiler | [profiler-collector-ownership.md](../../../../specs/symfinity/symfinity/_org/contracts/ui-profiler/profiler-collector-ownership.md) |
-
-## Implementation
+When `kernel.debug` is true and `WebProfilerBundle` is present, the toolbar shows a **palette icon** with the active theme id (e.g. `semantic-dark`). Click the badge to open the profiler panel with lineage, colour scheme, generated CSS size, and theme count.
 
 | Asset | Location |
 |-------|----------|
@@ -18,34 +12,28 @@ UI Kernel ships a Symfony **DataCollector** for dev-only theme and CSS observabi
 | Conditional registration | `src/DependencyInjection/Compiler/RegisterProfilerCollectorPass.php` |
 | Templates | `templates/Collector/ui_kernel.html.twig`, `icon.svg` |
 
-Registration gates: `kernel.debug` **and** `WebProfilerBundle` present. Collector id: **`ui_kernel`**.
+Collector id: **`ui_kernel`**.
 
-## PHPUnit (monorepo)
-
-```bash
-cd src/symfinity
-docker compose --env-file .env.docker run --rm -T -w /app php php vendor/bin/phpunit packages/ui-kernel/tests/Unit/DataCollector/
-```
-
-## Manual — WDT + profiler panel (dogfood)
-
-Prerequisite: dogfood app with ui-kernel + WebProfilerBundle (`SLUG=ui-lab`).
+## Install
 
 ```bash
-make dogfood-serve SLUG=ui-lab
+composer require --dev symfony/web-profiler-bundle
 ```
 
-1. Open `/`, `/kernel`, or `/ui-themer` in the browser.
-2. Confirm WDT shows **palette icon** + theme id (e.g. `semantic-dark`).
-3. Click UI Kernel badge → profiler opens on UI Kernel panel.
-4. Verify panel shows lineage, scheme, CSS bytes, theme count.
-5. Set cookies `symfinity_ui_kernel_lineage=utility`, `symfinity_ui_kernel_scheme=light`; reload — panel updates.
+Register `WebProfilerBundle` in `config/bundles.php` for `dev` and enable `framework.profiler.collect`.
 
-### ui-profiler coexistence
+## Verify in the browser
 
-With `symfinity/ui-profiler` installed, repeat the steps above — collector MUST render without PHP errors. Visual chrome may differ (Chameleon); functional blocks unchanged.
+1. Load any page that includes `ui_kernel_css()` in dev.
+2. Confirm the Web Debug Toolbar shows the UI Kernel badge and theme id.
+3. Open the UI Kernel profiler panel — lineage, scheme, and CSS byte count should match your config.
+4. Change theme cookies or config (`default_theme`, `default_variant`); reload and confirm the panel updates.
 
-### Negative checks
+### With symfinity/ui-profiler
+
+When [symfinity/ui-profiler](../../ui-profiler/README.md) is installed, Chameleon chrome may override profiler layout via bundle template precedence. The kernel collector still registers and reports theme data; visual chrome may differ.
+
+### Expected behaviour
 
 | Case | Expected |
 |------|----------|
@@ -53,8 +41,7 @@ With `symfinity/ui-profiler` installed, repeat the steps above — collector MUS
 | WebProfilerBundle absent | No collector service; app boots |
 | API route without theme HTML | Toolbar shows `n/a` or minimal payload |
 
-## Horizon — `symfinity/ui-profiler`
+## See also
 
-When [symfinity/ui-profiler](../../ui-profiler/README.md) is installed, Chameleon chrome may override profiler layout via bundle template precedence. ui-profiler may register an enriched collector with the same id; see [third-party-collectors](../../ui-profiler/docs/third-party-collectors.md).
-
-Stock `@WebProfiler/Profiler/layout.html.twig` is the default for apps without ui-profiler.
+- [Installation](installation.md) — optional Web Profiler setup
+- [Quick start](quickstart.md) — include theme CSS on every page

@@ -47,7 +47,7 @@
   --ui-color-border: oklch(0.7365 0.0095 240);
   --ui-color-danger: oklch(0.4612 0.187 25);
   --ui-color-success: oklch(0.4612 0.1451 145);
-  --ui-color-warning: oklch(0.78 0.1486 55);
+  --ui-color-warning: oklch(0.5409 0.1339 55);
   --ui-color-info: oklch(0.4612 0.0837 180);
   --ui-color-focus: oklch(0.4612 0.1519 255);
   --ui-color-overlay: rgba(15, 15, 16, 0.4);
@@ -73,7 +73,7 @@
   --ui-color-on-success: oklch(1 0 0);
   --ui-color-success-hover: oklch(from var(--ui-color-success) calc(l * 0.88) c h);
   --ui-color-success-active: oklch(from var(--ui-color-success) calc(l * 0.76) c h);
-  --ui-color-on-warning: oklch(0.1075 0.0072 240);
+  --ui-color-on-warning: oklch(1 0 0);
   --ui-color-warning-hover: oklch(from var(--ui-color-warning) calc(l * 0.88) c h);
   --ui-color-warning-active: oklch(from var(--ui-color-warning) calc(l * 0.76) c h);
   --ui-color-on-info: oklch(1 0 0);
@@ -130,7 +130,7 @@
   --ui-color-border: oklch(0.7365 0.0095 240);
   --ui-color-danger: oklch(0.4612 0.187 25);
   --ui-color-success: oklch(0.4612 0.1451 145);
-  --ui-color-warning: oklch(0.78 0.1486 55);
+  --ui-color-warning: oklch(0.5409 0.1339 55);
   --ui-color-info: oklch(0.4612 0.0837 180);
   --ui-color-focus: oklch(0.4612 0.1519 255);
   --ui-color-overlay: rgba(15, 15, 16, 0.4);
@@ -156,7 +156,7 @@
   --ui-color-on-success: oklch(1 0 0);
   --ui-color-success-hover: oklch(from var(--ui-color-success) calc(l * 0.88) c h);
   --ui-color-success-active: oklch(from var(--ui-color-success) calc(l * 0.76) c h);
-  --ui-color-on-warning: oklch(0.1075 0.0072 240);
+  --ui-color-on-warning: oklch(1 0 0);
   --ui-color-warning-hover: oklch(from var(--ui-color-warning) calc(l * 0.88) c h);
   --ui-color-warning-active: oklch(from var(--ui-color-warning) calc(l * 0.76) c h);
   --ui-color-on-info: oklch(1 0 0);
@@ -171,7 +171,7 @@
     --ui-color-tertiary: oklch(0.4612 0.2462 300);
     --ui-color-danger: oklch(0.4612 0.187 25);
     --ui-color-success: oklch(0.4612 0.1451 145);
-    --ui-color-warning: oklch(0.78 0.1486 55);
+    --ui-color-warning: oklch(0.5409 0.1339 55);
     --ui-color-info: oklch(0.4612 0.0837 180);
     --ui-color-focus: oklch(0.4612 0.1519 255);
   }
@@ -180,7 +180,7 @@
     --ui-color-tertiary: oklch(0.4612 0.2462 300);
     --ui-color-danger: oklch(0.4612 0.187 25);
     --ui-color-success: oklch(0.4612 0.1451 145);
-    --ui-color-warning: oklch(0.78 0.1486 55);
+    --ui-color-warning: oklch(0.5409 0.1339 55);
     --ui-color-info: oklch(0.4612 0.0837 180);
     --ui-color-focus: oklch(0.4612 0.1519 255);
   }
