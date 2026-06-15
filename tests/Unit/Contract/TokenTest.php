@@ -59,7 +59,7 @@ final class TokenTest extends TestCase
         $colorGroup = new TokenGroup(
             TokenType::Color,
             [
-                'blue' => new TokenGroup(TokenType::Color, ['600' => $blue]),
+                'blue' => new TokenGroup(TokenType::Color, ['level' => $blue]),
                 'primary' => $primary,
             ],
         );

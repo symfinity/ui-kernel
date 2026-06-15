@@ -9,6 +9,7 @@ use Symfinity\UiKernel\Contract\Resolver\ResolvedGraphInterface;
 use Symfinity\UiKernel\Contract\Token\TokenInterface;
 use Symfinity\UiKernel\Contract\Token\TokenPath;
 use Symfinity\UiKernel\Dtcg\CssEmissionFilter;
+use Symfinity\UiKernel\Internal\TypeGuard;
 use Symfinity\UiKernel\Palette\OklchColorSpace;
 use Symfinity\UiKernel\Palette\OklchTuple;
 
@@ -46,6 +47,9 @@ final class CssVariableSet
         return $this->variablesFromGraph($graph, new CssEmissionFilter());
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function variablesFromGraph(ResolvedGraphInterface $graph, CssEmissionFilter $filter): array
     {
         return $this->fromEmitTokens($filter->emitTokens($graph));
@@ -89,8 +93,12 @@ final class CssVariableSet
             return self::formatNumber((float) $value);
         }
 
-        if (\is_array($value) && ($value['colorSpace'] ?? null) === 'oklch') {
-            return $this->emitOklch($token->path(), $value);
+        if (\is_array($value)) {
+            /** @var array<string, mixed> $colorValue */
+            $colorValue = $value;
+            if (($colorValue['colorSpace'] ?? null) === 'oklch') {
+                return $this->emitOklch($token->path(), $colorValue);
+            }
         }
 
         throw new InvalidArgumentException(sprintf(
@@ -117,9 +125,9 @@ final class CssVariableSet
             : null;
 
         return $this->colorSpace->toCss(new OklchTuple(
-            (float) $components[0],
-            (float) $components[1],
-            (float) $components[2],
+            TypeGuard::numericFloat($components[0]),
+            TypeGuard::numericFloat($components[1]),
+            TypeGuard::numericFloat($components[2]),
             $alpha,
         ));
     }

@@ -1,0 +1,22 @@
+:root {
+  --ui-z-dropdown: 1000;
+  --ui-z-sticky: 1020;
+  --ui-z-fixed: 1030;
+  --ui-z-modal-backdrop: 1040;
+  --ui-z-modal: 1050;
+  --ui-z-popover: 1060;
+  --ui-z-tooltip: 1070;
+  --ui-z-toast: 1080;
+}
+@keyframes ui-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes ui-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@keyframes ui-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

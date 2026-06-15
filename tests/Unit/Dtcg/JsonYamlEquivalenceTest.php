@@ -24,8 +24,8 @@ final class JsonYamlEquivalenceTest extends TestCase
     #[Test]
     public function jsonAndYamlProduceIdenticalDocumentAndGraph(): void
     {
-        $json = (new DtcgJsonReader())->read(__DIR__ . '/fixtures/sample.json');
-        $yaml = (new DtcgYamlReader())->read(__DIR__ . '/fixtures/sample.yaml');
+        $json = (new DtcgJsonReader())->read(__DIR__ . '/parity/sample.json');
+        $yaml = (new DtcgYamlReader())->read(__DIR__ . '/parity/sample.yaml');
 
         self::assertSame($this->snapshotDocument($json), $this->snapshotDocument($yaml));
 

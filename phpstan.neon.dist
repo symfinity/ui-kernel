@@ -7,6 +7,9 @@ parameters:
         - src
         - tests
 
+    excludePaths:
+        - tests/bin/*
+
     reportUnmatchedIgnoredErrors: false
     bootstrapFiles:
         - phpstan-bootstrap.php

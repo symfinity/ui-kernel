@@ -36,8 +36,6 @@ final class CssParityTest extends TestCase
         self::assertNotEmpty($themes, 'expected built-in themes to compare');
 
         foreach ($themes as $theme) {
-            \assert($theme instanceof Theme);
-
             $baseline = $generator->forTheme($theme);
 
             $variant = ThemeCatalog::variant($theme->id());

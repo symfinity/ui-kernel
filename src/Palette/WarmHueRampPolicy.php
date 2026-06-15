@@ -106,7 +106,11 @@ final class WarmHueRampPolicy
             $low = $keys[$i];
             $high = $keys[$i + 1];
             if ($level >= $low && $level <= $high) {
-                $t = ($level - $low) / ($high - $low);
+                $span = $high - $low;
+                if ($span <= 0) {
+                    return self::LIGHTNESS_TARGETS[$low];
+                }
+                $t = ($level - $low) / $span;
 
                 return self::LIGHTNESS_TARGETS[$low]
                     + $t * (self::LIGHTNESS_TARGETS[$high] - self::LIGHTNESS_TARGETS[$low]);

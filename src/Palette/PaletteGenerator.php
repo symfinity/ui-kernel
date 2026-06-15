@@ -186,6 +186,9 @@ final class PaletteGenerator
         return (new DtcgTreeBuilder())->build($tree);
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function rampPreview(string $family, ThemePaletteRecipe $recipe, ?MonoTone $spice = null): array
     {
         if ($family === 'mono') {

@@ -60,13 +60,15 @@ final class GeneratorPaletteConfigValidator
             throw new \RuntimeException('contract.palette.mono_tones must be a non-empty list.');
         }
 
+        $monoToneNames = [];
         foreach ($monoTones as $tone) {
             if (!is_string($tone)) {
                 throw new \RuntimeException('contract.palette.mono_tones must contain strings.');
             }
+            $monoToneNames[] = $tone;
         }
 
-        self::validateMonoHues($generatorPalette['mono_hues'] ?? null, $monoTones);
+        self::validateMonoHues($generatorPalette['mono_hues'] ?? null, $monoToneNames);
 
         self::validateBoundsPair($generatorPalette['l_bounds'] ?? null, 'l_bounds');
         self::validateBoundsPair($generatorPalette['pure_l_bounds'] ?? null, 'pure_l_bounds');

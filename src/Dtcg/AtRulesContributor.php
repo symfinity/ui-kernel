@@ -117,7 +117,18 @@ final class AtRulesContributor implements AtRulesContributorInterface
         $extensions = $token->extensions();
         $symfinity = $extensions['symfinity'] ?? [];
 
-        return \is_array($symfinity) ? $symfinity : [];
+        if (!\is_array($symfinity)) {
+            return [];
+        }
+
+        $typed = [];
+        foreach ($symfinity as $key => $value) {
+            if (\is_string($key)) {
+                $typed[$key] = $value;
+            }
+        }
+
+        return $typed;
     }
 
     private function resolveStepValue(string $rawValue, ResolvedGraphInterface $graph): string

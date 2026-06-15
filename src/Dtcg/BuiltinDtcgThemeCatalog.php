@@ -102,7 +102,8 @@ final class BuiltinDtcgThemeCatalog
                 throw new \InvalidArgumentException(sprintf('Theme meta "%s" must be a YAML mapping.', $metaPath));
             }
 
-            if (isset($parsed['symfinity_ui_kernel']['themes'])) {
+            $legacyKernel = $parsed['symfinity_ui_kernel'] ?? null;
+            if (is_array($legacyKernel) && isset($legacyKernel['themes'])) {
                 throw InvalidThemeSchemaException::legacySchema($metaPath);
             }
 
@@ -129,10 +130,11 @@ final class BuiltinDtcgThemeCatalog
             }
 
             $paletteNorm = ThemePaletteMetaNormalizer::normalize(TypeGuard::stringKeyMap($palette));
+            /** @var list<array<string, mixed>> $variantEntries */
             $variantEntries = [];
             foreach ($variantList as $entry) {
                 if (is_array($entry)) {
-                    $variantEntries[] = $entry;
+                    $variantEntries[] = TypeGuard::stringKeyMap($entry);
                 }
             }
             GeneratorPaletteConfigValidator::validateVariantTones($variantEntries);

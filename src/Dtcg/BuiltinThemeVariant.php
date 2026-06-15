@@ -14,7 +14,12 @@ use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 final readonly class BuiltinThemeVariant
 {
     /**
-     * @param array<string, mixed> $paletteDefinition raw palette block from theme.meta.yaml
+     * @param array{
+     *     hue_base: array<string, float>,
+     *     mono_tones: array<string, array{hue: float, saturation: float}>,
+     *     hue_chroma: array<string, float>,
+     *     scale_anchors: array<string, string>
+     * } $paletteDefinition
      */
     public function __construct(
         private string $id,
@@ -86,13 +91,18 @@ final readonly class BuiltinThemeVariant
         return ThemePaletteRecipe::fromPaletteDefinition(
             $this->paletteDefinition['hue_base'],
             $this->paletteDefinition['mono_tones'],
-            $this->paletteDefinition['hue_chroma'] ?? [],
-            $this->paletteDefinition['scale_anchors'] ?? [],
+            $this->paletteDefinition['hue_chroma'],
+            $this->paletteDefinition['scale_anchors'],
         );
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{
+     *     hue_base: array<string, float>,
+     *     mono_tones: array<string, array{hue: float, saturation: float}>,
+     *     hue_chroma: array<string, float>,
+     *     scale_anchors: array<string, string>
+     * }
      */
     public function paletteDefinition(): array
     {

@@ -11,5 +11,7 @@ use Symfinity\UiKernel\Contract\Resolver\ResolvedGraphInterface;
  */
 interface AtRulesContributorInterface
 {
+    public function emitZIndexVars(ResolvedGraphInterface $graph): string;
+
     public function contribute(ResolvedGraphInterface $graph): string;
 }

@@ -33,7 +33,7 @@ final class TokenPath
             }
         }
 
-        $this->segments = array_values($segments);
+        $this->segments = $segments;
     }
 
     public static function fromString(string $path): self

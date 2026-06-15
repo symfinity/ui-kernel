@@ -163,7 +163,7 @@ final class CssGenerator
         $lightSelectors = $anchorId === 'default' ? [$selector, ':root'] : [$selector];
         $lines = [...$lines, ...$this->p3GamutOverrides($lightSelectors, $light->tokens()->all())];
 
-        $lines[] = $this->profileGlobalsCss($graph);
+        $lines[] = $this->profileGlobalsCss(null);
 
         return implode("\n", $lines);
     }

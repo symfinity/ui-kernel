@@ -43,7 +43,9 @@ final class PaletteGeneratorDtcgTest extends TestCase
         $recipe = ThemeConfig::get('default')->paletteRecipe();
         $flat = (new PaletteGenerator())->materializeDtcgDocument($recipe)->flatten();
 
-        self::assertMatchesRegularExpression('/^(oklch\([^)]+\)|#[0-9a-f]{6})$/', (string) $flat['color.blue.600']->value());
-        self::assertNotSame('#105be3', $flat['color.blue.600']->value());
+        $tokenValue = $flat['color.blue.600']->value();
+        self::assertIsString($tokenValue);
+        self::assertMatchesRegularExpression('/^(oklch\([^)]+\)|#[0-9a-f]{6})$/', $tokenValue);
+        self::assertNotSame('#105be3', $tokenValue);
     }
 }

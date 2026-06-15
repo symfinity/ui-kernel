@@ -122,24 +122,23 @@ final class PaletteCatalog
     public static function lBounds(): array
     {
         $bounds = self::generator()['l_bounds'] ?? null;
-        if (is_array($bounds) && array_is_list($bounds) && count($bounds) === 2) {
-            return [(float) $bounds[0], (float) $bounds[1]];
+        if (is_array($bounds) && array_is_list($bounds) && count($bounds) === 2
+            && is_numeric($bounds[0]) && is_numeric($bounds[1])) {
+            return [TypeGuard::numericFloat($bounds[0]), TypeGuard::numericFloat($bounds[1])];
         }
 
         return [0.0025, 0.92];
     }
 
     /**
-     * @return array{0: float, 1: float} [L at index 0, L at index n-1]
-     */
-    /**
-     * Achromatic mono.neutral.* L endpoints (081: was pure_l_bounds for mono.pure.*).
+     * @return array{0: float, 1: float}
      */
     public static function pureLBounds(): array
     {
         $bounds = self::generator()['pure_l_bounds'] ?? null;
-        if (is_array($bounds) && array_is_list($bounds) && count($bounds) === 2) {
-            return [(float) $bounds[0], (float) $bounds[1]];
+        if (is_array($bounds) && array_is_list($bounds) && count($bounds) === 2
+            && is_numeric($bounds[0]) && is_numeric($bounds[1])) {
+            return [TypeGuard::numericFloat($bounds[0]), TypeGuard::numericFloat($bounds[1])];
         }
 
         return [1.0, 0.0];

@@ -29,7 +29,7 @@ final class ThemePaletteMetaNormalizer
         $chroma = $palette['chroma'] ?? [];
         $anchors = $palette['anchors'] ?? [];
         $anchorProfile = $palette['anchor_profile'] ?? null;
-        $monoSaturation = (float) ($palette['mono_saturation'] ?? 0);
+        $monoSaturation = TypeGuard::numericFloat($palette['mono_saturation'] ?? 0);
 
         if (!is_array($hues) || $hues === []) {
             throw new \InvalidArgumentException('Theme palette must define hues.');

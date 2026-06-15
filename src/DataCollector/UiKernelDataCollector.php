@@ -15,8 +15,7 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 final class UiKernelDataCollector extends DataCollector
-{
-    public const CSS_BYTES_REQUEST_ATTR = '_symfinity_ui_kernel_css_bytes';
+{    public const CSS_BYTES_REQUEST_ATTR = '_symfinity_ui_kernel_css_bytes';
 
     /**
      * Best-effort deep links to a kernel/demo gallery if the host app happens to
@@ -47,13 +46,16 @@ final class UiKernelDataCollector extends DataCollector
 
         $preference = $this->activeThemeContext->preferenceFromRequest($request);
 
+        $cssBytesAttr = $request->attributes->get(self::CSS_BYTES_REQUEST_ATTR, 0);
+        $cssBytes = is_int($cssBytesAttr) ? $cssBytesAttr : (is_numeric($cssBytesAttr) ? (int) $cssBytesAttr : 0);
+
         $this->data = [
             'enabled' => true,
             'themeId' => $this->activeThemeContext->resolvedThemeIdFromRequest($request),
             'lineage' => $preference->lineage,
             'scheme' => $preference->scheme->value,
             'systemPrefersDark' => $this->resolver->resolveSystemPrefersDark($request),
-            'cssBytes' => (int) $request->attributes->get(self::CSS_BYTES_REQUEST_ATTR, 0),
+            'cssBytes' => $cssBytes,
             'themeCount' => \count($this->themeRegistry->all()),
             'semantic_color_slugs' => $this->variantCatalog?->semanticColorSlugs() ?? [],
             'graph_layer_signature' => $this->variantCatalog?->layerSignature() ?? '',
@@ -85,12 +87,16 @@ final class UiKernelDataCollector extends DataCollector
 
     public function getLineage(): string
     {
-        return (string) ($this->data['lineage'] ?? '');
+        $lineage = $this->data['lineage'] ?? '';
+
+        return is_string($lineage) ? $lineage : '';
     }
 
     public function getScheme(): string
     {
-        return (string) ($this->data['scheme'] ?? '');
+        $scheme = $this->data['scheme'] ?? '';
+
+        return is_string($scheme) ? $scheme : '';
     }
 
     public function isSystemPrefersDark(): bool
@@ -100,12 +106,16 @@ final class UiKernelDataCollector extends DataCollector
 
     public function getCssBytes(): int
     {
-        return (int) ($this->data['cssBytes'] ?? 0);
+        $cssBytes = $this->data['cssBytes'] ?? 0;
+
+        return is_int($cssBytes) ? $cssBytes : (is_numeric($cssBytes) ? (int) $cssBytes : 0);
     }
 
     public function getThemeCount(): int
     {
-        return (int) ($this->data['themeCount'] ?? 0);
+        $themeCount = $this->data['themeCount'] ?? 0;
+
+        return is_int($themeCount) ? $themeCount : (is_numeric($themeCount) ? (int) $themeCount : 0);
     }
 
     public function getShowcaseUrl(): ?string
@@ -130,7 +140,9 @@ final class UiKernelDataCollector extends DataCollector
 
     public function getGraphLayerSignature(): string
     {
-        return (string) ($this->data['graph_layer_signature'] ?? '');
+        $signature = $this->data['graph_layer_signature'] ?? '';
+
+        return is_string($signature) ? $signature : '';
     }
 
     private function resolveShowcaseUrl(): ?string

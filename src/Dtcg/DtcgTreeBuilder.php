@@ -47,23 +47,25 @@ final class DtcgTreeBuilder
 
         $children = [];
         foreach ($node as $name => $child) {
-            if (\is_string($name) && str_starts_with($name, '$')) {
+            if (str_starts_with((string) $name, '$')) {
                 continue;
             }
             if (!\is_array($child)) {
                 continue;
             }
 
+            /** @var array<string, mixed> $childNode */
+            $childNode = self::normalizeChildNode($child);
             $name = (string) $name;
             $path = $prefix === null ? TokenPath::fromString($name) : $prefix->child($name);
 
-            if (\array_key_exists('$value', $child)) {
-                $children[$name] = $this->buildToken($child, $groupType, $path);
+            if (\array_key_exists('$value', $childNode)) {
+                $children[$name] = $this->buildToken($childNode, $groupType, $path);
 
                 continue;
             }
 
-            $children[$name] = $this->buildGroup($child, $groupType, $path);
+            $children[$name] = $this->buildGroup($childNode, $groupType, $path);
         }
 
         return new TokenGroup($groupType, $children, $description);
@@ -79,7 +81,11 @@ final class DtcgTreeBuilder
             : ($inheritedType ?? TokenType::Unknown);
 
         $rawValue = $node['$value'];
-        $value = AliasReference::isAlias($rawValue)
+        if (!\is_string($rawValue) && !\is_int($rawValue) && !\is_float($rawValue) && !\is_bool($rawValue) && !\is_array($rawValue)) {
+            throw new \InvalidArgumentException(sprintf('Token "%s" has invalid $value.', (string) $path));
+        }
+
+        $value = \is_string($rawValue) && AliasReference::isAlias($rawValue)
             ? AliasReference::parse($rawValue)
             : $rawValue;
 
@@ -93,5 +99,22 @@ final class DtcgTreeBuilder
             : [];
 
         return new Token($path, $type, $value, $description, $extensions);
+    }
+
+    /**
+     * DTCG palette trees may use numeric segment keys (e.g. level 600).
+     *
+     * @param array<mixed, mixed> $node
+     *
+     * @return array<string, mixed>
+     */
+    private static function normalizeChildNode(array $node): array
+    {
+        $normalized = [];
+        foreach ($node as $key => $value) {
+            $normalized[(string) $key] = $value;
+        }
+
+        return $normalized;
     }
 }

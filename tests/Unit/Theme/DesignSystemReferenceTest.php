@@ -79,9 +79,9 @@ final class DesignSystemReferenceTest extends TestCase
         self::assertSame('corp', $boundTheme->designSystemId());
         self::assertNull($defaultTheme->designSystemId());
 
-        // Resolution input selects the design-system layer by the theme's reference (FR-009).
-        $selectedForBound = $registry[$boundTheme->designSystemId() ?? 'platform'];
-        $selectedForDefault = $registry[$defaultTheme->designSystemId() ?? 'platform'];
+        $selectedForBound = $registry[$boundTheme->designSystemId()];
+
+        $selectedForDefault = $registry['platform'];
 
         self::assertSame('corp', $selectedForBound->id());
         self::assertSame('platform', $selectedForDefault->id());

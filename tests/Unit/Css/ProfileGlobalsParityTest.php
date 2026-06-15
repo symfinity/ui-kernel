@@ -13,7 +13,7 @@ use Symfinity\UiKernel\Token\ThemeTokenSchema;
 /** 078 — profile globals DTCG parity vs pre-migration oracle. */
 final class ProfileGlobalsParityTest extends TestCase
 {
-    private const ORACLE = __DIR__ . '/fixtures/profile-globals-oracle.css';
+    private const ORACLE = __DIR__ . '/parity/profile-globals-oracle.css';
 
     #[Test]
     public function profileGlobalsMatchOracleForBuiltInThemes(): void

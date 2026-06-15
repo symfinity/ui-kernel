@@ -37,7 +37,11 @@ final class UiKernelExtension extends Extension
             ->setAutoconfigured(false)
             ->setArgument('$config', $config['system_profile']);
 
-        $profileGlobalsFile = TypeGuard::string($config['dtcg']['profile_globals_layer'] ?? 'profile-globals.dtcg.yaml');
+        $dtcg = $config['dtcg'] ?? [];
+        if (!is_array($dtcg)) {
+            $dtcg = [];
+        }
+        $profileGlobalsFile = TypeGuard::string($dtcg['profile_globals_layer'] ?? 'profile-globals.dtcg.yaml');
         $container->setParameter(
             'symfinity.ui_kernel.profile_globals_layer_path',
             dirname(__DIR__, 2) . '/config/tokens/' . $profileGlobalsFile,

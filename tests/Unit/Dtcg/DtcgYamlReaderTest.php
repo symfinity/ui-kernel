@@ -6,6 +6,7 @@ namespace Symfinity\UiKernel\Tests\Unit\Dtcg;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Symfinity\UiKernel\Contract\Token\AliasReference;
 use Symfinity\UiKernel\Contract\Token\TokenType;
 use Symfinity\UiKernel\Dtcg\DtcgYamlReader;
 
@@ -27,6 +28,8 @@ final class DtcgYamlReaderTest extends TestCase
         self::assertSame(['color.blue.600', 'color.primary'], array_keys($flat));
         self::assertSame(TokenType::Color, $flat['color.primary']->type());
         self::assertTrue($flat['color.primary']->isAlias());
-        self::assertSame('color.blue.600', (string) $flat['color.primary']->value()->target());
+        $alias = $flat['color.primary']->value();
+        self::assertInstanceOf(AliasReference::class, $alias);
+        self::assertSame('color.blue.600', (string) $alias->target());
     }
 }

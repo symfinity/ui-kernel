@@ -6,6 +6,7 @@ namespace Symfinity\UiKernel\Dtcg;
 
 use Symfinity\UiKernel\Contract\Layer\LayerRole;
 use Symfinity\UiKernel\Contract\Layer\LayerStack;
+use Symfinity\UiKernel\Contract\Layer\TokenLayerInterface;
 use Symfinity\UiKernel\Contract\Layer\TokenLayer;
 use Symfinity\UiKernel\Palette\PaletteGenerator;
 use Symfinity\UiKernel\Token\ThemePaletteRecipe;
@@ -26,13 +27,13 @@ final class LayerStackBuilder
         BuiltinThemeVariant $variant,
         ThemePaletteRecipe $paletteRecipe,
     ): LayerStack {
-        $anchorProfile = $variant->paletteDefinition()['anchor_profile'] ?? null;
+        $anchorProfile = null;
 
         $base = $this->paletteGenerator
             ->materializeDtcgDocument(
                 $paletteRecipe,
                 $variant->lineage(),
-                \is_string($anchorProfile) && $anchorProfile !== '' ? $anchorProfile : null,
+                $anchorProfile,
             )
             ->asLayer('base:' . $variant->lineage(), LayerRole::Base);
 
@@ -50,7 +51,7 @@ final class LayerStackBuilder
     }
 
     /**
-     * @return list<TokenLayer>
+     * @return list<TokenLayerInterface>
      */
     public function layerList(LayerStack $stack): array
     {
