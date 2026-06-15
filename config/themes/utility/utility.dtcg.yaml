@@ -11,10 +11,10 @@ color:
   surface:
     base:
       $type: color
-      $value: '{color.mono.neutral.100}'
+      $value: '{color.mono.neutral.50}'
     elevated:
       $type: color
-      $value: '{color.mono.slate.100}'
+      $value: '{color.mono.neutral.100}'
   overlay:
     $type: color
     $value: 'rgba(15, 15, 16, 0.4)'
@@ -28,19 +28,19 @@ color:
   border:
     default:
       $type: color
-      $value: '{color.mono.slate.200}'
+      $value: '{color.mono.slate.100}'
   danger:
     $type: color
     $value: '{color.red.500}'
   success:
     $type: color
-    $value: '{color.emerald.600}'
+    $value: '{color.green.500}'
   warning:
     $type: color
     $value: '{color.orange.400}'
   info:
     $type: color
-    $value: '{color.teal.600}'
+    $value: '{color.teal.500}'
   focus:
     $type: color
     $value: '{color.blue.400}'
