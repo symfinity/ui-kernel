@@ -227,7 +227,7 @@ final class PerceptualMidtoneRampOracleTest extends TestCase
      */
     private static function loadBaseline(): array
     {
-        $path = dirname(__DIR__, 2) . '/Fixtures/palette/pre-085-midtone-baseline.json';
+        $path = dirname(__DIR__, 2) . '/fixtures/palette/pre-085-midtone-baseline.json';
         self::assertFileExists($path);
 
         $contents = file_get_contents($path);
