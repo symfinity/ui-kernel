@@ -16,6 +16,9 @@ final class GeneratorPaletteConfigValidator
         'chroma_percent',
         'mono_hues',
         'dark_tail_l_end',
+        'midtone_gamma',
+        'midtone_gain',
+        'midtone_chroma_floor',
     ];
 
     /**
@@ -81,6 +84,26 @@ final class GeneratorPaletteConfigValidator
         $darkTailEnd = $generatorPalette['dark_tail_l_end'] ?? null;
         if ($darkTailEnd !== null && !is_numeric($darkTailEnd)) {
             throw new \RuntimeException('generator.palette.dark_tail_l_end must be numeric.');
+        }
+
+        $midtoneGamma = $generatorPalette['midtone_gamma'] ?? null;
+        if ($midtoneGamma !== null && !is_numeric($midtoneGamma)) {
+            throw new \RuntimeException('generator.palette.midtone_gamma must be numeric.');
+        }
+
+        $midtoneGain = $generatorPalette['midtone_gain'] ?? null;
+        if ($midtoneGain !== null) {
+            if (!is_numeric($midtoneGain)) {
+                throw new \RuntimeException('generator.palette.midtone_gain must be numeric.');
+            }
+            if ((float) $midtoneGain > 1.2) {
+                throw new \RuntimeException('generator.palette.midtone_gain must not exceed 1.2.');
+            }
+        }
+
+        $midtoneChromaFloor = $generatorPalette['midtone_chroma_floor'] ?? null;
+        if ($midtoneChromaFloor !== null && !is_numeric($midtoneChromaFloor)) {
+            throw new \RuntimeException('generator.palette.midtone_chroma_floor must be numeric.');
         }
     }
 

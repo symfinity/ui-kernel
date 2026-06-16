@@ -174,6 +174,36 @@ final class PaletteCatalog
         return 1;
     }
 
+    public static function midtoneGamma(): float
+    {
+        $gamma = self::generator()['midtone_gamma'] ?? null;
+        if (is_numeric($gamma)) {
+            return (float) $gamma;
+        }
+
+        return 1.35;
+    }
+
+    public static function midtoneGain(): float
+    {
+        $gain = self::generator()['midtone_gain'] ?? null;
+        if (is_numeric($gain)) {
+            return (float) $gain;
+        }
+
+        return 1.0;
+    }
+
+    public static function midtoneChromaFloor(): float
+    {
+        $floor = self::generator()['midtone_chroma_floor'] ?? null;
+        if (is_numeric($floor)) {
+            return (float) $floor;
+        }
+
+        return 0.10;
+    }
+
     /**
      * @return array<string, string>
      */

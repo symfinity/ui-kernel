@@ -13,6 +13,16 @@ use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 
 final class DarkTailRampOracleTest extends TestCase
 {
+    /** @var array<int, float> SSOT base L — dark-tail-ramp-correction rev 2 */
+    private const DARK_TAIL_BASE_L = [
+        500 => 0.461,
+        600 => 0.446,
+        700 => 0.402,
+        800 => 0.328,
+        900 => 0.224,
+        950 => 0.112,
+    ];
+
     private PaletteRampMath $math;
 
     private PaletteGenerator $generator;
@@ -33,17 +43,26 @@ final class DarkTailRampOracleTest extends TestCase
     }
 
     #[Test]
-    public function blue900And950ArePerceptuallySeparated(): void
+    public function blue900And950UseMidpointToBlack(): void
     {
         $l900 = $this->generator->resolveToOklch('blue.900', $this->recipe)->l;
         $l950 = $this->generator->resolveToOklch('blue.950', $this->recipe)->l;
 
-        self::assertGreaterThanOrEqual(0.017, $l900 - $l950, '900/950 must be perceptually distinct at default l_bounds');
-        self::assertEqualsWithDelta(PaletteCatalog::darkTailLEnd(), $l950, 0.001);
+        self::assertEqualsWithDelta($l900 / 2.0, $l950, 0.001, '950 must sit midway between 900 and black');
+        self::assertGreaterThanOrEqual(0.017, $l900 - $l950, '900/950 must remain perceptually distinct');
     }
 
     #[Test]
-    public function level600MatchesLinearBaseline(): void
+    public function darkTailBaseLightnessMatchesSsotAnchors(): void
+    {
+        foreach (self::DARK_TAIL_BASE_L as $level => $expected) {
+            $actual = $this->math->lightnessForLevel($level);
+            self::assertEqualsWithDelta($expected, $actual, 0.001, 'level ' . $level);
+        }
+    }
+
+    #[Test]
+    public function level600UsesDarkSegmentNotLinearBaseline(): void
     {
         $levels = PaletteCatalog::levels();
         $index600 = array_search(600, $levels, true);
@@ -52,7 +71,8 @@ final class DarkTailRampOracleTest extends TestCase
         $linearL600 = $this->linearLightnessAtIndex($index600);
         $actualL600 = $this->math->lightnessForLevel(600);
 
-        self::assertEqualsWithDelta($linearL600, $actualL600, 0.001);
+        self::assertEqualsWithDelta(self::DARK_TAIL_BASE_L[600], $actualL600, 0.001);
+        self::assertGreaterThan($linearL600, $actualL600, '600 must be lighter than pre-079 linear');
     }
 
     #[Test]

@@ -12,6 +12,19 @@ use Symfinity\UiKernel\Token\PaletteCatalog;
  */
 final class PaletteRampMath
 {
+    /** Dark-tail SSOT (revision 2) — see dark-tail-ramp-correction contract. */
+    private const DARK_TAIL_L_AT_600 = 0.446;
+
+    private const DARK_TAIL_DROP_FIRST = 0.044;
+
+    private const DARK_TAIL_DROP_ACCEL = 0.030;
+
+    private const DARK_TAIL_DEFAULT_L_END = 0.09;
+
+    private const DARK_TAIL_MAX_STEPS_FROM_600 = 4;
+
+    private const DARK_TAIL_STEPS_900 = 3;
+
     public function __construct(
         private readonly float $lMin = 0.0025,
         private readonly float $lMax = 0.92,
@@ -77,11 +90,69 @@ final class PaletteRampMath
             return $linear;
         }
 
-        $l600 = $this->lightnessForIndex($index600, $count, false);
-        $lEnd = PaletteCatalog::darkTailLEnd();
-        $t = ($index - $index600) / ($index950 - $index600);
+        $stepsFrom600 = $index - $index600;
 
-        return $lEnd + ($l600 - $lEnd) * (1.0 - $t) * (1.0 - $t);
+        return $this->darkTailLightnessAtStep(
+            $stepsFrom600,
+            self::DARK_TAIL_L_AT_600,
+            PaletteCatalog::darkTailLEnd(),
+        );
+    }
+
+    /**
+     * Dark-tail L for step s from 600. Step 4 (950) = midpoint between step 3 (900) and black (L=0).
+     */
+    public function darkTailLightnessAtStep(int $stepsFrom600, float $l600Anchor, float $lEnd): float
+    {
+        if ($stepsFrom600 === self::DARK_TAIL_MAX_STEPS_FROM_600) {
+            $l900 = $this->darkSegmentLightnessFromAnchor(self::DARK_TAIL_STEPS_900, $l600Anchor, $lEnd);
+
+            return $l900 / 2.0;
+        }
+
+        return $this->darkSegmentLightnessFromAnchor($stepsFrom600, $l600Anchor, $lEnd);
+    }
+
+    /**
+     * Quadratic-step dark tail from a per-hue L₆₀₀ anchor (500→600 bridge sets anchor).
+     *
+     * When {@see PaletteCatalog::darkTailLEnd()} differs from the default 0.09, remap along the same relative curve.
+     */
+    public function darkSegmentLightnessFromAnchor(int $stepsFrom600, float $l600Anchor, float $lEnd): float
+    {
+        if ($stepsFrom600 < 0) {
+            throw new InvalidArgumentException('stepsFrom600 must be non-negative.');
+        }
+
+        $lDefault = $l600Anchor
+            - $stepsFrom600 * self::DARK_TAIL_DROP_FIRST
+            - self::DARK_TAIL_DROP_ACCEL * $stepsFrom600 * ($stepsFrom600 - 1) / 2.0;
+
+        $lDefaultEnd = $l600Anchor
+            - self::DARK_TAIL_MAX_STEPS_FROM_600 * self::DARK_TAIL_DROP_FIRST
+            - self::DARK_TAIL_DROP_ACCEL * self::DARK_TAIL_MAX_STEPS_FROM_600
+                * (self::DARK_TAIL_MAX_STEPS_FROM_600 - 1) / 2.0;
+
+        $range = $l600Anchor - $lDefaultEnd;
+        if ($range <= 0.0) {
+            return $lEnd;
+        }
+
+        $fraction = ($lDefault - $lDefaultEnd) / $range;
+
+        return $lEnd + $fraction * ($l600Anchor - $lEnd);
+    }
+
+    public function stepsFrom600(int $level): int
+    {
+        $levels = PaletteCatalog::levels();
+        $index600 = array_search(600, $levels, true);
+        $index = array_search($level, $levels, true);
+        if ($index600 === false || $index === false) {
+            throw new InvalidArgumentException(sprintf('Unknown level %d.', $level));
+        }
+
+        return $index - $index600;
     }
 
     public function chromaForHueStep(

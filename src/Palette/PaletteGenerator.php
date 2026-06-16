@@ -24,7 +24,7 @@ final class PaletteGenerator
 
     private readonly PaletteRampMath $rampMath;
 
-    private readonly WarmHueRampPolicy $warmHuePolicy;
+    private readonly PerceptualMidtoneRampPolicy $midtonePolicy;
 
     /** @var array<string, string> */
     private readonly array $scaleAnchors;
@@ -36,12 +36,12 @@ final class PaletteGenerator
         ?array $scaleAnchors = null,
         ?OklchColorSpace $colorSpace = null,
         ?PaletteRampMath $rampMath = null,
-        ?WarmHueRampPolicy $warmHuePolicy = null,
+        ?PerceptualMidtoneRampPolicy $midtonePolicy = null,
     ) {
         $this->scaleAnchors = $scaleAnchors ?? PaletteScaleAnchors::all();
         $this->colorSpace = $colorSpace ?? new OklchColorSpace();
         $this->rampMath = $rampMath ?? PaletteRampMath::fromCatalog();
-        $this->warmHuePolicy = $warmHuePolicy ?? new WarmHueRampPolicy();
+        $this->midtonePolicy = $midtonePolicy ?? PerceptualMidtoneRampPolicy::fromCatalog();
     }
 
     public function resolve(string $ref, ThemePaletteRecipe $recipe): string
@@ -241,9 +241,26 @@ final class PaletteGenerator
 
     public function hueOklch(string $hue, int $level, ThemePaletteRecipe $recipe): OklchTuple
     {
-        $lightness = $this->rampMath->lightnessForLevel($level);
-        $lightness = $this->warmHuePolicy->adjustLightness($hue, $level, $lightness);
         $hueDegrees = $recipe->hueDegrees($hue);
+
+        if ($level >= 600) {
+            $lightness500 = $this->resolveHueMidtoneLightness($hue, 500, $recipe);
+            $l600Anchor = max(
+                PaletteCatalog::darkTailLEnd(),
+                $lightness500 - PerceptualMidtoneRampPolicy::LEVEL_500_TO_600_DELTA,
+            );
+            $lightness = $this->rampMath->darkTailLightnessAtStep(
+                $this->rampMath->stepsFrom600($level),
+                $l600Anchor,
+                PaletteCatalog::darkTailLEnd(),
+            );
+            $strength = 0.0;
+        } else {
+            $baseLightness = $this->rampMath->lightnessForLevel($level);
+            $strength = $this->midtonePolicy->strength($hue, $level, $baseLightness, $hueDegrees, $this->colorSpace);
+            $lightness = $this->midtonePolicy->adjustLightness($hue, $level, $baseLightness, $hueDegrees, $this->colorSpace);
+        }
+
         $chroma = $this->rampMath->chromaForHueStep(
             $level,
             $lightness,
@@ -251,12 +268,23 @@ final class PaletteGenerator
             $this->colorSpace,
             $recipe->hueChromaOverride($hue),
         );
-        $floor = $this->warmHuePolicy->chromaFloor($hue, $level);
-        if ($floor > 0.0 && $this->warmHuePolicy->isWarmFamily($hue)) {
-            $chroma = max($chroma, $floor);
-        }
+        $chroma = $this->midtonePolicy->applyChromaFloor($chroma, $strength);
 
         return new OklchTuple($lightness, $chroma, $hueDegrees);
+    }
+
+    private function resolveHueMidtoneLightness(string $hue, int $level, ThemePaletteRecipe $recipe): float
+    {
+        $baseLightness = $this->rampMath->lightnessForLevel($level);
+        $hueDegrees = $recipe->hueDegrees($hue);
+
+        return $this->midtonePolicy->adjustLightness(
+            $hue,
+            $level,
+            $baseLightness,
+            $hueDegrees,
+            $this->colorSpace,
+        );
     }
 
     public function applyAlpha(string $hex, int $alphaPercent): string

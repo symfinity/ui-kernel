@@ -124,4 +124,16 @@ final class GeneratorPaletteConfigValidatorTest extends TestCase
 
         GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
     }
+
+    #[Test]
+    public function midtoneGainAboveMaxIsRejected(): void
+    {
+        $generator = $this->validGenerator();
+        $generator['midtone_gain'] = 1.5;
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('generator.palette.midtone_gain must not exceed 1.2');
+
+        GeneratorPaletteConfigValidator::validate($this->validContract(), $generator);
+    }
 }

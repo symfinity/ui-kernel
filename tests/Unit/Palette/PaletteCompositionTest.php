@@ -46,7 +46,7 @@ final class PaletteCompositionTest extends TestCase
             $default->monoTones(),
         );
         $baselineTuple = $this->generator->resolveToOklch('blue.500', $generatorOnly);
-        self::assertSame(255.0, $baselineTuple->h);
+        self::assertSame(250.0, $baselineTuple->h);
         self::assertGreaterThan(0.0, $baselineTuple->c);
     }
 

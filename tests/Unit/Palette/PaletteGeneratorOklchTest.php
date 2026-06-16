@@ -107,7 +107,7 @@ final class PaletteGeneratorOklchTest extends TestCase
 
         self::assertGreaterThan(0.0, $blue600->l);
         self::assertGreaterThan(0.0, $blue600->c);
-        self::assertSame(255.0, $blue600->h);
+        self::assertSame(250.0, $blue600->h);
     }
 
     #[Test]

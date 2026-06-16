@@ -24,8 +24,9 @@ final class PaletteGeneratorTest extends TestCase
         );
         $tuple = $generator->resolveToOklch('blue.500', $recipe);
         [$min, $max] = PaletteCatalog::lBounds();
+        $midpoint = ($min + $max) / 2.0;
 
-        self::assertEqualsWithDelta(($min + $max) / 2.0, $tuple->l, 1e-6);
+        self::assertLessThanOrEqual(0.08, abs($tuple->l - $midpoint), '085 midtone lift capped for cool_vivid');
     }
 
     #[Test]
