@@ -2,11 +2,17 @@
 
 ## 0.1.1
 
-No breaking changes. Patch release: Flex recipe constraint `^0.1.1` and handbook upgrade guide.
+Patch release after [v0.1.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.0). PHP APIs are unchanged; **generated palette CSS is not identical to v0.1.0** (perceptual midtone policy, dark-tail curve, bundle mono hue centralization — all in-place at `generator.palette.revision: 1`).
 
 ```bash
 composer update symfinity/ui-kernel
 ```
+
+After upgrade:
+
+1. Clear Symfony cache if theme CSS is cached in your environment.
+2. Re-check pages or snapshots that assert exact `--ui-color-*` values — hue ramps and tinted mono steps were recalculated in place at `generator.palette.revision: 1`.
+3. No manifest or config key renames; existing `symfinity_ui_kernel.yaml` trees remain valid.
 
 ## 0.1.0
 
