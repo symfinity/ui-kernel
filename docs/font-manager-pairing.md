@@ -19,7 +19,7 @@ Values use system stacks until you wire font-manager.
 
 Applications remain legible with system stacks — ui-kernel does not ship `@font-face` rules.
 
-## Non-goals (v0.1)
+## Non-goals (v0.1.0+)
 
 - Runtime auto-detect of font-manager
 - Flex recipe requiring font-manager
