@@ -12,14 +12,12 @@ use Symfinity\UiKernel\Token\PaletteCatalog;
  */
 final class PaletteRampMath
 {
-    /** Dark-tail SSOT (revision 2) — see dark-tail-ramp-correction contract. */
+    /** Dark-tail SSOT — see dark-tail-ramp-correction contract (in-place at generator.palette.revision 1). */
     private const DARK_TAIL_L_AT_600 = 0.446;
 
     private const DARK_TAIL_DROP_FIRST = 0.044;
 
     private const DARK_TAIL_DROP_ACCEL = 0.030;
-
-    private const DARK_TAIL_DEFAULT_L_END = 0.09;
 
     private const DARK_TAIL_MAX_STEPS_FROM_600 = 4;
 
