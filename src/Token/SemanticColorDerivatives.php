@@ -68,6 +68,9 @@ final class SemanticColorDerivatives
             $derived['--ui-color-on-ghost'] = $tokens['--ui-color-text'];
         }
 
+        // Solid filled controls (ux-blocks button appearance=solid) use a fixed on-fill label.
+        $derived['--ui-color-button-text'] = 'oklch(1 0 0)';
+
         return $derived;
     }
 

@@ -29,6 +29,18 @@ Runtime resolution: `base` (OKLCH palette DTCG from generator) ⊕ `design_syste
 
 **ui-themer consumer themes** (export YAML from symfinity/ui-themer) stay on the bespoke `preset` / `tone` / `semantics` schema via `AuthoringThemeConfig` — they do **not** register in `config/themes/`. See [DTCG token core](dtcg-token-core.md) and the ui-themer boundary below.
 
+## Consumer app overrides
+
+Flex apps may ship DTCG lineages under `config/themes/{lineage}/` (same layout as bundle). App lineages **override** bundle lineages with the same folder name; invalid app lineages are skipped with a warning.
+
+```yaml
+# config/packages/symfinity_ui_kernel.yaml
+symfinity_ui_kernel:
+    themes_directory: '%kernel.project_dir%/config/themes'
+```
+
+Merged variants appear in `ThemeRegistry` and the ui-themer explore catalog (`source: app` badge).
+
 ## Built-in theme ids
 
 | Id | Label | Notes |

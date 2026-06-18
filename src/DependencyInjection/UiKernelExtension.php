@@ -24,6 +24,21 @@ final class UiKernelExtension extends Extension
         $container->setParameter('symfinity.ui_kernel.schema_version', TypeGuard::string($config['schema_version'] ?? null));
         $container->setParameter('symfinity.ui_kernel.default_lineage', TypeGuard::string($config['default_variant'] ?? null));
 
+        $themesDirectory = $config['themes_directory'] ?? null;
+        if ($themesDirectory !== null && !is_string($themesDirectory)) {
+            $themesDirectory = null;
+        }
+        $container->setParameter(
+            'symfinity.ui_kernel.themes_directory',
+            is_string($themesDirectory) && $themesDirectory !== ''
+                ? $themesDirectory
+                : '%kernel.project_dir%/config/themes',
+        );
+        $container->setParameter(
+            'symfinity.ui_kernel.bundle_themes_directory',
+            dirname(__DIR__, 2) . '/config/themes',
+        );
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../config'));
         $loader->load('services.yaml');
 

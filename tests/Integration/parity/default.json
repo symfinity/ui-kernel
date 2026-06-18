@@ -2,6 +2,7 @@
     "--ui-backdrop-blur": "0",
     "--ui-backdrop-color": "rgba(15, 15, 16, 0.4)",
     "--ui-color-border": "oklch(0.7365 0.0095 240)",
+    "--ui-color-button-text": "oklch(1 0 0)",
     "--ui-color-danger": "oklch(0.5861 0.2376 25)",
     "--ui-color-danger-active": "oklch(from var(--ui-color-danger) calc(l * 0.76) c h)",
     "--ui-color-danger-hover": "oklch(from var(--ui-color-danger) calc(l * 0.88) c h)",

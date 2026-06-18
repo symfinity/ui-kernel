@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Theme;
 
 use InvalidArgumentException;
+use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
 use Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry;
 use Symfinity\UiKernel\Dtcg\LayerStackBuilder;
 use Symfinity\UiKernel\Dtcg\ThemeDtcgResolver;
@@ -20,8 +21,13 @@ final class ThemeRegistry
 
     private UserTokenSet $userTokens;
 
-    public function __construct(?ThemeDtcgResolver $resolver = null, ?UserTokenSet $userTokens = null)
-    {
+    public function __construct(
+        ?BuiltinDtcgThemeCatalog $dtcgCatalog = null,
+        ?ThemeDtcgResolver $resolver = null,
+        ?UserTokenSet $userTokens = null,
+    ) {
+        $dtcgCatalog ??= BuiltinDtcgThemeCatalog::fromDefaultDirectory();
+        ThemeCatalog::bindDtcgCatalog($dtcgCatalog);
         $this->resolver = $resolver ?? new ThemeDtcgResolver(new LayerStackBuilder(
             new DesignSystemLayerRegistry(DesignSystemLayerRegistry::defaultDirectory()),
         ));
@@ -38,6 +44,11 @@ final class ThemeRegistry
         RegistryResolutionPolicy::assertUniqueThemeId($id, isset($this->themes[$id]));
 
         $this->themes[$id] = $theme;
+    }
+
+    public function has(string $id): bool
+    {
+        return isset($this->themes[$id]);
     }
 
     public function get(string $id): Theme

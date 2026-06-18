@@ -109,6 +109,6 @@ final class ThemeLineageCatalog
 
     private static function dtcgCatalog(): BuiltinDtcgThemeCatalog
     {
-        return new BuiltinDtcgThemeCatalog(BuiltinDtcgThemeCatalog::defaultDirectory());
+        return ThemeCatalog::dtcgCatalogInstance();
     }
 }

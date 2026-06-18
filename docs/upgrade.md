@@ -1,5 +1,20 @@
 # Upgrade and migration
 
+## 0.1.2
+
+Patch release after [v0.1.1](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.1). Optional consumer theme overrides and `--ui-color-button-text`; yellow ramp CSS may differ from v0.1.1.
+
+```bash
+composer update symfinity/ui-kernel
+```
+
+After upgrade:
+
+1. Clear Symfony cache if theme CSS is cached in your environment.
+2. Re-check snapshots that assert exact `--ui-color-*` values — yellow ramp steps changed; new `--ui-color-button-text` appears in generated CSS.
+3. To ship app-owned DTCG lineages, add files under `config/themes/{lineage}/` and set `themes_directory` if not using the default — see [Themes](themes.md#consumer-app-overrides).
+4. Existing apps without `config/themes/` need no config changes beyond the Flex-copied default.
+
 ## 0.1.1
 
 Patch release after [v0.1.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.0). PHP APIs are unchanged; **generated palette CSS is not identical to v0.1.0** (perceptual midtone policy, dark-tail curve, bundle mono hue centralization — all in-place at `generator.palette.revision: 1`).

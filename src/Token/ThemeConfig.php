@@ -7,6 +7,7 @@ namespace Symfinity\UiKernel\Token;
 use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
 use Symfinity\UiKernel\Dtcg\BuiltinThemeVariant;
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\ThemeCatalog;
 
 /**
  * Built-in theme definitions — palette recipe access for tests and palette tooling.
@@ -144,6 +145,6 @@ final class ThemeConfig
 
     private static function catalog(): BuiltinDtcgThemeCatalog
     {
-        return new BuiltinDtcgThemeCatalog(BuiltinDtcgThemeCatalog::defaultDirectory());
+        return ThemeCatalog::dtcgCatalogInstance();
     }
 }

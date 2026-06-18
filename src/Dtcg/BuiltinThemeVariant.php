@@ -33,6 +33,8 @@ final readonly class BuiltinThemeVariant
         private string $schemaVersion = '1.0',
         private bool $scrollMotion = false,
         private string $backdropBlur = '0',
+        private string $mode = 'light',
+        private string $catalogSource = 'kernel',
     ) {
     }
 
@@ -107,5 +109,15 @@ final readonly class BuiltinThemeVariant
     public function paletteDefinition(): array
     {
         return $this->paletteDefinition;
+    }
+
+    public function mode(): string
+    {
+        return $this->mode;
+    }
+
+    public function catalogSource(): string
+    {
+        return $this->catalogSource;
     }
 }

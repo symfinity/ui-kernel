@@ -58,6 +58,7 @@
   --ui-overlay-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
   --ui-backdrop-color: rgba(15, 15, 16, 0.4);
   --ui-backdrop-blur: 0;
+  --ui-color-button-text: oklch(1 0 0);
   --ui-color-on-primary: oklch(1 0 0);
   --ui-color-primary-hover: oklch(from var(--ui-color-primary) calc(l * 0.88) c h);
   --ui-color-primary-active: oklch(from var(--ui-color-primary) calc(l * 0.76) c h);
@@ -141,6 +142,7 @@
   --ui-overlay-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
   --ui-backdrop-color: rgba(15, 15, 16, 0.4);
   --ui-backdrop-blur: 0;
+  --ui-color-button-text: oklch(1 0 0);
   --ui-color-on-primary: oklch(1 0 0);
   --ui-color-primary-hover: oklch(from var(--ui-color-primary) calc(l * 0.88) c h);
   --ui-color-primary-active: oklch(from var(--ui-color-primary) calc(l * 0.76) c h);

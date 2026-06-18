@@ -2,6 +2,7 @@ symfinity_ui_kernel:
   schema_version: '1.0'
   default_theme: default
   default_variant: default
+  themes_directory: '%kernel.project_dir%/config/themes'
   user_tokens: {}
   contract:
     palette:

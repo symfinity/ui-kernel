@@ -5,6 +5,36 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2] - 2026-06-19
+
+Patch release after [v0.1.1](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.1). Adds optional consumer theme overrides and a solid-button label token; yellow ramp values may differ from v0.1.1.
+
+### Added
+
+- **Consumer app DTCG themes** — ship lineages under `config/themes/{lineage}/` (same layout as bundle); app lineages override bundle lineages with the same folder name; invalid app lineages are skipped with a PSR-3 warning
+- **`themes_directory`** — app config key defaulting to `%kernel.project_dir%/config/themes`
+- **`ThemeRegistry::has()`** — check whether a theme id is registered
+- **`--ui-color-button-text`** — semantic CSS variable for on-fill label colour on solid controls (light and dark schemes)
+- **Built-in DTCG `color.button.text`** — on all six bundle theme variants
+- **Handbook** — consumer app overrides in `docs/themes.md`
+
+### Changed
+
+- **`BuiltinDtcgThemeCatalog`** — merges bundle and app theme directories; shared catalog instance wired through `ThemeRegistry` and `ThemeCatalog`
+- **`BuiltinThemeVariant`** — exposes `mode()` and `catalogSource()` (`kernel` or `app`)
+- **Yellow perceptual midtone ramp** — adjusted L for levels 200–500; default lineage yellow hue 95° → 100°
+- **Generated CSS** — includes `--ui-color-button-text`; yellow `--ui-color-*` steps may differ from v0.1.1
+
+### Removed
+
+- **`config/reference.php`** — auto-generated Symfony config reference (apps-only; not part of the bundle API)
+
+### Notes
+
+- No PHP public API removals — patch semver
+- Flex recipe `0.1` unchanged in constraint; default copied app config includes `themes_directory`
+- Apps without a `config/themes/` tree behave as on v0.1.1
+
 ## [0.1.1] - 2026-06-16
 
 Palette ramp generation overhaul since [v0.1.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.0) — same `generator.palette.revision: 1`, replaced math in place.

@@ -44,6 +44,10 @@ color:
   focus:
     $type: color
     $value: '{color.blue.400}'
+  button:
+    text:
+      $type: color
+      $value: '{color.mono.neutral.50}'
   skeleton:
     base:
       $type: color

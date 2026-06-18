@@ -69,7 +69,22 @@ final class ThemeCatalog
     public static function reset(): void
     {
         self::$defaultThemes = null;
+        self::$dtcgCatalog = null;
         BuiltinDtcgThemeCatalog::reset();
+    }
+
+    public static function bindDtcgCatalog(BuiltinDtcgThemeCatalog $catalog): void
+    {
+        if (self::$dtcgCatalog !== null) {
+            BuiltinDtcgThemeCatalog::reset();
+        }
+        self::$dtcgCatalog = $catalog;
+        self::$defaultThemes = null;
+    }
+
+    public static function dtcgCatalogInstance(): BuiltinDtcgThemeCatalog
+    {
+        return self::dtcgCatalog();
     }
 
     private static function dtcgCatalog(): BuiltinDtcgThemeCatalog

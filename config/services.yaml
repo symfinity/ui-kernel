@@ -22,13 +22,18 @@ services:
 
   Symfinity\UiKernel\Css\CssGenerator: ~
 
-  Symfinity\UiKernel\Theme\ThemeRegistry: ~
+  Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog:
+    factory: ['Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog', 'fromConfiguredDirectories']
+    arguments:
+      - '%symfinity.ui_kernel.themes_directory%'
+      - '%symfinity.ui_kernel.bundle_themes_directory%'
+
+  Symfinity\UiKernel\Theme\ThemeRegistry:
+    arguments:
+      $dtcgCatalog: '@Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog'
 
   Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry:
     factory: ['Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry', 'fromDefaultDirectory']
-
-  Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog:
-    factory: ['Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog', 'fromDefaultDirectory']
 
   Symfinity\UiKernel\Dtcg\ProfileGlobalsLayerRegistry:
     arguments:

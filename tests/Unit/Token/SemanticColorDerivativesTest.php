@@ -39,6 +39,18 @@ final class SemanticColorDerivativesTest extends TestCase
         self::assertArrayHasKey('--ui-color-on-danger', $tokens);
         self::assertArrayHasKey('--ui-color-warning-active', $tokens);
         self::assertArrayHasKey('--ui-color-on-muted', $tokens);
+        self::assertSame('oklch(1 0 0)', $tokens['--ui-color-button-text']);
+    }
+
+    #[Test]
+    public function buttonTextStaysWhiteForDarkSchemeTokens(): void
+    {
+        $resolver = ThemeDtcgResolverFactory::create();
+        $light = $resolver->resolve(ThemeCatalog::variant('semantic'))->all();
+        $dark = $resolver->resolve(ThemeCatalog::variant('semantic-dark'))->all();
+
+        self::assertSame('oklch(1 0 0)', $light['--ui-color-button-text']);
+        self::assertSame('oklch(1 0 0)', $dark['--ui-color-button-text']);
     }
 
     #[Test]
