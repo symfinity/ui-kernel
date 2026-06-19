@@ -11,14 +11,22 @@ use Symfinity\UiKernel\Theme\LayoutProfile;
  */
 final class PresetRegistry
 {
+    public function __construct(
+        private readonly CompoundShadowBuilder $compoundShadowBuilder = new CompoundShadowBuilder(),
+    ) {
+    }
+
     /**
      * @return array<string, string>
      */
-    public function tokensFor(LayoutProfile $preset, string $schemaVersion = ThemeTokenSchema::V1_0): array
-    {
+    public function tokensFor(
+        LayoutProfile $preset,
+        string $schemaVersion = ThemeTokenSchema::V1_0,
+        ColorMode $mode = ColorMode::Light,
+    ): array {
         ThemeTokenSchema::requiredKeys($schemaVersion);
 
-        return match ($preset) {
+        $tokens = match ($preset) {
             LayoutProfile::Semantic => [
                 '--ui-space-xs' => '0.25rem',
                 '--ui-space-sm' => '0.5rem',
@@ -32,9 +40,6 @@ final class PresetRegistry
                 '--ui-radius-lg' => '0.5rem',
                 '--ui-radius-full' => '9999px',
                 '--ui-grid-gap' => '1rem',
-                '--ui-shadow-sm' => '0 1px 2px rgba(0, 0, 0, 0.06)',
-                '--ui-shadow-md' => '0 4px 12px rgba(0, 0, 0, 0.1)',
-                '--ui-shadow-lg' => '0 12px 28px rgba(0, 0, 0, 0.15)',
                 '--ui-font-family-sans' => 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
                 '--ui-font-family-mono' => 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
                 '--ui-font-size-sm' => '0.875rem',
@@ -69,9 +74,6 @@ final class PresetRegistry
                 '--ui-radius-lg' => '0.5rem',
                 '--ui-radius-full' => '9999px',
                 '--ui-grid-gap' => '0.75rem',
-                '--ui-shadow-sm' => '0 1px 2px rgba(15, 23, 42, 0.08)',
-                '--ui-shadow-md' => '0 4px 8px rgba(15, 23, 42, 0.12)',
-                '--ui-shadow-lg' => '0 10px 20px rgba(15, 23, 42, 0.16)',
                 '--ui-font-family-sans' => 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif',
                 '--ui-font-family-mono' => 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
                 '--ui-font-size-sm' => '0.875rem',
@@ -94,5 +96,11 @@ final class PresetRegistry
                 '--ui-focus-ring-blur' => '0',
             ],
         };
+
+        return $this->compoundShadowBuilder->applyToTokenMap(
+            $tokens,
+            LineageId::fromLayoutProfile($preset),
+            $mode,
+        );
     }
 }

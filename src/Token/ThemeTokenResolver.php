@@ -9,6 +9,7 @@ final class ThemeTokenResolver
     public function __construct(
         private readonly SemanticColorMap $semanticColorMap = new SemanticColorMap(),
         private readonly PresetRegistry $presetRegistry = new PresetRegistry(),
+        private readonly CompoundShadowBuilder $compoundShadowBuilder = new CompoundShadowBuilder(),
     ) {
     }
 
@@ -33,6 +34,12 @@ final class ThemeTokenResolver
         if ($userTokens !== null && !$userTokens->isEmpty()) {
             $merged = $userTokens->merge($merged, $schemaVersion);
         }
+
+        $merged = $this->compoundShadowBuilder->applyToTokenMap(
+            $merged,
+            LineageId::fromLayoutProfile($config->layout()),
+            ColorMode::Light,
+        );
 
         $merged = [...$merged, ...self::overlayTokens($merged, $config)];
         $merged = [...$merged, ...(new SemanticColorDerivatives())->derive($merged)];

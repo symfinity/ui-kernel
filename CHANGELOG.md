@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`CompoundShadowBuilder`** — compound inset + drop shadows on `--ui-shadow-sm|md|lg` at theme resolve time (lineage × mode × surface-elevated); **098**
+
+### Changed
+
+- **`ThemeDtcgResolver` / `ThemeTokenResolver` / `PresetRegistry`** — replace flat `rgba` shadow literals with compound `color-mix` strings; `--ui-overlay-shadow` aliases strongest tier
+- **CSS parity fixtures** — regenerated for all six built-in theme variants
+
 ## [0.1.2] - 2026-06-19
 
 Patch release after [v0.1.1](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.1). Adds optional consumer theme overrides and a solid-button label token; yellow ramp values may differ from v0.1.1.

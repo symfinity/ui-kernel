@@ -130,6 +130,12 @@ final class TokenValueValidator
             return;
         }
 
+        if (str_contains($key, 'shadow')
+            && str_contains($value, 'inset')
+            && str_contains($value, 'color-mix(in oklch')) {
+            return;
+        }
+
         if (self::isAllowedOklchColor($value)) {
             return;
         }

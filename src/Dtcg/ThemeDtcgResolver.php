@@ -7,7 +7,10 @@ namespace Symfinity\UiKernel\Dtcg;
 use Symfinity\UiKernel\Contract\Resolver\ResolvedGraphInterface;
 use Symfinity\UiKernel\Contract\Token\TokenInterface;
 use Symfinity\UiKernel\Css\CssVariableSet;
+use Symfinity\UiKernel\Token\ColorMode;
+use Symfinity\UiKernel\Token\CompoundShadowBuilder;
 use Symfinity\UiKernel\Token\DesignTokenSet;
+use Symfinity\UiKernel\Token\LineageId;
 use Symfinity\UiKernel\Token\SemanticColorDerivatives;
 use Symfinity\UiKernel\Token\SemanticColorMap;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
@@ -24,6 +27,7 @@ final class ThemeDtcgResolver
         private readonly CssVariableSet $cssVariableSet = new CssVariableSet(),
         private readonly CssEmissionFilter $emissionFilter = new CssEmissionFilter(),
         private readonly SemanticColorDerivatives $derivatives = new SemanticColorDerivatives(),
+        private readonly CompoundShadowBuilder $compoundShadowBuilder = new CompoundShadowBuilder(),
     ) {
     }
 
@@ -37,6 +41,12 @@ final class ThemeDtcgResolver
         if ($userTokens !== null && !$userTokens->isEmpty()) {
             $variables = $userTokens->merge($variables, $variant->schemaVersion());
         }
+
+        $variables = $this->compoundShadowBuilder->applyToTokenMap(
+            $variables,
+            LineageId::fromThemeLineage($variant->lineage()),
+            ColorMode::fromThemeMode($variant->mode()),
+        );
 
         $variables = [...$variables, ...self::overlayTokens($variables, $variant)];
         $variables = [...$variables, ...$this->derivatives->derive($variables)];

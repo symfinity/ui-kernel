@@ -36,6 +36,8 @@ final class PresetRegistryTest extends TestCase
         self::assertArrayHasKey('--ui-motion-duration-normal', $tokens);
         self::assertArrayHasKey('--ui-shadow-md', $tokens);
         self::assertArrayHasKey('--ui-focus-ring-width', $tokens);
+        self::assertStringContainsString('inset 0 1px 0', $tokens['--ui-shadow-md']);
+        self::assertStringContainsString('color-mix(in oklch', $tokens['--ui-shadow-md']);
         self::assertArrayNotHasKey('--ui-transition-duration', $tokens);
     }
 }

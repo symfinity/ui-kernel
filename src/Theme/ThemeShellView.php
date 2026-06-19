@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Theme;
 
 /**
- * View-model for host layout chrome: SchemeSwitch (ux-blocks-core) and data-theme hooks.
+ * View-model for host layout chrome: SchemeSwitch (ux-blocks-interactive) and data-theme hooks.
  *
  * @phpstan-type SchemeSwitcherLink array{scheme: string, url: string, active: bool}
  * @phpstan-type ThemeSwitcherLink array{id: string, url: string, active: bool}
