@@ -1,6 +1,6 @@
 {
     "name": "symfinity/ui-kernel",
-    "description": "Design tokens, themes, and generated CSS for Symfony",
+    "description": "Design tokens, themes, and slim CSS generation for Symfony",
     "type": "symfony-bundle",
     "license": "MIT",
     "homepage": "https://github.com/symfinity/ui-kernel",
