@@ -49,8 +49,9 @@ final class ThemeRegistryTest extends TestCase
     #[Test]
     public function defaultThemeHasAllSchemaKeys(): void
     {
-        $tokens = ThemeCatalog::get('default')->tokens()->all();
-        foreach (ThemeTokenSchema::REQUIRED_KEYS as $key) {
+        $theme = ThemeCatalog::get('default');
+        $tokens = $theme->tokens()->all();
+        foreach (ThemeTokenSchema::requiredKeys($theme->schemaVersion()) as $key) {
             self::assertArrayHasKey($key, $tokens);
         }
     }

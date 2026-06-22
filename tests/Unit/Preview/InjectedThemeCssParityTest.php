@@ -36,7 +36,7 @@ final class InjectedThemeCssParityTest extends TestCase
     private function sampleConfig(): AuthoringThemeConfig
     {
         $donor = ThemeConfig::get('semantic');
-        $appearance = $donor->layout()->layout(ThemeTokenSchema::V1_0);
+        $appearance = $donor->layout()->layout(ThemeTokenSchema::V2_0);
 
         return new AuthoringThemeConfig(
             id: 'sample-brand',
@@ -47,7 +47,8 @@ final class InjectedThemeCssParityTest extends TestCase
             colorRefs: [
                 'primary' => 'blue.600',
                 'secondary' => 'mono.slate.500',
-                'tertiary' => 'purple.600',
+                'accent' => 'purple.600',
+                'neutral' => 'mono.slate.400',
                 'surface' => 'mono.slate.100',
                 'surface_elevated' => 'mono.slate.100',
                 'text' => 'mono.slate.900',
@@ -63,7 +64,7 @@ final class InjectedThemeCssParityTest extends TestCase
                 'skeleton_shine' => 'mono.slate.100',
             ],
             appearanceTokens: $appearance,
-            schemaVersion: ThemeTokenSchema::V1_0,
+            schemaVersion: ThemeTokenSchema::V2_0,
         );
     }
 }

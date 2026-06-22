@@ -113,7 +113,7 @@ final class ThemeTokenSchema
 
     /** @var list<string> */
     public const REQUIRED_KEYS = [
-        ...self::COLOR_KEYS_V1,
+        ...self::COLOR_KEYS_V2,
         ...self::LAYOUT_KEYS,
         ...self::OVERLAY_KEYS,
         ...self::GLASS_KEYS,
