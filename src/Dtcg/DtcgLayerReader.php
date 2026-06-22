@@ -15,7 +15,8 @@ final class DtcgLayerReader
     private const PATH_TO_ROLE = [
         'color.primary' => 'primary',
         'color.secondary' => 'secondary',
-        'color.tertiary' => 'tertiary',
+        'color.accent' => 'accent',
+        'color.neutral' => 'neutral',
         'color.surface.base' => 'surface',
         'color.surface.elevated' => 'surface_elevated',
         'color.text.default' => 'text',

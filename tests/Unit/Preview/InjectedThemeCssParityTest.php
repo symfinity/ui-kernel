@@ -10,7 +10,6 @@ use Symfinity\UiKernel\Preview\InjectedThemeCssProvider;
 use Symfinity\UiKernel\Token\AuthoringThemeConfig;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\ThemeConfig;
-use Symfinity\UiKernel\Token\PresetRegistry;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
 final class InjectedThemeCssParityTest extends TestCase
@@ -37,7 +36,7 @@ final class InjectedThemeCssParityTest extends TestCase
     private function sampleConfig(): AuthoringThemeConfig
     {
         $donor = ThemeConfig::get('semantic');
-        $appearance = (new PresetRegistry())->tokensFor($donor->layout(), ThemeTokenSchema::V1_0);
+        $appearance = $donor->layout()->layout(ThemeTokenSchema::V1_0);
 
         return new AuthoringThemeConfig(
             id: 'sample-brand',

@@ -17,15 +17,6 @@ use Symfinity\UiKernel\Contract\Token\TokenPath;
 final class CssEmissionFilter
 {
     /**
-     * Semantic vocabulary tokens that MUST NOT emit {@code --ui-*} (077 / 060 ghost parity).
-     *
-     * @var list<string>
-     */
-    private const CSS_SUPPRESSED_PATHS = [
-        'color.ghost',
-    ];
-
-    /**
      * @return array<string, TokenInterface>
      */
     public function emitTokens(ResolvedGraphInterface $graph): array
@@ -33,9 +24,6 @@ final class CssEmissionFilter
         $filtered = [];
         foreach ($graph->all() as $path => $token) {
             if ($this->isPalettePrimitive(TokenPath::fromString($path))) {
-                continue;
-            }
-            if (\in_array($path, self::CSS_SUPPRESSED_PATHS, true)) {
                 continue;
             }
             $filtered[$path] = $token;

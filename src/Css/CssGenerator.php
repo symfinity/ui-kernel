@@ -24,6 +24,7 @@ final class CssGenerator
         private readonly CssVariableSet $cssVariableSet = new CssVariableSet(),
         private readonly ?AtRulesContributorInterface $atRulesContributor = null,
         private readonly ?ProfileGlobalsLayerRegistry $profileGlobalsLayerRegistry = null,
+        private readonly PhysicsCssEmitter $physicsCssEmitter = new PhysicsCssEmitter(),
     ) {
     }
 
@@ -40,7 +41,7 @@ final class CssGenerator
         ?SystemProfile $profile = null,
         bool $scrollMotion = false,
     ): string {
-        $schemaVersion ??= ThemeTokenSchema::V1_0;
+        $schemaVersion ??= ThemeTokenSchema::V2_0;
         $tokens = new DesignTokenSet($this->cssVariableSet->fromResolvedGraph($graph), $schemaVersion);
 
         return $this->forResolvedTokens($themeId, $tokens, $schemaVersion, $profile, $scrollMotion, $graph);
@@ -98,8 +99,9 @@ final class CssGenerator
         $lines = [...$lines, ...$this->p3GamutOverrides($selectors, $tokenMap)];
 
         $lines[] = $this->profileGlobalsCss($graph);
+        $lines[] = $this->physicsCssEmitter->emit();
 
-        return implode("\n", $lines);
+        return implode("\n", array_filter($lines, static fn (string $line): bool => $line !== ''));
     }
 
     /**
@@ -164,8 +166,9 @@ final class CssGenerator
         $lines = [...$lines, ...$this->p3GamutOverrides($lightSelectors, $light->tokens()->all())];
 
         $lines[] = $this->profileGlobalsCss(null);
+        $lines[] = $this->physicsCssEmitter->emit();
 
-        return implode("\n", $lines);
+        return implode("\n", array_filter($lines, static fn (string $line): bool => $line !== ''));
     }
 
     /**

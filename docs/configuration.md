@@ -18,7 +18,8 @@ After install, keep a **minimal** app file. Palette math and built-in theme tree
 |--------|------|---------|-------------|
 | `default_theme` | string | `default` | Active built-in theme lineage (`data-theme` anchor) |
 | `default_variant` | string | `default` | Default variant key within the lineage |
-| `schema_version` | string | `1.0` | Output token schema (only `1.0` supported) |
+| `schema_version` | string | `2.0` | Output token schema (`2.0` — semantic colour vocabulary **115**) |
+| `default_physics` | string | `flat` | Physics axis: `flat`, `glass`, or `retro` (**111**) |
 | `user_tokens` | map | `{}` | Partial `--ui-*` overrides on the active theme |
 | `system_profile.id` | string | `ui-kernel-default` | Structural profile id |
 | `system_profile.columns` | int | `12` | Grid columns |
@@ -31,7 +32,8 @@ Example (app layer):
 symfinity_ui_kernel:
     default_theme: semantic
     default_variant: semantic
-    schema_version: '1.0'
+    schema_version: '2.0'
+    default_physics: flat
     user_tokens:
         '--ui-color-primary': '#336699'
     system_profile:

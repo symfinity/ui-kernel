@@ -6,6 +6,7 @@ namespace Symfinity\UiKernel\Theme;
 
 use Symfinity\UiKernel\Token\PresetRegistry;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
+use Symfinity\UiKernel\Theme\PhysicsRegistry;
 
 /**
  * Design preset identifier — spacing, radius, type, motion presets.
@@ -20,6 +21,9 @@ enum LayoutProfile
      */
     public function layout(string $schemaVersion = ThemeTokenSchema::V1_0): array
     {
-        return (new PresetRegistry())->tokensFor($this, $schemaVersion);
+        return [
+            ...(new PresetRegistry())->tokensFor($this, $schemaVersion),
+            ...(new PhysicsRegistry())->flatResolveTokens(),
+        ];
     }
 }

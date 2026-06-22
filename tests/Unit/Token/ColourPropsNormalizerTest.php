@@ -24,6 +24,8 @@ final class ColourPropsNormalizerTest extends TestCase
         self::assertSame('primary', $this->normalizer->normalize('default'));
         self::assertSame('primary', $this->normalizer->normalize(''));
         self::assertSame('danger', $this->normalizer->normalize('destructive'));
+        self::assertSame('accent', $this->normalizer->normalize('tertiary'));
+        self::assertSame('neutral', $this->normalizer->normalize('ghost'));
     }
 
     #[Test]
@@ -43,19 +45,47 @@ final class ColourPropsNormalizerTest extends TestCase
     public function normalizeColourPropsPreservesValidVariants(): void
     {
         $normalized = $this->normalizer->normalizeColourProps(
-            ['variant' => 'danger', 'submitVariant' => 'ghost'],
+            ['variant' => 'danger', 'submitVariant' => 'accent'],
             'variant',
             'submitVariant',
         );
 
         self::assertSame('danger', $normalized['variant']);
-        self::assertSame('ghost', $normalized['submitVariant']);
+        self::assertSame('accent', $normalized['submitVariant']);
     }
 
     #[Test]
-    public function ghostMapsToMutedTextToken(): void
+    public function normalizeButtonColourMapsGhostToNeutralAppearance(): void
     {
-        self::assertSame('--ui-color-text-muted', ColourPropsNormalizer::tokenKey('ghost'));
+        $normalized = $this->normalizer->normalizeButtonColour('ghost', 'solid');
+
+        self::assertSame('neutral', $normalized['variant']);
+        self::assertSame('ghost', $normalized['appearance']);
+    }
+
+    #[Test]
+    public function normalizeButtonColourPreservesExplicitAppearanceWhenGhostVariant(): void
+    {
+        $normalized = $this->normalizer->normalizeButtonColour('ghost', 'outline');
+
+        self::assertSame('neutral', $normalized['variant']);
+        self::assertSame('outline', $normalized['appearance']);
+    }
+
+    #[Test]
+    public function normalizeButtonColourMapsOutlineVariantToAppearance(): void
+    {
+        $normalized = $this->normalizer->normalizeButtonColour('outline', 'solid');
+
+        self::assertSame('primary', $normalized['variant']);
+        self::assertSame('outline', $normalized['appearance']);
+    }
+
+    #[Test]
+    public function tokenKeyUsesSemanticSlug(): void
+    {
+        self::assertSame('--ui-color-accent', ColourPropsNormalizer::tokenKey('accent'));
+        self::assertSame('--ui-color-neutral', ColourPropsNormalizer::tokenKey('neutral'));
         self::assertSame('--ui-color-danger', ColourPropsNormalizer::tokenKey('danger'));
     }
 }

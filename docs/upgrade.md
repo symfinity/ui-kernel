@@ -1,5 +1,21 @@
 # Upgrade and migration
 
+## 0.2.0
+
+Minor release after [v0.1.2](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.2). Semantic colour vocabulary v2, physics axis, and compound shadows. **Breaking** for custom DTCG themes and CSS snapshots still on schema `1.0` or `tertiary` / `ghost` semantic colours.
+
+```bash
+composer require symfinity/ui-kernel:^0.2
+```
+
+After upgrade:
+
+1. Set `schema_version: '2.0'` in `config/packages/symfinity_ui_kernel.yaml` (Flex default on fresh copy).
+2. In custom `config/themes/` DTCG files: rename `color.tertiary` → `color.accent`; remove `color.ghost`; add `color.neutral` where you need achromatic chrome.
+3. In Twig or PHP that passed `variant="ghost"` or `variant="tertiary"` to ux-blocks roles: use `variant="neutral"` + `appearance="ghost"` (Button/Link) or `variant="accent"` — requires **`symfinity/ux-blocks-core` `^0.2`**.
+4. Optional: set `default_physics` (`flat`, `glass`, `retro`) and expose `data-ui-physics` on your layout root — see [Themes](themes.md#physics-axis-data-ui-physics).
+5. Clear Symfony cache; re-run visual or PHPUnit snapshots that assert exact `--ui-color-*` or `--ui-shadow-*` values.
+
 ## 0.1.2
 
 Patch release after [v0.1.1](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.1). Optional consumer theme overrides and `--ui-color-button-text`; yellow ramp CSS may differ from v0.1.1.
@@ -12,7 +28,7 @@ After upgrade:
 
 1. Clear Symfony cache if theme CSS is cached in your environment.
 2. Re-check snapshots that assert exact `--ui-color-*` values — yellow ramp steps changed; new `--ui-color-button-text` appears in generated CSS.
-3. To ship app-owned DTCG lineages, add files under `config/themes/{lineage}/` and set `themes_directory` if not using the default — see [Themes](themes.md#consumer-app-overrides).
+3. To ship app-owned DTCG lineages, add files under `config/themes/{lineage}/` and set `themes_directory` if not using the default — see [Themes](themes.md) (Consumer app overrides).
 4. Existing apps without `config/themes/` need no config changes beyond the Flex-copied default.
 
 ## 0.1.1
@@ -50,6 +66,6 @@ If you consumed ui-kernel from a private monorepo path repository during develop
 
 ## See also
 
-- [CHANGELOG](../CHANGELOG.md)
+- [CHANGELOG](https://github.com/symfinity/ui-kernel/blob/main/CHANGELOG.md)
 - [Themes](themes.md)
 - [GitHub Issues](https://github.com/symfinity/ui-kernel/issues)

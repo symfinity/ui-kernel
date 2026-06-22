@@ -146,6 +146,9 @@ final class CssGeneratorFinalCssTest extends TestCase
             foreach (ThemeTokenSchema::OVERLAY_KEYS as $key) {
                 self::assertArrayHasKey($key, $tokens, $id . ' missing ' . $key);
             }
+            foreach (ThemeTokenSchema::GLASS_KEYS as $key) {
+                self::assertArrayHasKey($key, $tokens, $id . ' missing ' . $key);
+            }
         }
     }
 

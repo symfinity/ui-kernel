@@ -26,7 +26,8 @@ final class Configuration implements ConfigurationInterface
         $children
                 ->scalarNode('default_theme')->defaultValue('default')->end()
                 ->scalarNode('default_variant')->defaultValue('default')->end()
-                ->scalarNode('schema_version')->defaultValue('1.0')->end()
+                ->scalarNode('default_physics')->defaultValue('flat')->end()
+                ->scalarNode('schema_version')->defaultValue('2.0')->end()
                 ->scalarNode('themes_directory')
                     ->defaultNull()
                     ->info('Consumer app DTCG themes root; default %kernel.project_dir%/config/themes when null in extension')

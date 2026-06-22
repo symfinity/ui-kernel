@@ -1,5 +1,6 @@
 lineage: default
 design_system_id: chameleon
+physics: flat
 palette:
   mono_saturation: 7.5
   hues:

@@ -26,15 +26,19 @@ final class ThemeTokenResolverTest extends TestCase
     }
 
     #[Test]
-    public function itResolvesAllSchemaOneKeysForSemanticTheme(): void
+    public function itResolvesAllSchemaTwoKeysForSemanticTheme(): void
     {
         $variant = ThemeCatalog::variant('semantic');
         $tokens = $this->resolver->resolve($variant)->all();
 
-        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
+        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
             self::assertArrayHasKey($key, $tokens, $key);
             self::assertNotSame('', $tokens[$key]);
         }
+
+        self::assertArrayNotHasKey('--ui-color-tertiary', $tokens);
+        self::assertArrayHasKey('--ui-color-accent', $tokens);
+        self::assertArrayHasKey('--ui-color-neutral', $tokens);
     }
 
     #[Test]
@@ -61,6 +65,6 @@ final class ThemeTokenResolverTest extends TestCase
 
         $override = new UserTokenSet(['--ui-not-a-real-token' => '#112233']);
         $base = $this->resolver->resolve(ThemeCatalog::variant('semantic'))->all();
-        $override->merge($base, ThemeTokenSchema::V1_0);
+        $override->merge($base, ThemeTokenSchema::V2_0);
     }
 }

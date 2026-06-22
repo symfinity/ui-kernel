@@ -46,7 +46,7 @@ Set the active theme lineage in your app config:
 symfinity_ui_kernel:
     default_theme: semantic
     default_variant: semantic
-    schema_version: '1.0'
+    schema_version: '2.0'
 ```
 
 Reload the page — `:root` receives `--ui-*` design tokens for the selected theme. Built-in ids include `default`, `default-dark`, `semantic`, `semantic-dark`, `utility`, and `utility-dark`. See [Themes](themes.md).
@@ -64,7 +64,7 @@ Reload the page — `:root` receives `--ui-*` design tokens for the selected the
 symfinity_ui_kernel:
     default_theme: default
     default_variant: default
-    schema_version: '1.0'
+    schema_version: '2.0'
     user_tokens: {}
 ```
 
@@ -97,6 +97,6 @@ UI Kernel emits **theme tokens and structural profile globals only**. `[data-ui-
 
 ## See also
 
-- [CHANGELOG.md](../CHANGELOG.md) — version history
-- [CONTRIBUTING.md](../CONTRIBUTING.md) — how to contribute
+- [CHANGELOG](https://github.com/symfinity/ui-kernel/blob/main/CHANGELOG.md) — version history
+- [Contributing](https://github.com/symfinity/ui-kernel/blob/main/CONTRIBUTING.md) — how to contribute
 - [GitHub Issues](https://github.com/symfinity/ui-kernel/issues) — bug reports

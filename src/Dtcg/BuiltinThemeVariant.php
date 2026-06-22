@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Dtcg;
 
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\PhysicsId;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 
@@ -30,11 +31,12 @@ final readonly class BuiltinThemeVariant
         private MonoTone $tone,
         private string $layerPath,
         private array $paletteDefinition,
-        private string $schemaVersion = '1.0',
+        private string $schemaVersion = '2.0',
         private bool $scrollMotion = false,
         private string $backdropBlur = '0',
         private string $mode = 'light',
         private string $catalogSource = 'kernel',
+        private PhysicsId $physics = PhysicsId::Flat,
     ) {
     }
 
@@ -119,5 +121,15 @@ final readonly class BuiltinThemeVariant
     public function catalogSource(): string
     {
         return $this->catalogSource;
+    }
+
+    public function physics(): PhysicsId
+    {
+        return $this->physics;
+    }
+
+    public function isDarkVariant(): bool
+    {
+        return $this->mode === 'dark';
     }
 }

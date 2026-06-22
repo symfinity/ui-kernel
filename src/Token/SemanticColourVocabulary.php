@@ -15,16 +15,16 @@ use Symfinity\UiKernel\Theme\ThemeCatalog;
  */
 final class SemanticColourVocabulary
 {
-    /** @var list<string> Platform chameleon minimum — parity with former enum set. */
+    /** @var list<string> Platform chameleon minimum — schema 2.0 (115). */
     public const PLATFORM_MINIMUM = [
         'primary',
         'secondary',
-        'tertiary',
+        'accent',
         'success',
         'danger',
         'info',
         'warning',
-        'ghost',
+        'neutral',
     ];
 
     /** @var list<string> Non-variant infrastructure tokens under {@code color.*}. */

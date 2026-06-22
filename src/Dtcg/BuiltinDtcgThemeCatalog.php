@@ -8,6 +8,7 @@ use Psr\Log\LoggerInterface;
 use Symfinity\UiKernel\Dtcg\Exception\InvalidThemeSchemaException;
 use Symfinity\UiKernel\Internal\TypeGuard;
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\PhysicsId;
 use Symfinity\UiKernel\Token\GeneratorPaletteConfigValidator;
 use Symfinity\UiKernel\Token\MonoTone;
 use Symfinity\UiKernel\Token\ThemePaletteMetaNormalizer;
@@ -260,6 +261,9 @@ final class BuiltinDtcgThemeCatalog
             : DesignSystemLayerRegistry::DEFAULT_ID;
 
         $layout = self::layoutForLineage($lineage);
+        $lineagePhysics = PhysicsId::fromString(
+            is_string($meta['physics'] ?? null) ? $meta['physics'] : null,
+        );
         $variants = [];
         $donor = null;
 
@@ -291,6 +295,10 @@ final class BuiltinDtcgThemeCatalog
                 ? $entry['mode']
                 : (str_ends_with($id, '-dark') ? 'dark' : 'light');
 
+            $variantPhysics = PhysicsId::fromString(
+                is_string($entry['physics'] ?? null) ? $entry['physics'] : $lineagePhysics->value,
+            );
+
             $variant = new BuiltinThemeVariant(
                 $id,
                 $label,
@@ -304,6 +312,7 @@ final class BuiltinDtcgThemeCatalog
                 backdropBlur: is_string($entry['backdrop_blur'] ?? null) ? $entry['backdrop_blur'] : '0',
                 mode: $mode,
                 catalogSource: $catalogSource,
+                physics: $variantPhysics,
             );
 
             if ($donor === null) {

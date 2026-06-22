@@ -8,7 +8,7 @@ Built-in themes ship as W3C DTCG token files — not bespoke `symfinity_ui_kerne
 
 ```text
 config/
-├── design-systems/chameleon.dtcg.yaml   # platform semantic vocabulary (ghost alias, …)
+├── design-systems/chameleon.dtcg.yaml   # platform semantic vocabulary (eight colours, schema 2.0)
 └── themes/{lineage}/
     ├── theme.meta.yaml                  # palette recipe + variant registry
     ├── {variant}.dtcg.yaml              # theme-layer semantic + appearance tokens
@@ -58,18 +58,43 @@ Set the active lineage in config:
 symfinity_ui_kernel:
     default_theme: semantic
     default_variant: semantic
+    default_physics: flat
 ```
+
+## Physics axis (`data-ui-physics`)
+
+Material character — radius, elevation shadow model, motion durations/easing, hover lift — is orthogonal to palette, mode, and Preset (typography + spacing). Three profiles ship in kernel CSS:
+
+| Physics | DOM value | Notes |
+|---------|-----------|-------|
+| **flat** | `flat` | Default; opaque surfaces, quick motion, no hover lift |
+| **glass** | `glass` | Dark-mode only (light + glass corrects to flat) |
+| **retro** | `retro` | Zero radius, hard offset shadow, stepped/instant motion |
+
+Set on `[data-ui-root]` (or `html`):
+
+```html
+<html data-ui-root data-theme="semantic-dark" data-ui-physics="glass">
+```
+
+Author in `theme.meta.yaml`:
+
+```yaml
+physics: flat   # lineage default; per-variant override in variants[]
+```
+
+`CssGenerator` emits `[data-ui-physics="…"]` blocks with `--ui-physics-*` tokens and bridge aliases to `--ui-motion-*` / `--ui-radius-*`. Complements **109** `data-ui-surface="glass"` (component blur) — not a merge.
 
 ## Layout profiles
 
 Built-in themes map to one of two rhythm profiles:
 
-| Profile | Spacing | Radius | Motion | Lineages |
-|---------|---------|--------|--------|----------|
-| **Semantic** | Roomy | Rounded | 200ms | `default`, `semantic` pairs |
-| **Utility** | Compact | Subtle | 150ms | `utility` pair |
+| Profile | Spacing | Typography | Lineages |
+|---------|---------|------------|----------|
+| **Semantic** | Roomy | 1rem base | `default`, `semantic` pairs |
+| **Utility** | Compact | 0.875rem base | `utility` pair |
 
-Theme swap changes **semantic role colours**; layout rhythm follows the lineage profile.
+Radius, shadow, and motion character follow the active **physics** profile (default `flat`). DTCG theme layers still define per-lineage appearance tokens until authors opt into non-flat physics via `data-ui-physics`.
 
 ## Dark mode and `data-theme`
 
@@ -82,6 +107,7 @@ For `prefers-color-scheme: auto`, the bundle can sync with a server endpoint whe
 `CssGenerator` emits:
 
 - Theme tokens (`--ui-color-*`, `--ui-space-*`, `--ui-radius-*`, …)
+- Physics blocks (`[data-ui-physics="flat|glass|retro"]` with `--ui-physics-*` + bridged motion/radius)
 - Overlay tokens (`--ui-overlay-surface`, `--ui-overlay-border`, `--ui-overlay-shadow`, `--ui-backdrop-color`, `--ui-backdrop-blur`)
 - Structural profile globals (breakpoints, z-index ladder, layout roles such as grid/stack)
 
@@ -123,6 +149,16 @@ When caching generated CSS, include profile identity in your cache key alongside
 ## Fonts
 
 Built-in themes use **system font stacks** for `--ui-font-family-sans` and `--ui-font-family-mono`. Optional webfont loading via **symfinity/font-manager**: [font-manager-pairing.md](font-manager-pairing.md).
+
+## Semantic colour homonyms (schema 2.0)
+
+| Term | Namespace | Example |
+|------|-----------|---------|
+| Semantic `neutral` | `data-ui-variant="neutral"` on colour roles | Cancel / chrome button |
+| Mono tone `neutral` | `mono.neutral.500` palette ramp | Surface tint — not a button variant |
+| Typography `muted` | typography role variant | Helper text (**089**) |
+| Structural `text-muted` | `--ui-color-text-muted` | Foreground token — not `data-ui-variant` |
+| `ghost` | `data-ui-appearance="ghost"` on Button/Link only | Transparent hover wash — **not** a semantic colour |
 
 ## See also
 

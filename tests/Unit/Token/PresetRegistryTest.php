@@ -7,6 +7,7 @@ namespace Symfinity\UiKernel\Tests\Unit\Token;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\PhysicsRegistry;
 use Symfinity\UiKernel\Token\PresetRegistry;
 use Symfinity\UiKernel\Token\ThemeTokenSchema;
 
@@ -20,24 +21,29 @@ final class PresetRegistryTest extends TestCase
         $semantic = $registry->tokensFor(LayoutProfile::Semantic, ThemeTokenSchema::V1_0);
         $utility = $registry->tokensFor(LayoutProfile::Utility, ThemeTokenSchema::V1_0);
 
-        self::assertSame('0.375rem', $semantic['--ui-radius-md']);
-        self::assertSame('0.25rem', $utility['--ui-radius-md']);
-
         self::assertNotSame($semantic['--ui-space-xl'], $utility['--ui-space-xl']);
         self::assertNotSame($semantic['--ui-font-size-md'], $utility['--ui-font-size-md']);
     }
 
     #[Test]
-    public function schemaTwoIncludesMotionAndFocusRingTokens(): void
+    public function presetExportsZeroPhysicsOwnedKeys(): void
     {
         $registry = new PresetRegistry();
         $tokens = $registry->tokensFor(LayoutProfile::Semantic, ThemeTokenSchema::V1_0);
 
-        self::assertArrayHasKey('--ui-motion-duration-normal', $tokens);
-        self::assertArrayHasKey('--ui-shadow-md', $tokens);
+        foreach (PhysicsRegistry::PRESET_FORBIDDEN_KEYS as $key) {
+            self::assertArrayNotHasKey($key, $tokens, 'Preset must not export ' . $key);
+        }
+    }
+
+    #[Test]
+    public function presetIncludesFocusRingTokens(): void
+    {
+        $registry = new PresetRegistry();
+        $tokens = $registry->tokensFor(LayoutProfile::Semantic, ThemeTokenSchema::V1_0);
+
         self::assertArrayHasKey('--ui-focus-ring-width', $tokens);
-        self::assertStringContainsString('inset 0 1px 0', $tokens['--ui-shadow-md']);
-        self::assertStringContainsString('color-mix(in oklch', $tokens['--ui-shadow-md']);
-        self::assertArrayNotHasKey('--ui-transition-duration', $tokens);
+        self::assertArrayHasKey('--ui-focus-ring-opacity', $tokens);
+        self::assertArrayHasKey('--ui-focus-ring-blur', $tokens);
     }
 }

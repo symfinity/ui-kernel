@@ -68,3 +68,6 @@ services:
       - { name: data_collector, id: 'ui_kernel', template: '@UiKernel/Collector/ui_kernel.html.twig' }
 
   Symfinity\UiKernel\Preview\InjectedThemeCssProvider: ~
+
+  Symfinity\UiKernel\Token\ThemeTokenResolver:
+    autowire: false

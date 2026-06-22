@@ -7,6 +7,7 @@ namespace Symfinity\UiKernel\Token;
 use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
 use Symfinity\UiKernel\Dtcg\BuiltinThemeVariant;
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\PhysicsId;
 use Symfinity\UiKernel\Theme\ThemeCatalog;
 
 /**
@@ -23,9 +24,10 @@ final class ThemeConfig
         private readonly MonoTone $tone,
         private readonly ThemePaletteRecipe $paletteRecipe,
         private readonly string $layerPath,
-        private readonly string $schemaVersion = ThemeTokenSchema::V1_0,
+        private readonly string $schemaVersion = ThemeTokenSchema::V2_0,
         private readonly bool $scrollMotion = false,
         private readonly string $backdropBlur = '0',
+        private readonly PhysicsId $physics = PhysicsId::Flat,
     ) {
     }
 
@@ -67,6 +69,11 @@ final class ThemeConfig
     public function backdropBlur(): string
     {
         return $this->backdropBlur;
+    }
+
+    public function physics(): PhysicsId
+    {
+        return $this->physics;
     }
 
     /**
@@ -140,6 +147,7 @@ final class ThemeConfig
             $variant->schemaVersion(),
             $variant->scrollMotion(),
             $variant->backdropBlur(),
+            $variant->physics(),
         );
     }
 

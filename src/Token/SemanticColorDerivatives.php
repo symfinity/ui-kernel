@@ -16,7 +16,8 @@ final class SemanticColorDerivatives
     private const INTERACTIVE_ROLES = [
         'primary',
         'secondary',
-        'tertiary',
+        'accent',
+        'neutral',
         'danger',
         'success',
         'warning',
@@ -62,10 +63,6 @@ final class SemanticColorDerivatives
         if (isset($tokens['--ui-color-text-muted'])) {
             $mutedTuple = $this->colorSpace->parseColor($tokens['--ui-color-text-muted']);
             $derived['--ui-color-on-muted'] = $this->contrastForeground($mutedTuple, $tokens);
-        }
-
-        if (isset($tokens['--ui-color-text'])) {
-            $derived['--ui-color-on-ghost'] = $tokens['--ui-color-text'];
         }
 
         // Solid filled controls (ux-blocks button appearance=solid) use a fixed on-fill label.

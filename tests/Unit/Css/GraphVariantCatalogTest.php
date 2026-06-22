@@ -26,7 +26,7 @@ final class GraphVariantCatalogTest extends TestCase
         $catalog = $this->catalog();
 
         self::assertSame(
-            ['primary', 'secondary', 'tertiary', 'success', 'danger', 'info', 'warning', 'ghost'],
+            ['primary', 'secondary', 'accent', 'success', 'danger', 'info', 'warning', 'neutral'],
             $catalog->semanticColorSlugs(),
         );
     }

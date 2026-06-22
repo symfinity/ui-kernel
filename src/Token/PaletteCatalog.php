@@ -276,11 +276,12 @@ final class PaletteCatalog
         /** @var array<string, mixed> $kernel */
         $kernel = $parsed['symfinity_ui_kernel'] ?? $parsed;
 
-        if (($kernel['schema_version'] ?? null) !== ThemeTokenSchema::V1_0) {
+        if (!in_array($kernel['schema_version'] ?? null, [ThemeTokenSchema::V1_0, ThemeTokenSchema::V2_0], true)) {
             throw new \RuntimeException(sprintf(
-                'Bundle config "%s" must set schema_version: "%s".',
+                'Bundle config "%s" must set schema_version: "%s" or "%s".',
                 $configPath,
                 ThemeTokenSchema::V1_0,
+                ThemeTokenSchema::V2_0,
             ));
         }
 

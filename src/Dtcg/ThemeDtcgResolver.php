@@ -10,6 +10,7 @@ use Symfinity\UiKernel\Css\CssVariableSet;
 use Symfinity\UiKernel\Token\ColorMode;
 use Symfinity\UiKernel\Token\CompoundShadowBuilder;
 use Symfinity\UiKernel\Token\DesignTokenSet;
+use Symfinity\UiKernel\Token\GlassSurfaceTokens;
 use Symfinity\UiKernel\Token\LineageId;
 use Symfinity\UiKernel\Token\SemanticColorDerivatives;
 use Symfinity\UiKernel\Token\SemanticColorMap;
@@ -49,6 +50,7 @@ final class ThemeDtcgResolver
         );
 
         $variables = [...$variables, ...self::overlayTokens($variables, $variant)];
+        $variables = [...$variables, ...GlassSurfaceTokens::resolve($variables)];
         $variables = [...$variables, ...$this->derivatives->derive($variables)];
         $variables = self::canonicalize($variables);
 
@@ -97,6 +99,7 @@ final class ThemeDtcgResolver
             ...ThemeTokenSchema::LAYOUT_KEYS,
             ...array_values(SemanticColorMap::ROLE_TO_CSS),
             ...ThemeTokenSchema::OVERLAY_KEYS,
+            ...ThemeTokenSchema::GLASS_KEYS,
         ];
 
         $ordered = [];

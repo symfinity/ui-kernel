@@ -23,24 +23,29 @@ final class CssGeneratorTest extends TestCase
         self::assertStringContainsString('[data-theme="semantic"]', $semantic);
         self::assertStringContainsString('color-scheme: dark;', $dark);
         self::assertStringContainsString('color-scheme: light;', $semantic);
-        self::assertStringContainsString('schema:1.0', $dark);
+        self::assertStringContainsString('schema:2.0', $dark);
 
-        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
+        foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
             self::assertStringContainsString($key, $dark);
             self::assertStringContainsString($key, $semantic);
         }
+
+        self::assertStringNotContainsString('--ui-color-tertiary', $dark);
+        self::assertStringContainsString('--ui-color-accent', $dark);
+        self::assertStringContainsString('--ui-color-neutral', $dark);
     }
 
     #[Test]
-    public function allSixThemesEmitSchemaOneKeys(): void
+    public function allSixThemesEmitSchemaTwoKeys(): void
     {
         $generator = new CssGenerator();
 
         foreach (['default', 'default-dark', 'semantic', 'semantic-dark', 'utility', 'utility-dark'] as $id) {
             $css = $generator->forTheme(ThemeCatalog::get($id));
-            foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V1_0) as $key) {
+            foreach (ThemeTokenSchema::requiredKeys(ThemeTokenSchema::V2_0) as $key) {
                 self::assertStringContainsString($key, $css, $id . ' missing ' . $key);
             }
+            self::assertStringNotContainsString('--ui-color-tertiary', $css, $id);
         }
     }
 

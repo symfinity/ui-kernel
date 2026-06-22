@@ -5,9 +5,12 @@ color:
   secondary:
     $type: color
     $value: '{color.mono.slate.500}'
-  tertiary:
+  accent:
     $type: color
     $value: '{color.purple.600}'
+  neutral:
+    $type: color
+    $value: '{color.mono.slate.600}'
   surface:
     base:
       $type: color
@@ -174,3 +177,6 @@ focus:
     blur:
       $type: number
       $value: '0'
+  neutral:
+    $type: color
+    $value: '{color.mono.slate.600}'

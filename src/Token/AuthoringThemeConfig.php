@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Token;
 
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\PhysicsId;
 
 /**
  * Bespoke theme definition for ui-themer / consumer YAML — not built-in DTCG catalog (077 boundary).
@@ -23,9 +24,10 @@ final class AuthoringThemeConfig
         private readonly ThemePaletteRecipe $paletteRecipe,
         private readonly array $colorRefs,
         private readonly array $appearanceTokens,
-        private readonly string $schemaVersion = ThemeTokenSchema::V1_0,
+        private readonly string $schemaVersion = ThemeTokenSchema::V2_0,
         private readonly bool $scrollMotion = false,
         private readonly string $backdropBlur = '0',
+        private readonly PhysicsId $physics = PhysicsId::Flat,
     ) {
     }
 
@@ -83,5 +85,10 @@ final class AuthoringThemeConfig
     public function backdropBlur(): string
     {
         return $this->backdropBlur;
+    }
+
+    public function physics(): PhysicsId
+    {
+        return $this->physics;
     }
 }

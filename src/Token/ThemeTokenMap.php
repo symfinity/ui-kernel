@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\Token;
 
 use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\PhysicsRegistry;
 
 /**
  * Short theme YAML keys (e.g. space-md) ↔ CSS variables (--ui-space-md).
@@ -92,7 +93,11 @@ final class ThemeTokenMap
     public static function presetShortTokensFor(LayoutProfile $layout): array
     {
         $registry = new PresetRegistry();
-        $css = $registry->tokensFor($layout, ThemeTokenSchema::V1_0);
+        $physics = new PhysicsRegistry();
+        $css = [
+            ...$registry->tokensFor($layout, ThemeTokenSchema::V1_0),
+            ...$physics->flatResolveTokens(),
+        ];
         $short = [];
         foreach ($css as $cssVar => $value) {
             $short[self::cssVarToShortKey($cssVar)] = $value;

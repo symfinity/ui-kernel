@@ -11,7 +11,7 @@ final class ThemeTokenSchema
     public const V2_0 = '2.0';
 
     /** @var list<string> */
-    public const COLOR_KEYS = [
+    public const COLOR_KEYS_V1 = [
         '--ui-color-primary',
         '--ui-color-secondary',
         '--ui-color-tertiary',
@@ -29,6 +29,30 @@ final class ThemeTokenSchema
         '--ui-color-skeleton-base',
         '--ui-color-skeleton-shine',
     ];
+
+    /** @var list<string> */
+    public const COLOR_KEYS_V2 = [
+        '--ui-color-primary',
+        '--ui-color-secondary',
+        '--ui-color-accent',
+        '--ui-color-neutral',
+        '--ui-color-surface',
+        '--ui-color-surface-elevated',
+        '--ui-color-text',
+        '--ui-color-text-muted',
+        '--ui-color-border',
+        '--ui-color-danger',
+        '--ui-color-success',
+        '--ui-color-warning',
+        '--ui-color-info',
+        '--ui-color-focus',
+        '--ui-color-overlay',
+        '--ui-color-skeleton-base',
+        '--ui-color-skeleton-shine',
+    ];
+
+    /** @deprecated use COLOR_KEYS_V1 or colorKeysFor() */
+    public const COLOR_KEYS = self::COLOR_KEYS_V1;
 
     /** @var list<string> */
     public const LAYOUT_KEYS = [
@@ -79,16 +103,43 @@ final class ThemeTokenSchema
     ];
 
     /** @var list<string> */
+    public const GLASS_KEYS = [
+        '--ui-glass-blur',
+        '--ui-glass-saturate',
+        '--ui-glass-tint',
+        '--ui-glass-border',
+        '--ui-glass-fallback-surface',
+    ];
+
+    /** @var list<string> */
     public const REQUIRED_KEYS = [
-        ...self::COLOR_KEYS,
+        ...self::COLOR_KEYS_V1,
         ...self::LAYOUT_KEYS,
         ...self::OVERLAY_KEYS,
+        ...self::GLASS_KEYS,
     ];
 
     /**
      * @return list<string>
      */
-    public static function requiredKeys(string $schemaVersion = self::V1_0): array
+    public static function colorKeysFor(string $schemaVersion): array
+    {
+        return match ($schemaVersion) {
+            self::V1_0 => self::COLOR_KEYS_V1,
+            self::V2_0 => self::COLOR_KEYS_V2,
+            default => throw new \InvalidArgumentException(sprintf(
+                'Unsupported schema_version "%s"; expected "%s" or "%s".',
+                $schemaVersion,
+                self::V1_0,
+                self::V2_0,
+            )),
+        };
+    }
+
+    /**
+     * @return list<string>
+     */
+    public static function requiredKeys(string $schemaVersion = self::V2_0): array
     {
         if (!in_array($schemaVersion, [self::V1_0, self::V2_0], true)) {
             throw new \InvalidArgumentException(sprintf(
@@ -99,6 +150,11 @@ final class ThemeTokenSchema
             ));
         }
 
-        return self::REQUIRED_KEYS;
+        return [
+            ...self::colorKeysFor($schemaVersion),
+            ...self::LAYOUT_KEYS,
+            ...self::OVERLAY_KEYS,
+            ...self::GLASS_KEYS,
+        ];
     }
 }

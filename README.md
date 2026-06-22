@@ -54,16 +54,17 @@ The Flex recipe registers the bundle for all environments and copies a minimal a
 symfinity_ui_kernel:
     default_theme: semantic
     default_variant: semantic
-    schema_version: '1.0'
+    schema_version: '2.0'
 ```
 
 See [Quick start](docs/quickstart.md) for the full walkthrough.
 
 ## Documentation
 
-- **[Quick start](docs/quickstart.md)** — theme CSS on every page in minutes
+- [Quick start](docs/quickstart.md) — theme CSS on every page in minutes
 - **[Installation](docs/installation.md)** — Flex, manual setup, Web Profiler (dev)
 - **[Configuration](docs/configuration.md)** — app wiring, user tokens, system profile
+- **[Usage](docs/usage.md)** — daily layout and override patterns
 - **[Themes](docs/themes.md)** — built-in lineages, DTCG on-disk layout, `design_system_id`, dark mode
 - **[Font Manager pairing](docs/font-manager-pairing.md)** — optional webfonts
 
@@ -78,6 +79,18 @@ See [Quick start](docs/quickstart.md) for the full walkthrough.
 - [GitHub Issues](https://github.com/symfinity/ui-kernel/issues)
 - [Security](.github/SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
+
+## R2 release train (maintainers)
+
+First public tag **`v0.1.0`** with `ui-themer`, `ui-action`, and `ux-blocks` in one coordination event ([PRODUCT-split-release-wave-1](https://github.com/symfinity/symfinity/blob/main/classified/explore/PRODUCT-split-release-wave-1.md)).
+
+| Before tag | Consumer install order |
+|------------|------------------------|
+| **115** done; `schema_version: '2.0'`; Flex recipe + handbook; split row in `mono.json` | **1.** `composer require symfinity/ui-kernel` |
+| `mono repo:doctor` clean for this slug | **2.** `composer require symfinity/ui-themer --dev` (after kernel on Packagist) |
+| `mono recipes:validate --tier=v1` clean for `ui-kernel` | **3.** `composer require symfinity/ui-action` and/or `symfinity/ux-blocks` (parallel) |
+
+After tag: `mono recipes:publish` for changed recipe dirs → Packagist webhook → Flex smoke in a clean Symfony app.
 
 ## License
 

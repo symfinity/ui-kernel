@@ -7,14 +7,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-06-22
+
+Minor release after [v0.1.2](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.2). Semantic colour vocabulary v2, physics axis, and compound elevation shadows. **Breaking** for custom DTCG themes and snapshots that still use `tertiary` / `ghost` semantic colours.
+
 ### Added
 
-- **`CompoundShadowBuilder`** — compound inset + drop shadows on `--ui-shadow-sm|md|lg` at theme resolve time (lineage × mode × surface-elevated); **098**
+- **Semantic colour vocabulary v2** — eight canonical slugs for `data-ui-variant`: `primary`, `secondary`, `accent`, `success`, `warning`, `danger`, `info`, `neutral`
+- **`color.neutral` / `--ui-color-neutral`** — achromatic chrome semantic (distinct from mono tone `neutral` ramp steps)
+- **`schema_version: '2.0'`** — app config key; default in bundle and Flex-copied config
+- **`ColourPropsNormalizer`** — legacy prop aliases at normalize time: `tertiary` → `accent`, `ghost` → `neutral`, `destructive` → `danger`, empty/`default` → `primary`
+- **Physics axis** — material profiles `flat`, `glass`, and `retro` via `default_physics` and `data-ui-physics` on `[data-ui-root]` or `html`
+- **`PhysicsCssEmitter`** — `[data-ui-physics="…"]` blocks with `--ui-physics-*` tokens and bridges to `--ui-motion-*` / `--ui-radius-*`
+- **`EffectivePhysicsResolver`** — `glass` on a light variant coerces to `flat` with a PSR-3 warning
+- **`CompoundShadowBuilder`** — compound inset highlight + drop shadows on `--ui-shadow-sm|md|lg` at theme resolve time (lineage × mode × surface)
+- **Handbook** — physics axis and semantic-colour homonyms in `docs/themes.md`; `schema_version` and `default_physics` in `docs/configuration.md`
 
 ### Changed
 
-- **`ThemeDtcgResolver` / `ThemeTokenResolver` / `PresetRegistry`** — replace flat `rgba` shadow literals with compound `color-mix` strings; `--ui-overlay-shadow` aliases strongest tier
+- **Built-in DTCG themes** — `color.tertiary` renamed to `color.accent` on all six bundle variants
+- **`ThemeDtcgResolver` / `ThemeTokenResolver` / `PresetRegistry`** — flat `rgba` shadow literals replaced with compound `color-mix` strings; `--ui-overlay-shadow` aliases the strongest shadow tier
+- **Generated CSS** — `--ui-color-accent` and `--ui-color-neutral` emitted; `--ui-color-tertiary` no longer present
 - **CSS parity fixtures** — regenerated for all six built-in theme variants
+
+### Removed
+
+- **`color.tertiary` / `--ui-color-tertiary`** — use `accent`
+- **`color.ghost` / `--ui-color-ghost`** — transparent controls use `variant="neutral"` with `appearance="ghost"` on Button/Link in `symfinity/ux-blocks-core` (pair with `^0.2`)
+
+### Notes
+
+- Upgrade custom theme YAML: set `schema_version: '2.0'`, rename `color.tertiary` → `color.accent`, drop `color.ghost`, add `color.neutral` where needed — see [docs/upgrade.md](docs/upgrade.md)
+- Re-check snapshots and visual baselines that assert exact `--ui-color-*` or shadow strings
+- Flex recipe `0.1` constraint unchanged (`^0.1`); new installs receive `schema_version` and `default_physics` defaults when the copied app config is refreshed
+- Pair with **`symfinity/ux-blocks-core` `^0.2`** for the five-value `appearance` axis (`solid`, `soft`, `outline`, `ghost`, `link`)
 
 ## [0.1.2] - 2026-06-19
 

@@ -11,7 +11,7 @@ final readonly class DesignTokenSet
      */
     public function __construct(
         private array $tokens,
-        private string $schemaVersion = ThemeTokenSchema::V1_0,
+        private string $schemaVersion = ThemeTokenSchema::V2_0,
     ) {
         self::assertComplete($tokens, $schemaVersion);
     }
@@ -19,7 +19,7 @@ final readonly class DesignTokenSet
     /**
      * @param array<string, string> $tokens
      */
-    public static function fromArray(array $tokens, string $schemaVersion = ThemeTokenSchema::V1_0): self
+    public static function fromArray(array $tokens, string $schemaVersion = ThemeTokenSchema::V2_0): self
     {
         return new self($tokens, $schemaVersion);
     }
@@ -40,7 +40,7 @@ final readonly class DesignTokenSet
     /**
      * @param array<string, string> $tokens
      */
-    public static function assertComplete(array $tokens, string $schemaVersion = ThemeTokenSchema::V1_0): void
+    public static function assertComplete(array $tokens, string $schemaVersion = ThemeTokenSchema::V2_0): void
     {
         foreach (ThemeTokenSchema::requiredKeys($schemaVersion) as $key) {
             if (!isset($tokens[$key]) || $tokens[$key] === '') {

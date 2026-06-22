@@ -1,5 +1,6 @@
 lineage: semantic
 design_system_id: chameleon
+physics: flat
 palette:
   mono_saturation: 10.0
   hues:

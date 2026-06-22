@@ -8,7 +8,9 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfinity\UiKernel\DataCollector\UiKernelDataCollector;
+use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
 use Symfinity\UiKernel\Theme\ActiveThemeContext;
+use Symfinity\UiKernel\Theme\EffectivePhysicsResolver;
 use Symfinity\UiKernel\Theme\ThemePreferenceCookies;
 use Symfinity\UiKernel\Theme\ThemePreferenceResolver;
 use Symfinity\UiKernel\Theme\ThemeRegistry;
@@ -151,6 +153,8 @@ final class UiKernelDataCollectorTest extends TestCase
             $this->resolver,
             $this->themeRegistry,
             $this->router,
+            new EffectivePhysicsResolver(),
+            BuiltinDtcgThemeCatalog::fromDefaultDirectory(),
             $port,
         );
         $collector->collect(Request::create('/demo'), new Response());
@@ -166,6 +170,8 @@ final class UiKernelDataCollectorTest extends TestCase
             $this->resolver,
             $this->themeRegistry,
             $this->router,
+            new EffectivePhysicsResolver(),
+            BuiltinDtcgThemeCatalog::fromDefaultDirectory(),
         );
     }
 }

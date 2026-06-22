@@ -1,0 +1,32 @@
+composer_name: symfinity/ui-kernel
+package_major: "1.x"
+
+sidebar:
+  - index
+  - installation
+  - quickstart
+  - configuration
+  - usage
+  - architecture
+  - themes
+  - dtcg-token-core
+  - dtcg-globals-consumers
+  - profiler
+  - font-manager-pairing
+  - upgrade
+
+slices:
+  - symfony: "7.4"
+    sources:
+      - index.md
+      - installation.md
+      - quickstart.md
+      - configuration.md
+      - usage.md
+      - architecture.md
+      - themes.md
+      - dtcg-token-core.md
+      - dtcg-globals-consumers.md
+      - profiler.md
+      - font-manager-pairing.md
+      - upgrade.md

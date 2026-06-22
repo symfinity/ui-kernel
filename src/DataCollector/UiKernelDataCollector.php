@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Symfinity\UiKernel\DataCollector;
 
 use Symfinity\UiKernel\Contract\Catalog\GraphVariantCatalogPort;
+use Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog;
 use Symfinity\UiKernel\Theme\ActiveThemeContext;
+use Symfinity\UiKernel\Theme\EffectivePhysicsResolver;
 use Symfinity\UiKernel\Theme\ThemePreferenceResolver;
 use Symfinity\UiKernel\Theme\ThemeRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +33,8 @@ final class UiKernelDataCollector extends DataCollector
         private readonly ThemePreferenceResolver $resolver,
         private readonly ThemeRegistry $themeRegistry,
         private readonly UrlGeneratorInterface $router,
+        private readonly EffectivePhysicsResolver $physicsResolver,
+        private readonly BuiltinDtcgThemeCatalog $themeCatalog,
         private readonly ?GraphVariantCatalogPort $variantCatalog = null,
     ) {
     }
@@ -49,9 +53,16 @@ final class UiKernelDataCollector extends DataCollector
         $cssBytesAttr = $request->attributes->get(self::CSS_BYTES_REQUEST_ATTR, 0);
         $cssBytes = is_int($cssBytesAttr) ? $cssBytesAttr : (is_numeric($cssBytesAttr) ? (int) $cssBytesAttr : 0);
 
+        $themeId = $this->activeThemeContext->resolvedThemeIdFromRequest($request);
+        $variant = $this->themeCatalog->get($themeId);
+        $physicsResolution = $this->physicsResolver->resolve(
+            $variant->physics(),
+            $variant->isDarkVariant(),
+        );
+
         $this->data = [
             'enabled' => true,
-            'themeId' => $this->activeThemeContext->resolvedThemeIdFromRequest($request),
+            'themeId' => $themeId,
             'lineage' => $preference->lineage,
             'scheme' => $preference->scheme->value,
             'systemPrefersDark' => $this->resolver->resolveSystemPrefersDark($request),
@@ -60,6 +71,10 @@ final class UiKernelDataCollector extends DataCollector
             'semantic_color_slugs' => $this->variantCatalog?->semanticColorSlugs() ?? [],
             'graph_layer_signature' => $this->variantCatalog?->layerSignature() ?? '',
             'showcaseUrl' => $this->resolveShowcaseUrl(),
+            'requestedPhysics' => $physicsResolution->requested->value,
+            'effectivePhysics' => $physicsResolution->effective->value,
+            'physicsCorrected' => $physicsResolution->corrected,
+            'physicsCorrectionReason' => $physicsResolution->correctionReason,
         ];
     }
 
@@ -143,6 +158,32 @@ final class UiKernelDataCollector extends DataCollector
         $signature = $this->data['graph_layer_signature'] ?? '';
 
         return is_string($signature) ? $signature : '';
+    }
+
+    public function getRequestedPhysics(): ?string
+    {
+        $value = $this->data['requestedPhysics'] ?? null;
+
+        return is_string($value) ? $value : null;
+    }
+
+    public function getEffectivePhysics(): ?string
+    {
+        $value = $this->data['effectivePhysics'] ?? null;
+
+        return is_string($value) ? $value : null;
+    }
+
+    public function isPhysicsCorrected(): bool
+    {
+        return (bool) ($this->data['physicsCorrected'] ?? false);
+    }
+
+    public function getPhysicsCorrectionReason(): ?string
+    {
+        $value = $this->data['physicsCorrectionReason'] ?? null;
+
+        return is_string($value) ? $value : null;
     }
 
     private function resolveShowcaseUrl(): ?string

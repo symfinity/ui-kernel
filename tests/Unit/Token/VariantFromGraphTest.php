@@ -24,7 +24,7 @@ final class VariantFromGraphTest extends TestCase
 
         $derived = (new GraphVariantReader())->semanticColorVariants($graph);
 
-        foreach (['primary', 'secondary', 'tertiary', 'success', 'danger', 'info', 'warning'] as $variant) {
+        foreach (['primary', 'secondary', 'accent', 'success', 'danger', 'info', 'warning', 'neutral'] as $variant) {
             self::assertContains($variant, $derived, $variant . ' should be derivable from the graph');
         }
     }
@@ -34,7 +34,8 @@ final class VariantFromGraphTest extends TestCase
     {
         $vocabulary = SemanticColourVocabulary::fromBuiltInThemeId('semantic');
 
-        self::assertContains('ghost', $vocabulary->all());
+        self::assertContains('neutral', $vocabulary->all());
+        self::assertContains('accent', $vocabulary->all());
         self::assertSame(
             SemanticColourVocabulary::PLATFORM_MINIMUM,
             array_values(array_intersect(SemanticColourVocabulary::PLATFORM_MINIMUM, $vocabulary->all())),

@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Token;
 
+use Symfinity\UiKernel\Theme\EffectivePhysicsResolver;
+use Symfinity\UiKernel\Theme\PhysicsRegistry;
+
 final class ThemeTokenResolver
 {
     public function __construct(
         private readonly SemanticColorMap $semanticColorMap = new SemanticColorMap(),
         private readonly PresetRegistry $presetRegistry = new PresetRegistry(),
         private readonly CompoundShadowBuilder $compoundShadowBuilder = new CompoundShadowBuilder(),
+        private readonly PhysicsRegistry $physicsRegistry = new PhysicsRegistry(),
+        private readonly EffectivePhysicsResolver $physicsResolver = new EffectivePhysicsResolver(),
     ) {
     }
 
@@ -29,6 +34,16 @@ final class ThemeTokenResolver
             $appearance = $this->presetRegistry->tokensFor($config->layout(), $schemaVersion);
         }
 
+        $effectivePhysics = $this->physicsResolver->resolve(
+            $config->physics(),
+            $this->physicsResolver->variantIsDark($config->id()),
+        )->effective;
+
+        $appearance = [
+            ...$appearance,
+            ...$this->physicsRegistry->appearanceResolveTokens($effectivePhysics),
+        ];
+
         $merged = [...$appearance, ...$colors];
 
         if ($userTokens !== null && !$userTokens->isEmpty()) {
@@ -42,6 +57,7 @@ final class ThemeTokenResolver
         );
 
         $merged = [...$merged, ...self::overlayTokens($merged, $config)];
+        $merged = [...$merged, ...GlassSurfaceTokens::resolve($merged)];
         $merged = [...$merged, ...(new SemanticColorDerivatives())->derive($merged)];
 
         return DesignTokenSet::fromArray($merged, $schemaVersion);

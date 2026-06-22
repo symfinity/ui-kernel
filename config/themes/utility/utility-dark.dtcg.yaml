@@ -5,9 +5,12 @@ color:
   secondary:
     $type: color
     $value: '{color.mono.slate.500}'
-  tertiary:
+  accent:
     $type: color
     $value: '{color.violet.500}'
+  neutral:
+    $type: color
+    $value: '{color.mono.slate.600}'
   surface:
     base:
       $type: color

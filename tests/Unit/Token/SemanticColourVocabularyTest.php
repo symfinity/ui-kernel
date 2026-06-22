@@ -18,6 +18,8 @@ final class SemanticColourVocabularyTest extends TestCase
         foreach (SemanticColourVocabulary::PLATFORM_MINIMUM as $name) {
             self::assertContains($name, $vocabulary->all(), $name);
         }
+
+        self::assertCount(8, array_intersect(SemanticColourVocabulary::PLATFORM_MINIMUM, $vocabulary->all()));
     }
 
     #[Test]

@@ -15,7 +15,8 @@ final class SemanticColorMap
     public const ROLE_TO_CSS = [
         'primary' => '--ui-color-primary',
         'secondary' => '--ui-color-secondary',
-        'tertiary' => '--ui-color-tertiary',
+        'accent' => '--ui-color-accent',
+        'neutral' => '--ui-color-neutral',
         'surface' => '--ui-color-surface',
         'surface_elevated' => '--ui-color-surface-elevated',
         'text' => '--ui-color-text',
