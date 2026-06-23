@@ -21,11 +21,11 @@
 
 ## Features
 
-- **Design tokens** — `--ui-color-*`, spacing, radius, motion, and focus tokens from W3C DTCG theme layers
-- **Built-in themes** — Balanced, Semantic, and Utility lineages (light + dark variants) on disk under `config/themes/{lineage}/`
-- **OKLCH palette generator** — shared ramp math; author palette refs, not raw hex, in theme packs
-- **Twig integration** — `ui_kernel_css()`, theme boot script, active theme id, theme shell helper
-- **Slim kernel boundary** — theme CSS only; component `[data-ui-role]` rules live in `ux-blocks-*` packages. ui-themer consumer themes use `AuthoringThemeConfig` (not the built-in DTCG catalog) — see [Themes](docs/themes.md#ui-themer-boundary).
+- **Design tokens** — color, spacing, radius, motion, and focus CSS variables from theme packs
+- **Built-in themes** — Balanced, Semantic, and Utility lineages with light and dark variants
+- **Twig integration** — `ui_kernel_css()`, theme boot script, and theme shell helpers
+- **Slim kernel boundary** — theme CSS only; component styles ship in `ux-blocks-*` packages
+- **Flex recipe** — bundle and default config wired on install
 
 ## Prerequisites
 
@@ -54,18 +54,17 @@ The Flex recipe registers the bundle for all environments and copies a minimal a
 symfinity_ui_kernel:
     default_theme: semantic
     default_variant: semantic
-    schema_version: '2.0'
 ```
 
 See [Quick start](docs/quickstart.md) for the full walkthrough.
 
 ## Documentation
 
-- [Quick start](docs/quickstart.md) — theme CSS on every page in minutes
+- **[Quick start](docs/quickstart.md)** — theme CSS on every page in minutes
 - **[Installation](docs/installation.md)** — Flex, manual setup, Web Profiler (dev)
 - **[Configuration](docs/configuration.md)** — app wiring, user tokens, system profile
 - **[Usage](docs/usage.md)** — daily layout and override patterns
-- **[Themes](docs/themes.md)** — built-in lineages, DTCG on-disk layout, `design_system_id`, dark mode
+- **[Themes](docs/themes.md)** — built-in lineages, dark mode, and theme packs
 - **[Font Manager pairing](docs/font-manager-pairing.md)** — optional webfonts
 
 ## Requirements
@@ -79,18 +78,6 @@ See [Quick start](docs/quickstart.md) for the full walkthrough.
 - [GitHub Issues](https://github.com/symfinity/ui-kernel/issues)
 - [Security](.github/SECURITY.md)
 - [Contributing](CONTRIBUTING.md)
-
-## R2 release train (maintainers)
-
-First public tag **`v0.1.0`** with `ui-themer`, `ui-action`, and `ux-blocks` in one coordination event ([PRODUCT-split-release-wave-1](https://github.com/symfinity/symfinity/blob/main/classified/explore/PRODUCT-split-release-wave-1.md)).
-
-| Before tag | Consumer install order |
-|------------|------------------------|
-| **115** done; `schema_version: '2.0'`; Flex recipe + handbook; split row in `mono.json` | **1.** `composer require symfinity/ui-kernel` |
-| `mono repo:doctor` clean for this slug | **2.** `composer require symfinity/ui-themer --dev` (after kernel on Packagist) |
-| `mono recipes:validate --tier=v1` clean for `ui-kernel` | **3.** `composer require symfinity/ui-action` and/or `symfinity/ux-blocks` (parallel) |
-
-After tag: `mono recipes:publish` for changed recipe dirs → Packagist webhook → Flex smoke in a clean Symfony app.
 
 ## License
 
