@@ -15,7 +15,7 @@ use Symfinity\UiKernel\Theme\ThemeCatalog;
  */
 final class SemanticColourVocabulary
 {
-    /** @var list<string> Platform chameleon minimum — schema 2.0 (115). */
+    /** @var list<string> Platform symfinity minimum — schema 2.0 (115). */
     public const PLATFORM_MINIMUM = [
         'primary',
         'secondary',

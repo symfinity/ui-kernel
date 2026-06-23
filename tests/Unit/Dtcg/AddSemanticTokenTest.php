@@ -35,7 +35,7 @@ final class AddSemanticTokenTest extends TestCase
         JSON);
 
         $graph = (new LayeredTokenResolver())->resolve(
-            new LayerStack($base, $accentDoc->asLayer('chameleon', LayerRole::DesignSystem)),
+            new LayerStack($base, $accentDoc->asLayer('symfinity', LayerRole::DesignSystem)),
         );
 
         self::assertContains('accent', $graph->semanticColors());
@@ -59,7 +59,7 @@ final class AddSemanticTokenTest extends TestCase
         JSON);
 
         $graph = (new LayeredTokenResolver())->resolve(
-            new LayerStack($base, $spacingDoc->asLayer('chameleon', LayerRole::DesignSystem)),
+            new LayerStack($base, $spacingDoc->asLayer('symfinity', LayerRole::DesignSystem)),
         );
 
         $css = (new CssGenerator())->forResolvedGraph($graph, 'default');

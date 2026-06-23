@@ -14,12 +14,12 @@ use Symfinity\UiKernel\Theme\ThemeCatalog;
 final class DesignSystemLayerRegistryTest extends TestCase
 {
     #[Test]
-    public function defaultRegistryLoadsChameleon(): void
+    public function defaultRegistryLoadsSymfinity(): void
     {
         $registry = DesignSystemLayerRegistry::fromDefaultDirectory();
 
         self::assertTrue($registry->has(DesignSystemLayerRegistry::DEFAULT_ID));
-        self::assertSame('design_system:chameleon', $registry->get('chameleon')->id());
+        self::assertSame('design_system:symfinity', $registry->get('symfinity')->id());
     }
 
     #[Test]

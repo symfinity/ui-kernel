@@ -13,7 +13,7 @@ use Symfinity\UiKernel\Dtcg\Exception\UnknownDesignSystemException;
  */
 final class DesignSystemLayerRegistry
 {
-    public const DEFAULT_ID = 'chameleon';
+    public const DEFAULT_ID = 'symfinity';
 
     public function __construct(
         private readonly string $directory,

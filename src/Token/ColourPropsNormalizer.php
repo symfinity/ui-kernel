@@ -14,6 +14,7 @@ final class ColourPropsNormalizer
         '' => 'primary',
         'default' => 'primary',
         'destructive' => 'danger',
+        'error' => 'danger',
         'tertiary' => 'accent',
         'ghost' => 'neutral',
     ];

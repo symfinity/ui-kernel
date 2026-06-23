@@ -40,7 +40,7 @@ final class LayerStackTest extends TestCase
             'color.primary' => new Token(TokenPath::fromString('color.primary'), TokenType::Color, 'base'),
             'color.text' => new Token(TokenPath::fromString('color.text'), TokenType::Color, 'base-text'),
         ]);
-        $ds = new TokenLayer('chameleon', LayerRole::DesignSystem, [
+        $ds = new TokenLayer('symfinity', LayerRole::DesignSystem, [
             'color.primary' => new Token(TokenPath::fromString('color.primary'), TokenType::Color, 'ds'),
             'color.accent' => new Token(TokenPath::fromString('color.accent'), TokenType::Color, 'ds-accent'),
         ]);

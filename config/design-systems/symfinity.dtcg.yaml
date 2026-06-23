@@ -1,6 +1,6 @@
 $extensions:
   symfinity:
-    design_system_id: chameleon
+    design_system_id: symfinity
     semantic_colors:
       - primary
       - secondary

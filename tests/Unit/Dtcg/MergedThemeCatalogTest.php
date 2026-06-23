@@ -137,7 +137,7 @@ final class MergedThemeCatalogTest extends TestCase
         mkdir($dir, 0755, true);
         file_put_contents($dir . '/theme.meta.yaml', <<<YAML
 lineage: {$lineage}
-design_system_id: chameleon
+design_system_id: symfinity
 palette:
   mono_saturation: 7.5
   hues:

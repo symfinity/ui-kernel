@@ -111,7 +111,7 @@ built-in themes on disk, and slim CSS generation.
   - `DtcgDocument`, `DtcgJsonReader`, `DtcgYamlReader`
   - `LayeredTokenResolver` — merges `base ⊕ design_system ⊕ theme`, resolves `{alias}` references with cycle detection
 - **Built-in themes**
-  - `config/design-systems/{id}.dtcg.yaml` (default `chameleon`)
+  - `config/design-systems/{id}.dtcg.yaml` (default `symfinity`)
   - `config/themes/{lineage}/theme.meta.yaml` + per-variant `.dtcg.yaml` files
   - Balanced (`default`), Semantic, and Utility lineages (light + dark variants)
   - `BuiltinDtcgThemeCatalog`, `DesignSystemLayerRegistry`, `LayerStackBuilder`, `ThemeDtcgResolver`

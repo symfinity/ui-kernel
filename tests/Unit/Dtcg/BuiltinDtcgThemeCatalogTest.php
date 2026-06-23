@@ -27,7 +27,7 @@ final class BuiltinDtcgThemeCatalogTest extends TestCase
     {
         $variant = (new BuiltinDtcgThemeCatalog(BuiltinDtcgThemeCatalog::defaultDirectory()))->get('default');
 
-        self::assertSame('chameleon', $variant->designSystemId());
+        self::assertSame('symfinity', $variant->designSystemId());
     }
 
     #[Test]

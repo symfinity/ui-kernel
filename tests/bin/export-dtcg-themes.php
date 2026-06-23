@@ -126,7 +126,7 @@ foreach ($lineageVariants as $lineage => $variantIds) {
 
     $meta = [
         'lineage' => $lineage,
-        'design_system_id' => 'chameleon',
+        'design_system_id' => 'symfinity',
         'palette' => $group['palette'],
         'variants' => $metaVariants,
     ];
@@ -139,7 +139,7 @@ if (!is_dir($designSystemsRoot)) {
     mkdir($designSystemsRoot, 0755, true);
 }
 
-$chameleon = [
+$symfinityDesignSystem = [
     'color' => [
         'ghost' => [
             '$type' => 'color',
@@ -149,14 +149,14 @@ $chameleon = [
     ],
     '$extensions' => [
         'symfinity' => [
-            'design_system_id' => 'chameleon',
+            'design_system_id' => 'symfinity',
             'semantic_colors' => ['primary', 'secondary', 'tertiary', 'success', 'danger', 'info', 'warning', 'ghost'],
         ],
     ],
 ];
 
-file_put_contents($designSystemsRoot . '/chameleon.dtcg.yaml', Yaml::dump($chameleon, 4, 2));
-echo "Wrote chameleon.dtcg.yaml\n";
+file_put_contents($designSystemsRoot . '/symfinity.dtcg.yaml', Yaml::dump($symfinityDesignSystem, 4, 2));
+echo "Wrote symfinity.dtcg.yaml\n";
 
 /**
  * @param array<string, mixed> $tree

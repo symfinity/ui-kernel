@@ -31,7 +31,7 @@ Register `WebProfilerBundle` in `config/bundles.php` for `dev` and enable `frame
 
 ### With symfinity/ui-profiler
 
-When [symfinity/ui-profiler](https://github.com/symfinity/ui-profiler) is installed, Chameleon chrome may override profiler layout via bundle template precedence. The kernel collector still registers and reports theme data; visual chrome may differ.
+When [symfinity/ui-profiler](https://github.com/symfinity/ui-profiler) is installed, ux-blocks chrome may override profiler layout via bundle template precedence. The kernel collector still registers and reports theme data; visual chrome may differ.
 
 ### Expected behaviour
 

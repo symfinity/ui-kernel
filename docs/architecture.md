@@ -22,7 +22,7 @@ Built-in lineages include **semantic** (default) and dark variants. Token math u
 
 ## Pair with UX Blocks
 
-UI Kernel supplies **tokens and shared primitives** (form controls, scroll, overlays). Component-specific `[data-ui-role]` CSS lives in tier packages (`symfinity/ux-blocks-core`, …). Install both when you render Chameleon components.
+UI Kernel supplies **tokens and shared primitives** (form controls, scroll, overlays). Component-specific `[data-ui-role]` CSS lives in tier packages (`symfinity/ux-blocks-core`, …). Install both when you render ux-blocks components.
 
 ## Optional companions
 

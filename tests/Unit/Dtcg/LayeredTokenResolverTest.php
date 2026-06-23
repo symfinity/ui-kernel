@@ -34,7 +34,7 @@ final class LayeredTokenResolverTest extends TestCase
             'color.primary' => $this->token('color.primary', TokenType::Color, 'base'),
             'color.text' => $this->token('color.text', TokenType::Color, 'base-text'),
         ]);
-        $ds = new TokenLayer('chameleon', LayerRole::DesignSystem, [
+        $ds = new TokenLayer('symfinity', LayerRole::DesignSystem, [
             'color.primary' => $this->token('color.primary', TokenType::Color, 'ds'),
         ]);
         $theme = new TokenLayer('zinc', LayerRole::Theme, [

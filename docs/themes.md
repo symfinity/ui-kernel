@@ -8,7 +8,7 @@ Built-in themes ship as W3C DTCG token files — not bespoke `symfinity_ui_kerne
 
 ```text
 config/
-├── design-systems/chameleon.dtcg.yaml   # platform semantic vocabulary (eight colours, schema 2.0)
+├── design-systems/symfinity.dtcg.yaml   # platform semantic vocabulary (eight colours, schema 2.0)
 └── themes/{lineage}/
     ├── theme.meta.yaml                  # palette recipe + variant registry
     ├── {variant}.dtcg.yaml              # theme-layer semantic + appearance tokens
@@ -23,7 +23,7 @@ config/
 
 ### `design_system_id`
 
-Each lineage **SHOULD** set `design_system_id: chameleon` in `theme.meta.yaml` (default when omitted). The registry loads `config/design-systems/{id}.dtcg.yaml`. Unknown ids fail at stack-build time with `UnknownDesignSystemException`.
+Each lineage **SHOULD** set `design_system_id: symfinity` in `theme.meta.yaml` (default when omitted). The registry loads `config/design-systems/{id}.dtcg.yaml`. Unknown ids fail at stack-build time with `UnknownDesignSystemException`.
 
 Runtime resolution: `base` (OKLCH palette DTCG from generator) ⊕ `design_system` ⊕ `theme` → `LayeredTokenResolver` → `--ui-*` CSS.
 
