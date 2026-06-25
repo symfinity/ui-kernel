@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.1] - 2026-06-25
+
+Patch release after [v0.2.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.0). Built-in theme file rename and documentation alignment — no new semantic-colour or physics-axis behaviour.
+
+### Changed
+
+- **Built-in default theme DTCG file** — `config/themes/default/chameleon.dtcg.yaml` renamed to `symfinity.dtcg.yaml`; theme meta files and handbook updated
+- **`DesignSystemLayerRegistry`** — default design system id aligned to Symfinity naming
+- **`ThemeTokenSchema`**, **`ColourPropsNormalizer`**, and **`SemanticColourVocabulary`** — minor token/schema alignment fixes
+- **Handbook** — `docs/architecture.md`, `docs/profiler.md`, and `docs/themes.md` reference the renamed built-in theme file
+- **Test fixtures** — DTCG catalog and `export-dtcg-themes` script updated for the new filename
+
+### Notes
+
+- Custom app themes are unaffected unless you copied the old `chameleon.dtcg.yaml` filename from the bundle — prefer `symfinity.dtcg.yaml` for new overrides
+- No changes to `schema_version`, semantic colour slugs, or physics axis since v0.2.0
 
 ## [0.2.0] - 2026-06-22
 

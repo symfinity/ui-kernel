@@ -1,5 +1,19 @@
 # Upgrade and migration
 
+## 0.2.1
+
+Patch release after [v0.2.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.0). Built-in theme file rename and handbook alignment — no semantic-colour or physics-axis changes.
+
+```bash
+composer update symfinity/ui-kernel
+```
+
+After upgrade:
+
+1. If you copied the bundle default DTCG file into your app, rename `config/themes/default/chameleon.dtcg.yaml` → `symfinity.dtcg.yaml` (or re-copy from the package).
+2. Clear Symfony cache if theme CSS is cached in dev.
+3. No `schema_version`, variant slug, or physics changes since v0.2.0.
+
 ## 0.2.0
 
 Minor release after [v0.1.2](https://github.com/symfinity/ui-kernel/releases/tag/v0.1.2). Semantic colour vocabulary v2, physics axis, and compound shadows. **Breaking** for custom DTCG themes and CSS snapshots still on schema `1.0` or `tertiary` / `ghost` semantic colours.
