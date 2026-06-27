@@ -19,7 +19,7 @@ Use `ui_kernel_active_theme_id()` in debug panels or admin chrome when you need 
 |------|-----------|
 | Brand colours on built-in lineages | `user_tokens` in app `symfinity_ui_kernel.yaml` |
 | Full custom lineage | App-owned files under `config/themes/` + `themes_directory` |
-| Author / export packs | [symfinity/ui-themer](https://github.com/symfinity/ui-themer) (dev only) |
+| Author / export packs | Your own YAML packs (preset / tone / semantics schema via `AuthoringThemeConfig`) |
 
 Keep app config minimal — do not copy `contract` or `generator` blocks from the bundle.
 

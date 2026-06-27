@@ -51,11 +51,11 @@ The bundle ships an OKLCH palette generator (`generator.palette.revision`) share
 
 Integrators author **palette refs** in custom theme packs, not raw hex in built-in lineage files.
 
-Custom packs (ui-themer, agency YAML) resolve ramps via **live OKLCH** — they do not inherit frozen hex anchor tables. Built-in lineages use the same live OKLCH generator (`generator.palette.revision` stays `1`); optional sparse `palette.anchors` in `theme.meta.yaml` still override individual refs.
+Custom packs (agency YAML, exported theme packs) resolve ramps via **live OKLCH** — they do not inherit frozen hex anchor tables. Built-in lineages use the same live OKLCH generator (`generator.palette.revision` stays `1`); optional sparse `palette.anchors` in `theme.meta.yaml` still override individual refs.
 
 ## Custom brand themes
 
-Use **symfinity/ui-themer** (or your own YAML packs) for brand-specific themes. Those files are **not** loaded from `ui-kernel/config/themes/`.
+Use your own YAML packs for brand-specific themes. Those files are **not** loaded from `ui-kernel/config/themes/`.
 
 Authoring shape: `version`, `id`, `schema_version`, `preset` (lineage: `default`, `semantic`, or `utility`), `tone`, and semantic colour refs.
 

@@ -27,7 +27,7 @@ Each lineage **SHOULD** set `design_system_id: symfinity` in `theme.meta.yaml` (
 
 Runtime resolution: `base` (OKLCH palette DTCG from generator) ⊕ `design_system` ⊕ `theme` → `LayeredTokenResolver` → `--ui-*` CSS.
 
-**ui-themer consumer themes** (export YAML from symfinity/ui-themer) stay on the bespoke `preset` / `tone` / `semantics` schema via `AuthoringThemeConfig` — they do **not** register in `config/themes/`. See [DTCG token core](dtcg-token-core.md) and the ui-themer boundary below.
+**Authoring consumer themes** (export YAML using the bespoke `preset` / `tone` / `semantics` schema via `AuthoringThemeConfig`) do **not** register in `config/themes/`. See [DTCG token core](dtcg-token-core.md) and the authoring boundary below.
 
 ## Consumer app overrides
 
@@ -39,7 +39,7 @@ symfinity_ui_kernel:
     themes_directory: '%kernel.project_dir%/config/themes'
 ```
 
-Merged variants appear in `ThemeRegistry` and the ui-themer explore catalog (`source: app` badge).
+Merged variants appear in `ThemeRegistry` when app lineages are present.
 
 ## Built-in theme ids
 
@@ -115,9 +115,9 @@ Mono-based semantic colour refs follow the active **theme tone** (warm/cool/pure
 
 It does **not** emit `[data-ui-role]` component rules. Install `symfinity/ux-blocks-*` tier packages for component CSS.
 
-### ui-themer boundary {#ui-themer-boundary}
+### Authoring theme boundary {#authoring-theme-boundary}
 
-Consumer themes authored in **ui-themer** (export YAML) use `AuthoringThemeConfig` + `ThemeTokenResolver` — **not** the built-in DTCG catalog. ui-themer packs live outside `config/themes/` and resolve through the authoring pipeline, not `BuiltinDtcgThemeCatalog`.
+Consumer themes authored with the export YAML pipeline use `AuthoringThemeConfig` + `ThemeTokenResolver` — **not** the built-in DTCG catalog. Authoring packs live outside `config/themes/` and resolve through the authoring pipeline, not `BuiltinDtcgThemeCatalog`.
 
 ## User token overrides
 

@@ -17,7 +17,7 @@ Platform-wide structural tokens and a read-only variant catalog ship alongside b
 ## Graph variant catalog port
 
 - `GraphVariantCatalogPort` → default `GraphVariantCatalog` (semantic colour slugs from the active built-in theme graph).
-- Optional consumers: **symfinity/ux-workshop** (variant selects in the catalog UI), **symfinity/ui-profiler** and the kernel baseline Web Debug Toolbar collector.
+- Optional consumers: apps that need variant pickers in catalog UIs, and the kernel baseline Web Debug Toolbar collector.
 
 Integrators can depend on the port interface to list allowed `data-ui-variant` slugs without hard-coding colour names.
 

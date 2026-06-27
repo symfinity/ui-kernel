@@ -28,8 +28,7 @@ UI Kernel supplies **tokens and shared primitives** (form controls, scroll, over
 
 | Package | Purpose |
 |---------|---------|
-| [symfinity/ui-themer](https://github.com/symfinity/ui-themer) | Author and export theme YAML (dev) |
-| [symfinity/font-manager](https://github.com/symfinity/font-manager) | Webfont pairing — [Font Manager pairing](font-manager-pairing.md) |
+| [symfinity/font-manager](https://packagist.org/packages/symfinity/font-manager) | Webfont pairing — [Font Manager pairing](font-manager-pairing.md) |
 | [symfony/web-profiler-bundle](https://symfony.com/doc/current/profiler.html) | WDT theme panel — [Web Profiler](profiler.md) |
 
 ## Next steps

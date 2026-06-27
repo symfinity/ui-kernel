@@ -29,10 +29,6 @@ Register `WebProfilerBundle` in `config/bundles.php` for `dev` and enable `frame
 3. Open the UI Kernel profiler panel — lineage, scheme, and CSS byte count should match your config.
 4. Change theme cookies or config (`default_theme`, `default_variant`); reload and confirm the panel updates.
 
-### With symfinity/ui-profiler
-
-When [symfinity/ui-profiler](https://github.com/symfinity/ui-profiler) is installed, ux-blocks chrome may override profiler layout via bundle template precedence. The kernel collector still registers and reports theme data; visual chrome may differ.
-
 ### Expected behaviour
 
 | Case | Expected |
