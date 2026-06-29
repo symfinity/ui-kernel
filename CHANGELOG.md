@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.3] - 2026-06-29
+
+Patch release after [v0.2.2](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.2). Split mirror CI maintenance — no PHP, theme-runtime, or handbook changes.
+
+### Changed
+
+- **Split mirror CI** — Composer package cache and `GITHUB_TOKEN` authentication so GitHub Actions reliably resolves dependencies across the PHP × Symfony matrix
+
+### Notes
+
+- No changes to `schema_version`, semantic colour slugs, physics axis, or generated CSS since v0.2.2
+- `composer update symfinity/ui-kernel` is sufficient; no config or theme file migrations
+
 ## [0.2.2] - 2026-06-29
 
 Patch release after [v0.2.1](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.1). Consumer handbook polish for the split mirror — no PHP or theme-runtime changes.

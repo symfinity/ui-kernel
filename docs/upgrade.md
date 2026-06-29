@@ -1,5 +1,15 @@
 # Upgrade and migration
 
+## 0.2.3
+
+Patch release after [v0.2.2](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.2). Split mirror CI only — no theme runtime or API changes.
+
+```bash
+composer update symfinity/ui-kernel
+```
+
+No config or DTCG file changes required.
+
 ## 0.2.2
 
 Patch release after [v0.2.1](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.1). Handbook-only — no theme runtime or API changes.
