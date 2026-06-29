@@ -65,6 +65,8 @@ See [Quick start](docs/quickstart.md) for the full walkthrough.
 - **[Configuration](docs/configuration.md)** — app wiring, user tokens, system profile
 - **[Usage](docs/usage.md)** — daily layout and override patterns
 - **[Themes](docs/themes.md)** — built-in lineages, dark mode, and theme packs
+- **[Reference](docs/reference.md)** — config root, DTCG layout, and entry points
+- **[Troubleshooting](docs/troubleshooting.md)** — stale CSS, upgrades, Web Profiler
 - **[Font Manager pairing](docs/font-manager-pairing.md)** — optional webfonts
 
 ## Requirements

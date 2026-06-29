@@ -4,8 +4,8 @@ UI Kernel does not register standalone Symfony console commands. Theme and CSS b
 
 | Need | Where |
 |------|--------|
-| Compile package SCSS / blocks CSS in a monorepo | `symfinity/mono-sass` via `vendor/bin/mono sass:compile` (consumer monorepo) |
-| Import or author themes | `symfinity/ui-themer` (`ui-themer:import`, Studio UI) |
+| Import or author theme packs | `symfinity/ui-themer` (`ui-themer:import`, Studio UI) |
 | Clear generated theme CSS in dev | `bin/console cache:clear` after theme file edits |
+| Component role CSS | `symfinity/ux-blocks-*` tier packages (kernel emits tokens only) |
 
 See [configuration.md](configuration.md) and [usage.md](usage.md) for kernel options that affect emitted CSS.

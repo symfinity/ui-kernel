@@ -25,7 +25,7 @@ Built-in themes ship inside the bundle under `Resources/themes/`. Consumer apps 
 
 ## Semantic tokens (schema 2.0)
 
-Eight canonical colours (`accent`, `neutral`, …), appearances (`solid`, `soft`, `ghost`, …), and physics ids (`flat`, `glass`, `retro`) — see package `docs/theme-flavours.md` and Spec Kit **002** contracts under `symfinity/2-ui-kernel/`.
+Eight canonical colours (`accent`, `neutral`, …), appearances (`solid`, `soft`, `ghost`, …), and physics ids (`flat`, `glass`, `retro`) — see [Themes](themes.md) and [Configuration](configuration.md).
 
 ## Related packages
 

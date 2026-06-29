@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-06-29
+
+Patch release after [v0.2.1](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.1). Consumer handbook polish for the split mirror — no PHP or theme-runtime changes.
+
+### Added
+
+- **Handbook** — `docs/commands.md` (kernel has no standalone console commands; related tooling pointers)
+- **Handbook** — `docs/reference.md` (config root, DTCG layout, key PHP entry points, related packages)
+- **Handbook** — `docs/troubleshooting.md` (stale theme CSS, upgrade mismatches, Web Profiler panel)
+
+### Changed
+
+- **`docs/index.md`** — lists all non-stub handbook pages including the new reference and troubleshooting guides
+- **`docs/architecture.md`**, **`docs/themes.md`**, **`docs/configuration.md`**, **`docs/usage.md`** — consumer-facing copy; authoring-theme boundary clarified without maintainer-only package paths
+- **`docs/profiler.md`** — baseline Web Profiler collector only (removed ui-profiler layout note)
+- **`docs/dtcg-globals-consumers.md`** — generic variant-catalog consumer wording
+- **`docs/installation.md`** — trimmed to omnia-shaped consumer install (no compile frontmatter)
+
+### Removed
+
+- **`docs.yaml`** — internal handbook compile manifest (split mirror ships `docs/` directly)
+
+### Notes
+
+- No changes to `schema_version`, semantic colour slugs, physics axis, or generated CSS since v0.2.1
+- `composer update symfinity/ui-kernel` is sufficient; no config or theme file migrations
+
 ## [0.2.1] - 2026-06-25
 
 Patch release after [v0.2.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.0). Built-in theme file rename and documentation alignment — no new semantic-colour or physics-axis behaviour.

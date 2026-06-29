@@ -14,4 +14,7 @@ Consumer handbook for **symfinity/ui-kernel** — design tokens, built-in themes
 - [DTCG profile globals and graph consumers](dtcg-globals-consumers.md)
 - [Web Profiler (dev)](profiler.md)
 - [Font Manager pairing](font-manager-pairing.md) (optional)
+- [Console commands](commands.md)
+- [Reference](reference.md)
+- [Troubleshooting](troubleshooting.md)
 - [Upgrade](upgrade.md)

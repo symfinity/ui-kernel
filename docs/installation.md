@@ -1,12 +1,3 @@
----
-source_links:
-  - kind: php
-    label: UiKernelBundle.php
-    path: src/UiKernelBundle.php
-  - kind: php
-    label: CssGenerator.php
-    path: src/Css/CssGenerator.php
----
 # Installation
 
 ## Prerequisites

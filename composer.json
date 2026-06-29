@@ -70,6 +70,12 @@
         "symfinity/font-manager": "Optional webfont loading — pair css_variables export with --ui-font-family-sans / --ui-font-family-mono (see docs/font-manager-pairing.md)",
         "symfinity/ux-blocks-demo": "Browser theme galleries and kernel showcase routes (dev/test only)"
     },
+    "funding": [
+        {
+            "type": "github",
+            "url": "https://github.com/sponsors/serotoninja"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true
 }
