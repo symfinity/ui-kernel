@@ -17,7 +17,7 @@ Open an [issue](https://github.com/symfinity/ui-kernel/issues) on this repositor
 
 ### Symfinity org collaborators
 
-Open a pull request on the **product monorepo** (`packages/ui-kernel/`) on a `feature/{spec-id}-{slug}` branch. Do not rely on merging on this mirror.
+Open a pull request on the **product monorepo** (`packages/ui-kernel/`) on a `feature/{short-description}` branch. Do not rely on merging on this mirror.
 
 ## Quality bar
 

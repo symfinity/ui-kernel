@@ -9,7 +9,7 @@ Values use system stacks until you wire font-manager.
 
 ## Seamless pairing (recommended)
 
-When both packages are installed:
+When both packages are installed (use **`symfinity/font-manager` `^0.2.6`** or newer for `ui_kernel_bridge`):
 
 1. `composer require symfinity/font-manager` (suggested in `composer.json`)
 2. Enable the bridge in font-manager config:
@@ -23,8 +23,10 @@ symfinity_font_manager:
 3. In your layout `<head>`:
 
 ```twig
+{{ ui_kernel_theme_boot_script() }}
 {{ font_manager('Your Sans', '400 700', 'normal', false, 'swap') }}
 {{ font_manager('Your Mono', '400 500', 'normal', true, 'swap') }}
+{{ ui_kernel_layer_order()|raw }}
 {{ ui_kernel_css('default-dark')|raw }}
 {{ font_manager_ui_kernel_bridge()|raw }}
 ```

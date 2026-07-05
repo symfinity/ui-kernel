@@ -1,5 +1,15 @@
 # Upgrade and migration
 
+## 0.2.5
+
+Patch release after [v0.2.4](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.4). Roadmap, sponsorship docs, and handbook wording — no theme runtime or API changes.
+
+```bash
+composer update symfinity/ui-kernel
+```
+
+No config or DTCG file changes required.
+
 ## 0.2.4
 
 Patch release after [v0.2.3](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.3). CSS cascade layers and handbook updates — no semantic-colour, physics-axis, or DTCG file changes.

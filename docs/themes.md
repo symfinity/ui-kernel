@@ -83,7 +83,7 @@ Author in `theme.meta.yaml`:
 physics: flat   # lineage default; per-variant override in variants[]
 ```
 
-`CssGenerator` emits `[data-ui-physics="…"]` blocks with `--ui-physics-*` tokens and bridge aliases to `--ui-motion-*` / `--ui-radius-*`. Complements **109** `data-ui-surface="glass"` (component blur) — not a merge.
+`CssGenerator` emits `[data-ui-physics="…"]` blocks with `--ui-physics-*` tokens and bridge aliases to `--ui-motion-*` / `--ui-radius-*`. Complements `data-ui-surface="glass"` on components (component blur) — not a merge.
 
 ## Layout profiles
 
@@ -156,7 +156,7 @@ Built-in themes use **system font stacks** for `--ui-font-family-sans` and `--ui
 |------|-----------|---------|
 | Semantic `neutral` | `data-ui-variant="neutral"` on colour roles | Cancel / chrome button |
 | Mono tone `neutral` | `mono.neutral.500` palette ramp | Surface tint — not a button variant |
-| Typography `muted` | typography role variant | Helper text (**089**) |
+| Typography `muted` | typography role variant | Helper text |
 | Structural `text-muted` | `--ui-color-text-muted` | Foreground token — not `data-ui-variant` |
 | `ghost` | `data-ui-appearance="ghost"` on Button/Link only | Transparent hover wash — **not** a semantic colour |
 

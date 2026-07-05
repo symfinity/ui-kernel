@@ -5,24 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.5] - 2026-07-05
+
+Patch release after [v0.2.4](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.4). Public roadmap, sponsorship links, and handbook copy polish — no theme runtime or API changes.
+
+### Added
+
+- **Public roadmap** — [ROADMAP.md](ROADMAP.md) with 0.1.x–1.0.x milestone table (current line: 0.2.x DTCG and colour system)
+- **Sponsors** — [SUPPORTERS.md](SUPPORTERS.md) and GitHub Sponsors metadata in `composer.json`
+
+### Changed
+
+- **Handbook** — [configuration.md](docs/configuration.md), [themes.md](docs/themes.md), and [reference.md](docs/reference.md) use consumer wording only (no internal planning references)
+- **[Font Manager pairing](docs/font-manager-pairing.md)** — documents `symfinity/font-manager` `ui_kernel_bridge` and `font_manager_ui_kernel_bridge()`; layout example includes boot script and cascade layer order
+
+### Notes
+
+- No changes to `schema_version`, semantic colour slugs, physics axis, DTCG theme files, or generated CSS since v0.2.4
+- `composer update symfinity/ui-kernel` is sufficient; no config migrations
+- Pair with `symfinity/font-manager` ****`^0.2.6` when using the optional font bridge (ui-kernel itself has no new PHP API in this release)
+
 ## [0.2.4] - 2026-07-05
 
 Patch release after [v0.2.3](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.3). CSS cascade layers for the Chameleon platform stack and handbook alignment for font-manager pairing.
 
 ### Added
 
-- **CSS cascade layers** — platform layer order (`kernel.tokens`, `kernel.profile`, `blocks.*`, `app`); generated theme CSS wrapped in `@layer kernel.tokens` and `@layer kernel.profile`
-- **`ui_kernel_layer_order()`** — Twig helper that emits the `@layer` declaration in `<head>` (call before `ui_kernel_css()`)
-- **Handbook** — `docs/verification.md` (local smoke commands and integration profile P2)
-- **PHPUnit bootstrap** — split-mirror and monorepo dual autoload in `tests/bootstrap.php`
+- **CSS cascade layers** — platform layer order (`kernel.tokens`, `kernel.profile`, `blocks.`*, `app`); generated theme CSS wrapped in `@layer kernel.tokens` and `@layer kernel.profile`
+- `**ui_kernel_layer_order()**` — Twig helper that emits the `@layer` declaration in `<head>` (call before `ui_kernel_css()`)
+- **Handbook** — `docs/verification.md` (local smoke commands for themed layouts)
 
 ### Changed
 
-- **`@UiKernel/_head.html.twig`** — includes `ui_kernel_layer_order()` between boot script and theme CSS
-- **`docs/quickstart.md`** — documents cascade layer order in the layout `<head>` sequence
-- **`docs/font-manager-pairing.md`** — seamless pairing via font-manager `ui_kernel_bridge` and `font_manager_ui_kernel_bridge()`; documents correct `font_manager()` parameter order
-- **`docs/index.md`** — integration profile frontmatter and page list
-- **CSS parity snapshots** — regenerated with `@layer` wrappers
+- `**@UiKernel/_head.html.twig**` — includes `ui_kernel_layer_order()` between boot script and theme CSS
+- `**docs/quickstart.md**` — documents cascade layer order in the layout `<head>` sequence
+- `**docs/font-manager-pairing.md**` — seamless pairing via font-manager `ui_kernel_bridge` and `font_manager_ui_kernel_bridge()`; documents correct `font_manager()` parameter order
+- `**docs/index.md**` — handbook page list updated
 
 ### Notes
 
@@ -56,15 +74,15 @@ Patch release after [v0.2.1](https://github.com/symfinity/ui-kernel/releases/tag
 
 ### Changed
 
-- **`docs/index.md`** — lists all non-stub handbook pages including the new reference and troubleshooting guides
-- **`docs/architecture.md`**, **`docs/themes.md`**, **`docs/configuration.md`**, **`docs/usage.md`** — consumer-facing copy; authoring-theme boundary clarified without maintainer-only package paths
-- **`docs/profiler.md`** — baseline Web Profiler collector only (removed ui-profiler layout note)
-- **`docs/dtcg-globals-consumers.md`** — generic variant-catalog consumer wording
-- **`docs/installation.md`** — trimmed to omnia-shaped consumer install (no compile frontmatter)
+- `**docs/index.md**` — lists all non-stub handbook pages including the new reference and troubleshooting guides
+- `**docs/architecture.md**`, `**docs/themes.md**`, `**docs/configuration.md**`, `**docs/usage.md**` — consumer-facing copy; authoring-theme boundary clarified without maintainer-only package paths
+- `**docs/profiler.md**` — baseline Web Profiler collector only (removed ui-profiler layout note)
+- `**docs/dtcg-globals-consumers.md**` — generic variant-catalog consumer wording
+- `**docs/installation.md**` — trimmed to omnia-shaped consumer install (no compile frontmatter)
 
 ### Removed
 
-- **`docs.yaml`** — internal handbook compile manifest (split mirror ships `docs/` directly)
+- `**docs.yaml**` — internal handbook compile manifest (split mirror ships `docs/` directly)
 
 ### Notes
 
@@ -78,8 +96,8 @@ Patch release after [v0.2.0](https://github.com/symfinity/ui-kernel/releases/tag
 ### Changed
 
 - **Built-in default theme DTCG file** — `config/themes/default/chameleon.dtcg.yaml` renamed to `symfinity.dtcg.yaml`; theme meta files and handbook updated
-- **`DesignSystemLayerRegistry`** — default design system id aligned to Symfinity naming
-- **`ThemeTokenSchema`**, **`ColourPropsNormalizer`**, and **`SemanticColourVocabulary`** — minor token/schema alignment fixes
+- `**DesignSystemLayerRegistry**` — default design system id aligned to Symfinity naming
+- `**ThemeTokenSchema**`, `**ColourPropsNormalizer**`, and `**SemanticColourVocabulary**` — minor token/schema alignment fixes
 - **Handbook** — `docs/architecture.md`, `docs/profiler.md`, and `docs/themes.md` reference the renamed built-in theme file
 - **Test fixtures** — DTCG catalog and `export-dtcg-themes` script updated for the new filename
 
@@ -95,33 +113,33 @@ Minor release after [v0.1.2](https://github.com/symfinity/ui-kernel/releases/tag
 ### Added
 
 - **Semantic colour vocabulary v2** — eight canonical slugs for `data-ui-variant`: `primary`, `secondary`, `accent`, `success`, `warning`, `danger`, `info`, `neutral`
-- **`color.neutral` / `--ui-color-neutral`** — achromatic chrome semantic (distinct from mono tone `neutral` ramp steps)
-- **`schema_version: '2.0'`** — app config key; default in bundle and Flex-copied config
-- **`ColourPropsNormalizer`** — legacy prop aliases at normalize time: `tertiary` → `accent`, `ghost` → `neutral`, `destructive` → `danger`, empty/`default` → `primary`
+- `**color.neutral` / `--ui-color-neutral**` — achromatic chrome semantic (distinct from mono tone `neutral` ramp steps)
+- `**schema_version: '2.0'**` — app config key; default in bundle and Flex-copied config
+- `**ColourPropsNormalizer**` — legacy prop aliases at normalize time: `tertiary` → `accent`, `ghost` → `neutral`, `destructive` → `danger`, empty/`default` → `primary`
 - **Physics axis** — material profiles `flat`, `glass`, and `retro` via `default_physics` and `data-ui-physics` on `[data-ui-root]` or `html`
-- **`PhysicsCssEmitter`** — `[data-ui-physics="…"]` blocks with `--ui-physics-*` tokens and bridges to `--ui-motion-*` / `--ui-radius-*`
-- **`EffectivePhysicsResolver`** — `glass` on a light variant coerces to `flat` with a PSR-3 warning
-- **`CompoundShadowBuilder`** — compound inset highlight + drop shadows on `--ui-shadow-sm|md|lg` at theme resolve time (lineage × mode × surface)
+- `**PhysicsCssEmitter**` — `[data-ui-physics="…"]` blocks with `--ui-physics-*` tokens and bridges to `--ui-motion-*` / `--ui-radius-*`
+- `**EffectivePhysicsResolver**` — `glass` on a light variant coerces to `flat` with a PSR-3 warning
+- `**CompoundShadowBuilder**` — compound inset highlight + drop shadows on `--ui-shadow-sm|md|lg` at theme resolve time (lineage × mode × surface)
 - **Handbook** — physics axis and semantic-colour homonyms in `docs/themes.md`; `schema_version` and `default_physics` in `docs/configuration.md`
 
 ### Changed
 
 - **Built-in DTCG themes** — `color.tertiary` renamed to `color.accent` on all six bundle variants
-- **`ThemeDtcgResolver` / `ThemeTokenResolver` / `PresetRegistry`** — flat `rgba` shadow literals replaced with compound `color-mix` strings; `--ui-overlay-shadow` aliases the strongest shadow tier
+- `**ThemeDtcgResolver` / `ThemeTokenResolver` / `PresetRegistry**` — flat `rgba` shadow literals replaced with compound `color-mix` strings; `--ui-overlay-shadow` aliases the strongest shadow tier
 - **Generated CSS** — `--ui-color-accent` and `--ui-color-neutral` emitted; `--ui-color-tertiary` no longer present
 - **CSS parity fixtures** — regenerated for all six built-in theme variants
 
 ### Removed
 
-- **`color.tertiary` / `--ui-color-tertiary`** — use `accent`
-- **`color.ghost` / `--ui-color-ghost`** — transparent controls use `variant="neutral"` with `appearance="ghost"` on Button/Link in `symfinity/ux-blocks-core` (pair with `^0.2`)
+- `**color.tertiary` / `--ui-color-tertiary**` — use `accent`
+- `**color.ghost` / `--ui-color-ghost**` — transparent controls use `variant="neutral"` with `appearance="ghost"` on Button/Link in `symfinity/ux-blocks-core` (pair with `^0.2`)
 
 ### Notes
 
 - Upgrade custom theme YAML: set `schema_version: '2.0'`, rename `color.tertiary` → `color.accent`, drop `color.ghost`, add `color.neutral` where needed — see [docs/upgrade.md](docs/upgrade.md)
 - Re-check snapshots and visual baselines that assert exact `--ui-color-*` or shadow strings
 - Flex recipe `0.1` constraint unchanged (`^0.1`); new installs receive `schema_version` and `default_physics` defaults when the copied app config is refreshed
-- Pair with **`symfinity/ux-blocks-core` `^0.2`** for the five-value `appearance` axis (`solid`, `soft`, `outline`, `ghost`, `link`)
+- Pair with `**symfinity/ux-blocks-core` `^0.2**` for the five-value `appearance` axis (`solid`, `soft`, `outline`, `ghost`, `link`)
 
 ## [0.1.2] - 2026-06-19
 
@@ -130,22 +148,22 @@ Patch release after [v0.1.1](https://github.com/symfinity/ui-kernel/releases/tag
 ### Added
 
 - **Consumer app DTCG themes** — ship lineages under `config/themes/{lineage}/` (same layout as bundle); app lineages override bundle lineages with the same folder name; invalid app lineages are skipped with a PSR-3 warning
-- **`themes_directory`** — app config key defaulting to `%kernel.project_dir%/config/themes`
-- **`ThemeRegistry::has()`** — check whether a theme id is registered
-- **`--ui-color-button-text`** — semantic CSS variable for on-fill label colour on solid controls (light and dark schemes)
+- `**themes_directory**` — app config key defaulting to `%kernel.project_dir%/config/themes`
+- `**ThemeRegistry::has()**` — check whether a theme id is registered
+- `**--ui-color-button-text**` — semantic CSS variable for on-fill label colour on solid controls (light and dark schemes)
 - **Built-in DTCG `color.button.text`** — on all six bundle theme variants
 - **Handbook** — consumer app overrides in `docs/themes.md`
 
 ### Changed
 
-- **`BuiltinDtcgThemeCatalog`** — merges bundle and app theme directories; shared catalog instance wired through `ThemeRegistry` and `ThemeCatalog`
-- **`BuiltinThemeVariant`** — exposes `mode()` and `catalogSource()` (`kernel` or `app`)
+- `**BuiltinDtcgThemeCatalog**` — merges bundle and app theme directories; shared catalog instance wired through `ThemeRegistry` and `ThemeCatalog`
+- `**BuiltinThemeVariant**` — exposes `mode()` and `catalogSource()` (`kernel` or `app`)
 - **Yellow perceptual midtone ramp** — adjusted L for levels 200–500; default lineage yellow hue 95° → 100°
-- **Generated CSS** — includes `--ui-color-button-text`; yellow `--ui-color-*` steps may differ from v0.1.1
+- **Generated CSS** — includes `--ui-color-button-text`; yellow `--ui-color-`* steps may differ from v0.1.1
 
 ### Removed
 
-- **`config/reference.php`** — auto-generated Symfony config reference (apps-only; not part of the bundle API)
+- `**config/reference.php**` — auto-generated Symfony config reference (apps-only; not part of the bundle API)
 
 ### Notes
 
@@ -159,21 +177,21 @@ Palette ramp generation overhaul since [v0.1.0](https://github.com/symfinity/ui-
 
 ### Added
 
-- **`PerceptualMidtoneRampPolicy`** — hybrid midtone correction (gamut headroom × hue archetype); levels 50–500 envelope peaks at 500; narrow-warm L overrides for amber, yellow, lime
-- **`HueArchetypeRegistry`** — per-hue-family strength multipliers for midtone policy
+- `**PerceptualMidtoneRampPolicy**` — hybrid midtone correction (gamut headroom × hue archetype); levels 50–500 envelope peaks at 500; narrow-warm L overrides for amber, yellow, lime
+- `**HueArchetypeRegistry**` — per-hue-family strength multipliers for midtone policy
 - **Bundle mono centralization** — `contract.palette.mono_tones` + `generator.palette.mono_hues` (slate, stone, sage, mauve, rust); lineage `palette.mono_saturation` only (no per-lineage hue drift)
 - **Handbook** — `docs/upgrade.md` (path-repo → Flex, version bumps, visual baseline note)
 
 ### Changed
 
-- **`PaletteRampMath`** — linear OKLCH lightness by level index; gamut-relative chroma with `levelChromaScale` floor; dark-tail curve updated in place (quadratic steps 600–950; **950** = **L(900)/2**); `generator.palette.revision` stays **1**
-- **`PaletteGenerator`** — 500→600 bridge **ΔL = 0.070**; midtone pipeline uses `PerceptualMidtoneRampPolicy` instead of warm-hue taper
+- `**PaletteRampMath**` — linear OKLCH lightness by level index; gamut-relative chroma with `levelChromaScale` floor; dark-tail curve updated in place (quadratic steps 600–950; **950** = **L(900)/2**); `generator.palette.revision` stays **1**
+- `**PaletteGenerator**` — 500→600 bridge **ΔL = 0.070**; midtone pipeline uses `PerceptualMidtoneRampPolicy` instead of warm-hue taper
 - **Built-in theme metadata** — industry mono tone ids; slate hue normalized to **240°** at bundle SSOT
-- **Generated CSS** — `--ui-color-*` values for hue and tinted-mono ramps differ from `v0.1.0` at the same YAML keys (refresh visual baselines after upgrade)
+- **Generated CSS** — `--ui-color-`* values for hue and tinted-mono ramps differ from `v0.1.0` at the same YAML keys (refresh visual baselines after upgrade)
 
 ### Removed
 
-- **`WarmHueRampPolicy`** — superseded by perceptual midtone pipeline (in-place at `generator.palette.revision: 1`)
+- `**WarmHueRampPolicy**` — superseded by perceptual midtone pipeline (in-place at `generator.palette.revision: 1`)
 
 ### Notes
 
@@ -230,3 +248,4 @@ built-in themes on disk, and slim CSS generation.
 
 - UI Kernel emits theme tokens and structural profile globals only; component `[data-ui-role]` CSS ships in separate `symfinity/ux-blocks-*` packages.
 - ui-themer consumer themes use the bespoke authoring format via `AuthoringThemeConfig` — not `BuiltinDtcgThemeCatalog`.
+

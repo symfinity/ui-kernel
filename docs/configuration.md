@@ -18,8 +18,8 @@ After install, keep a **minimal** app file. Palette math and built-in theme tree
 |--------|------|---------|-------------|
 | `default_theme` | string | `default` | Active built-in theme lineage (`data-theme` anchor) |
 | `default_variant` | string | `default` | Default variant key within the lineage |
-| `schema_version` | string | `2.0` | Output token schema (`2.0` — semantic colour vocabulary **115**) |
-| `default_physics` | string | `flat` | Physics axis: `flat`, `glass`, or `retro` (**111**) |
+| `schema_version` | string | `2.0` | Output token schema (`2.0` — eight canonical semantic colours; see [Themes](themes.md#semantic-colour-homonyms-schema-20)) |
+| `default_physics` | string | `flat` | Material profile on the layout root: `flat`, `glass`, or `retro` — see [Themes](themes.md#physics-axis-data-ui-physics) |
 | `user_tokens` | map | `{}` | Partial `--ui-*` overrides on the active theme |
 | `system_profile.id` | string | `ui-kernel-default` | Structural profile id |
 | `system_profile.columns` | int | `12` | Grid columns |
