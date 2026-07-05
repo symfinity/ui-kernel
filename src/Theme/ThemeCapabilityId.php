@@ -10,4 +10,6 @@ enum ThemeCapabilityId: string
     case UserTokenOverlay = 'user_token_overlay';
     case SessionPreviewOverlay = 'session_preview_overlay';
     case AppDtcgOverride = 'app_dtcg_override';
+    case NestedTheme = 'nested_theme';
+    case InheritanceChain = 'inheritance_chain';
 }

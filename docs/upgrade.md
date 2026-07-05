@@ -1,5 +1,21 @@
 # Upgrade and migration
 
+## 0.3.1
+
+Patch release after **0.3.0**. Adds functional theme inheritance via `extends` on variant entries — no `schema_version` change.
+
+```bash
+composer update symfinity/ui-kernel
+```
+
+After upgrade:
+
+1. Flat themes without `extends` behave unchanged — no config migration required.
+2. To define a child variant, add `extends: {parent_variant_id}` on the variant entry in `theme.meta.yaml` and supply theme-layer overrides only in the child `.dtcg.yaml` file — see [Themes — inheritance](themes.md#theme-inheritance-v031).
+3. Optional: tune `symfinity_ui_kernel.theme_inheritance.max_depth` (default `8`) when using long chains.
+4. `ui_kernel_theme_capabilities()` may report `nested_theme` and `inheritance_chain` when your catalog uses `extends`.
+5. See [CHANGELOG](../CHANGELOG.md#031---2026-07-05) for the full release note.
+
 ## 0.3.0
 
 Minor release after **0.2.x**. Opens the **0.3.x theme-engine line** — runtime switching, overlays, and documented capability ids. Safe to adopt; no config migration beyond confirming `<head>` order.

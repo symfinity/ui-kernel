@@ -45,6 +45,7 @@ Prefer `{% include '@UiKernel/_head.html.twig' %}` in `<head>` when you do not c
 | Capability ids | [themes.md — capabilities](themes.md#theme-capabilities-v03) |
 | Runtime probe | `ui_kernel_theme_capabilities()` and injectable probe service — [Twig helpers](#twig-helpers) below |
 | Overlay merge order | [themes.md — overlays](themes.md#theme-overlay-merge-order) |
+| Theme inheritance (`extends`) | [themes.md — inheritance](themes.md#theme-inheritance-v031) |
 | Public milestone plan | [themes.md — milestones](themes.md#theme-engine-milestones) |
 
 Preview session CSS uses `SessionThemeInjectionPort` on designated hosts — see **symfinity/ui-themer**; the registry is not mutated.

@@ -9,6 +9,7 @@ use Symfinity\UiKernel\Contract\Layer\LayerStack;
 use Symfinity\UiKernel\Contract\Layer\TokenLayerInterface;
 use Symfinity\UiKernel\Contract\Layer\TokenLayer;
 use Symfinity\UiKernel\Palette\PaletteGenerator;
+use Symfinity\UiKernel\Theme\ThemeInheritanceMerger;
 use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 
 /**
@@ -20,6 +21,7 @@ final class LayerStackBuilder
         private readonly DesignSystemLayerRegistry $designSystems,
         private readonly PaletteGenerator $paletteGenerator = new PaletteGenerator(),
         private readonly DtcgYamlReader $reader = new DtcgYamlReader(),
+        private readonly ?ThemeInheritanceMerger $inheritanceMerger = null,
     ) {
     }
 
@@ -40,10 +42,14 @@ final class LayerStackBuilder
         $designSystemId = $variant->designSystemId() ?: $this->designSystems->defaultId();
         $designSystem = $this->designSystems->get($designSystemId);
 
-        $themeTokens = (new MonoToneThemeLayerRewriter())->rewrite(
-            $this->reader->read($variant->layerPath())->flatten(),
-            $variant->tone(),
-        );
+        if ($this->inheritanceMerger !== null) {
+            $themeTokens = $this->inheritanceMerger->mergedThemeTokens($variant);
+        } else {
+            $themeTokens = (new MonoToneThemeLayerRewriter())->rewrite(
+                $this->reader->read($variant->layerPath())->flatten(),
+                $variant->tone(),
+            );
+        }
 
         $theme = new TokenLayer('theme:' . $variant->id(), LayerRole::Theme, $themeTokens);
 

@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2026-07-05
+
+Patch release after [v0.3.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.3.0). Functional theme inheritance for DTCG variant entries.
+
+### Added
+
+- Theme inheritance — optional `extends` on variant entries in `theme.meta.yaml` merges parent theme-layer DTCG before child overrides (whole-token replace by path)
+- Multi-hop chains with cycle detection and configurable `symfinity_ui_kernel.theme_inheritance.max_depth` (default `8`)
+- Capability probe ids `nested_theme` and `inheritance_chain` on `ThemeCapabilityProbe` / `ui_kernel_theme_capabilities()`
+- Handbook — [themes.md](docs/themes.md) 0.3.1 milestone row and inheritance section; [upgrade.md](docs/upgrade.md) 0.3.1 notes
+
+### Notes
+
+- Theme YAML stays on `schema_version: '2.0'` — flat themes without `extends` are unchanged
+- Theme composition author UI remains in ui-themer / ui-designer packages, not this release
+
 ## [0.3.0] - 2026-07-05
 
 Minor release after [v0.2.5](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.5). Opens the public **0.3.x theme-engine line**: runtime theme switching, config and session overlays, and a documented capability vocabulary.

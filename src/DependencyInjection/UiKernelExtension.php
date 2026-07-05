@@ -61,6 +61,16 @@ final class UiKernelExtension extends Extension
             'symfinity.ui_kernel.profile_globals_layer_path',
             dirname(__DIR__, 2) . '/config/tokens/' . $profileGlobalsFile,
         );
+
+        $themeInheritance = $config['theme_inheritance'] ?? [];
+        if (!is_array($themeInheritance)) {
+            $themeInheritance = [];
+        }
+        $maxDepth = $themeInheritance['max_depth'] ?? 8;
+        $container->setParameter(
+            'symfinity.ui_kernel.theme_inheritance.max_depth',
+            is_int($maxDepth) ? $maxDepth : 8,
+        );
     }
 
     public function getAlias(): string

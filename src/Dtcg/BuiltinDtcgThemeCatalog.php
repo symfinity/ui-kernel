@@ -299,6 +299,10 @@ final class BuiltinDtcgThemeCatalog
                 is_string($entry['physics'] ?? null) ? $entry['physics'] : $lineagePhysics->value,
             );
 
+            $extends = is_string($entry['extends'] ?? null) && $entry['extends'] !== ''
+                ? $entry['extends']
+                : null;
+
             $variant = new BuiltinThemeVariant(
                 $id,
                 $label,
@@ -313,6 +317,7 @@ final class BuiltinDtcgThemeCatalog
                 mode: $mode,
                 catalogSource: $catalogSource,
                 physics: $variantPhysics,
+                extends: $extends,
             );
 
             if ($donor === null) {

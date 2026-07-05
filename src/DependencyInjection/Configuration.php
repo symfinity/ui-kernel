@@ -75,6 +75,12 @@ final class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('theme_inheritance')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->integerNode('max_depth')->defaultValue(8)->min(1)->max(32)->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

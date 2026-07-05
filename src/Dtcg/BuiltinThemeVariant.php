@@ -37,6 +37,7 @@ final readonly class BuiltinThemeVariant
         private string $mode = 'light',
         private string $catalogSource = 'kernel',
         private PhysicsId $physics = PhysicsId::Flat,
+        private ?string $extends = null,
     ) {
     }
 
@@ -131,5 +132,10 @@ final readonly class BuiltinThemeVariant
     public function isDarkVariant(): bool
     {
         return $this->mode === 'dark';
+    }
+
+    public function extends(): ?string
+    {
+        return $this->extends;
     }
 }

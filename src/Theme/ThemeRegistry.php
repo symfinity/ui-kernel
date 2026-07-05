@@ -19,6 +19,8 @@ final class ThemeRegistry
 
     private readonly BuiltinDtcgThemeCatalog $dtcgCatalog;
 
+    private readonly ThemeInheritanceGraph $inheritanceGraph;
+
     private ThemeDtcgResolver $resolver;
 
     private UserTokenSet $userTokens;
@@ -27,11 +29,14 @@ final class ThemeRegistry
         ?BuiltinDtcgThemeCatalog $dtcgCatalog = null,
         ?ThemeDtcgResolver $resolver = null,
         ?UserTokenSet $userTokens = null,
+        ?ThemeInheritanceGraph $inheritanceGraph = null,
     ) {
         $this->dtcgCatalog = $dtcgCatalog ?? BuiltinDtcgThemeCatalog::fromDefaultDirectory();
         ThemeCatalog::bindDtcgCatalog($this->dtcgCatalog);
+        $this->inheritanceGraph = $inheritanceGraph ?? ThemeInheritanceGraph::fromCatalog($this->dtcgCatalog);
         $this->resolver = $resolver ?? new ThemeDtcgResolver(new LayerStackBuilder(
             new DesignSystemLayerRegistry(DesignSystemLayerRegistry::defaultDirectory()),
+            inheritanceMerger: new ThemeInheritanceMerger($this->inheritanceGraph),
         ));
         $this->userTokens = $userTokens ?? new UserTokenSet();
 
@@ -101,5 +106,15 @@ final class ThemeRegistry
         }
 
         return false;
+    }
+
+    public function hasNestedTheme(): bool
+    {
+        return $this->inheritanceGraph->hasNestedTheme();
+    }
+
+    public function hasInheritanceChain(): bool
+    {
+        return $this->inheritanceGraph->hasInheritanceChain();
     }
 }

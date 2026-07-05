@@ -38,6 +38,8 @@ final class ThemeCapabilityProbe
             ThemeCapabilityId::UserTokenOverlay => !$this->userTokens->isEmpty(),
             ThemeCapabilityId::SessionPreviewOverlay => $this->sessionThemeInjectionPort !== null,
             ThemeCapabilityId::AppDtcgOverride => $this->themeRegistry->hasAppLineages(),
+            ThemeCapabilityId::NestedTheme => $this->themeRegistry->hasNestedTheme(),
+            ThemeCapabilityId::InheritanceChain => $this->themeRegistry->hasInheritanceChain(),
         };
     }
 

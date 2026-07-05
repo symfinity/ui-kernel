@@ -28,9 +28,20 @@ services:
       - '%symfinity.ui_kernel.themes_directory%'
       - '%symfinity.ui_kernel.bundle_themes_directory%'
 
+  Symfinity\UiKernel\Theme\ThemeInheritanceGraph:
+    factory: ['Symfinity\UiKernel\Theme\ThemeInheritanceGraph', 'fromCatalog']
+    arguments:
+      - '@Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog'
+      - '%symfinity.ui_kernel.theme_inheritance.max_depth%'
+
+  Symfinity\UiKernel\Theme\ThemeInheritanceMerger:
+    arguments:
+      $graph: '@Symfinity\UiKernel\Theme\ThemeInheritanceGraph'
+
   Symfinity\UiKernel\Theme\ThemeRegistry:
     arguments:
       $dtcgCatalog: '@Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog'
+      $inheritanceGraph: '@Symfinity\UiKernel\Theme\ThemeInheritanceGraph'
 
   Symfinity\UiKernel\Theme\ThemeCapabilityProbe:
     arguments:
@@ -43,7 +54,9 @@ services:
     arguments:
       $filePath: '%symfinity.ui_kernel.profile_globals_layer_path%'
 
-  Symfinity\UiKernel\Dtcg\LayerStackBuilder: ~
+  Symfinity\UiKernel\Dtcg\LayerStackBuilder:
+    arguments:
+      $inheritanceMerger: '@Symfinity\UiKernel\Theme\ThemeInheritanceMerger'
 
   Symfinity\UiKernel\Dtcg\ThemeDtcgResolver: ~
 

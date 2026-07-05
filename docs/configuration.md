@@ -25,6 +25,7 @@ After install, keep a **minimal** app file. Palette math and built-in theme tree
 | `system_profile.columns` | int | `12` | Grid columns |
 | `system_profile.breakpoints` | map | (profile default) | Breakpoint name to px |
 | `system_profile.container_max_widths` | map | (profile default) | Breakpoint name to max width px |
+| `theme_inheritance.max_depth` | int | `8` | Maximum `extends` hops when resolving nested themes |
 
 Example (app layer):
 

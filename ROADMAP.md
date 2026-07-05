@@ -1,21 +1,21 @@
 # Roadmap
 
-Public milestones for **symfinity/ui-kernel** on the path to **1.0.x**.
+Public milestones for symfinity/ui-kernel on the path to 1.0.x.
 
-**Current release line:** 0.3.x (`0.3-dev`; [Packagist](https://packagist.org/packages/symfinity/ui-kernel) publishes **0.2.x** until **v0.3.0** tags)
+Current release line: 0.3.x (0.3-dev; Packagist publishes 0.2.x until v0.3.0 tags)
 
 | Version | Focus | Status |
 |---------|-------|--------|
-| **0.1.x** | First public release | Released |
-| **0.2.x** | DTCG and colour system | Released |
-| **0.3.x** | Theme engine | Current |
-| **0.4.x** | Token engine | Planned |
-| **0.5.x** | Generator engine | Planned |
-| **0.6.x** | Contracts | Planned |
-| **0.7.x** | Tooling | Planned |
-| **0.8.x** | Ecosystem | Planned |
-| **0.9.x** | Hardening | Planned |
-| **1.0.x** | Stable API | Planned |
+| 0.1.x | First public release | Released |
+| 0.2.x | DTCG and colour system | Released |
+| 0.3.x | Theme engine | Current |
+| 0.4.x | Token engine | Planned |
+| 0.5.x | Generator engine | Planned |
+| 0.6.x | Contracts | Planned |
+| 0.7.x | Tooling | Planned |
+| 0.8.x | Ecosystem | Planned |
+| 0.9.x | Hardening | Planned |
+| 1.0.x | Stable API | Planned |
 
 ## Details
 
@@ -29,7 +29,7 @@ W3C design tokens, semantic colour vocabulary, OKLCH palette generation
 
 ### 0.3.x — Theme engine
 
-Runtime switching, config and session overlays, capability vocabulary
+Runtime switching, overlays, capability probe, nested theme inheritance
 
 ### 0.4.x — Token engine
 

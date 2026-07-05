@@ -25,3 +25,5 @@ symfinity_ui_kernel:
       dark_tail_l_end: 0.09
   dtcg:
     profile_globals_layer: profile-globals.dtcg.yaml
+  theme_inheritance:
+    max_depth: 8

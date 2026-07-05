@@ -100,18 +100,18 @@ Radius, shadow, and motion character follow the active **physics** profile (defa
 
 Public **0.3.x** line — runtime switching, overlays, and documented capability ids. Theme YAML stays on `schema_version: '2.0'` until a later release explicitly versions it.
 
-| Theme-engine capability | v0.3.0 | Later 0.3.x |
-|-------------------------|--------|-------------|
-| Runtime switching (boot script, cookies, scheme API) | **v0.3.0** | — |
-| Theme overlays (`user_tokens`, app DTCG overrides) | **v0.3.0** | — |
-| Session preview overlay (preview hosts only) | **v0.3.0** | — |
-| Theme capabilities vocabulary (documented ids) | **v0.3.0** | — |
-| Runtime capability probe (`ui_kernel_theme_capabilities()`) | **v0.3.0** | — |
-| Theme composition (author graphs) | Boundary documented | ui-themer + future kernel hooks |
-| Nested themes | — | 0.3.1+ |
-| Theme inheritance (multi-hop) | — | 0.3.1+ |
+| Theme-engine capability | v0.3.0 | v0.3.1 | Later 0.3.x |
+|-------------------------|--------|--------|-------------|
+| Runtime switching (boot script, cookies, scheme API) | **v0.3.0** | — | — |
+| Theme overlays (`user_tokens`, app DTCG overrides) | **v0.3.0** | — | — |
+| Session preview overlay (preview hosts only) | **v0.3.0** | — | — |
+| Theme capabilities vocabulary (documented ids) | **v0.3.0** | — | — |
+| Runtime capability probe (`ui_kernel_theme_capabilities()`) | **v0.3.0** | — | — |
+| Nested themes (`extends` single-hop merge) | — | **v0.3.1** | — |
+| Theme inheritance (multi-hop chains) | — | **v0.3.1** | — |
+| Theme composition (author graphs) | Boundary documented | — | ui-themer + future kernel hooks |
 
-**v0.3.0** ships `runtime_switch`, `user_token_overlay`, `session_preview_overlay`, and `app_dtcg_override`, plus the runtime probe (`ui_kernel_theme_capabilities()`) — see [Theme capabilities](#theme-capabilities-v03). Nested theme ids, multi-hop inheritance resolver, composition graph UI, and `schema_version: '3.0'` follow in later **0.3.x** patches.
+**v0.3.0** ships `runtime_switch`, `user_token_overlay`, `session_preview_overlay`, and `app_dtcg_override`, plus the runtime probe — see [Theme capabilities](#theme-capabilities-v03). **v0.3.1** adds functional `extends` on variant entries and multi-hop theme-layer merge. Composition graph UI and `schema_version: '3.0'` remain later **0.3.x** work.
 
 ## Runtime theme switching {#runtime-theme-switching}
 
@@ -170,10 +170,10 @@ Shared vocabulary for apps, dogfood labs, and optional packages:
 | `user_token_overlay` | Config `user_tokens` merge atop registry theme | `symfinity_ui_kernel.user_tokens` in YAML |
 | `session_preview_overlay` | Ephemeral author draft CSS on preview hosts | `SessionThemeInjectionPort` (ui-themer implements) |
 | `app_dtcg_override` | App `config/themes/{lineage}/` overrides bundle | `themes_directory` + merged `ThemeRegistry` |
+| `nested_theme` | Child variant resolves through parent theme layer | `extends` on variant entry in `theme.meta.yaml` |
+| `inheritance_chain` | Multi-hop parent merge (depth limit configurable) | Same as nested; probe true when chain length ≥ 2 hops |
 
-**Later 0.3.x** (not v0.3.0): `nested_theme`, `inheritance_chain`.
-
-**Runtime probe (v0.3.0):** `ThemeCapabilityProbe::enabled()` and `ui_kernel_theme_capabilities()` report which capability ids are active in the current app — see [reference.md](reference.md#twig-helpers).
+**Runtime probe:** `ThemeCapabilityProbe::enabled()` and `ui_kernel_theme_capabilities()` report which capability ids are active in the current app — see [reference.md](reference.md#twig-helpers).
 
 **Consumer checklist**
 
@@ -182,14 +182,44 @@ Shared vocabulary for apps, dogfood labs, and optional packages:
 3. Document cookie / scheme behaviour for your shell.
 4. Use preview injection only on designated preview routes with a valid session token.
 
+## Theme inheritance (v0.3.1) {#theme-inheritance-v031}
+
+**Capability ids:** `nested_theme`, `inheritance_chain` — see [Theme capabilities](#theme-capabilities-v03).
+
+Add optional `extends` on a variant entry to inherit another registered variant's theme-layer DTCG before applying child overrides:
+
+```yaml
+# config/themes/brand-a/theme.meta.yaml
+variants:
+  - id: brand-a
+    layer_file: brand-a.dtcg.yaml
+    extends: semantic
+```
+
+```yaml
+# config/themes/brand-a/brand-a.dtcg.yaml — theme-layer overrides only
+color:
+  primary:
+    $type: color
+    $value: '{color.red.600}'
+```
+
+Rules:
+
+- `extends` references a **variant id** registered in the merged catalog (built-in or app), not a lineage folder name alone.
+- Merge walks the chain root → leaf; each step replaces whole tokens by path (same semantics as layer stack merge).
+- Cycles and chains longer than `symfinity_ui_kernel.theme_inheritance.max_depth` fail at catalog load.
+- Child themes without overrides inherit the parent theme layer output unchanged.
+
 ## Theme overlay merge order {#theme-overlay-merge-order}
 
 ### Standard consumer page (no preview host)
 
 ```text
-1. Built-in or app registry theme (DTCG stack: base ⊕ design_system ⊕ theme)
-2. Config user_tokens overrides on the active variant
-3. Generated --ui-* CSS in @layer ui-kernel-theme
+1. Resolve `extends` chain → merged theme-role DTCG (when present)
+2. Built-in or app registry theme (DTCG stack: base ⊕ design_system ⊕ merged theme)
+3. Config user_tokens overrides on the active variant
+4. Generated --ui-* CSS in @layer ui-kernel-theme
 ```
 
 ### Preview host with valid session token
