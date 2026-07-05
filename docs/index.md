@@ -1,3 +1,7 @@
+---
+integration_profile: P2
+---
+
 # Overview
 
 Consumer handbook for **symfinity/ui-kernel** — design tokens, built-in themes, and generated CSS.
@@ -18,3 +22,4 @@ Consumer handbook for **symfinity/ui-kernel** — design tokens, built-in themes
 - [Reference](reference.md)
 - [Troubleshooting](troubleshooting.md)
 - [Upgrade](upgrade.md)
+- [Verification](verification.md)

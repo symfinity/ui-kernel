@@ -98,10 +98,13 @@ final class CssGenerator
         $selectors = $themeId === 'default' ? [$selector, ':root'] : [$selector];
         $lines = [...$lines, ...$this->p3GamutOverrides($selectors, $tokenMap)];
 
-        $lines[] = $this->profileGlobalsCss($graph);
-        $lines[] = $this->physicsCssEmitter->emit();
+        $tokenCss = implode("\n", array_filter($lines, static fn (string $line): bool => $line !== ''));
+        $profileCss = implode("\n", array_filter([
+            $this->profileGlobalsCss($graph),
+            $this->physicsCssEmitter->emit(),
+        ], static fn (string $line): bool => $line !== ''));
 
-        return implode("\n", array_filter($lines, static fn (string $line): bool => $line !== ''));
+        return $this->wrapKernelLayers($tokenCss, $profileCss);
     }
 
     /**
@@ -165,10 +168,23 @@ final class CssGenerator
         $lightSelectors = $anchorId === 'default' ? [$selector, ':root'] : [$selector];
         $lines = [...$lines, ...$this->p3GamutOverrides($lightSelectors, $light->tokens()->all())];
 
-        $lines[] = $this->profileGlobalsCss(null);
-        $lines[] = $this->physicsCssEmitter->emit();
+        $tokenCss = implode("\n", array_filter($lines, static fn (string $line): bool => $line !== ''));
+        $profileCss = implode("\n", array_filter([
+            $this->profileGlobalsCss(null),
+            $this->physicsCssEmitter->emit(),
+        ], static fn (string $line): bool => $line !== ''));
 
-        return implode("\n", array_filter($lines, static fn (string $line): bool => $line !== ''));
+        return $this->wrapKernelLayers($tokenCss, $profileCss);
+    }
+
+    private function wrapKernelLayers(string $tokenCss, string $profileCss): string
+    {
+        $parts = array_filter([
+            CascadeLayerWrap::wrap(CascadeLayerOrder::KERNEL_TOKENS, $tokenCss),
+            CascadeLayerWrap::wrap(CascadeLayerOrder::KERNEL_PROFILE, $profileCss),
+        ]);
+
+        return implode("\n", $parts);
     }
 
     /**

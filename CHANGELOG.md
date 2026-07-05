@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-07-05
+
+Patch release after [v0.2.3](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.3). CSS cascade layers for the Chameleon platform stack and handbook alignment for font-manager pairing.
+
+### Added
+
+- **CSS cascade layers** — platform layer order (`kernel.tokens`, `kernel.profile`, `blocks.*`, `app`); generated theme CSS wrapped in `@layer kernel.tokens` and `@layer kernel.profile`
+- **`ui_kernel_layer_order()`** — Twig helper that emits the `@layer` declaration in `<head>` (call before `ui_kernel_css()`)
+- **Handbook** — `docs/verification.md` (local smoke commands and integration profile P2)
+- **PHPUnit bootstrap** — split-mirror and monorepo dual autoload in `tests/bootstrap.php`
+
+### Changed
+
+- **`@UiKernel/_head.html.twig`** — includes `ui_kernel_layer_order()` between boot script and theme CSS
+- **`docs/quickstart.md`** — documents cascade layer order in the layout `<head>` sequence
+- **`docs/font-manager-pairing.md`** — seamless pairing via font-manager `ui_kernel_bridge` and `font_manager_ui_kernel_bridge()`; documents correct `font_manager()` parameter order
+- **`docs/index.md`** — integration profile frontmatter and page list
+- **CSS parity snapshots** — regenerated with `@layer` wrappers
+
+### Notes
+
+- Custom layouts that call `ui_kernel_css()` directly should add `{{ ui_kernel_layer_order()|raw }}` before theme CSS, or switch to `{% include '@UiKernel/_head.html.twig' %}`
+- Unlayered integrator CSS continues to override layered `ux-blocks-*` rules at equal specificity — pair with ux-blocks tier releases that emit matching `blocks.*` layers when upgrading component CSS
+- No changes to `schema_version`, semantic colour slugs, or DTCG theme files since v0.2.3
+- `composer update symfinity/ui-kernel` is sufficient; no config migrations
+
 ## [0.2.3] - 2026-06-29
 
 Patch release after [v0.2.2](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.2). Split mirror CI maintenance — no PHP, theme-runtime, or handbook changes.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Symfinity\UiKernel\Twig;
 
+use Symfinity\UiKernel\Css\CascadeLayerOrder;
 use Symfinity\UiKernel\Css\CssGenerator;
 use Symfinity\UiKernel\Theme\ActiveThemeContext;
 use Symfinity\UiKernel\Theme\ThemeShellPresenter;
@@ -31,6 +32,7 @@ final class UiKernelExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
+            new TwigFunction('ui_kernel_layer_order', $this->renderLayerOrder(...), ['is_safe' => ['html']]),
             new TwigFunction('ui_kernel_css', $this->renderCss(...), ['is_safe' => ['html']]),
             new TwigFunction('ui_kernel_theme_boot_script', $this->renderBootScript(...), ['is_safe' => ['html']]),
             new TwigFunction('ui_kernel_active_theme_id', $this->activeThemeId(...)),
@@ -44,6 +46,11 @@ final class UiKernelExtension extends AbstractExtension
             ?? \Symfony\Component\HttpFoundation\Request::create('/');
 
         return $this->themeShellPresenter->forRequest($request, $fallbackRoute);
+    }
+
+    public function renderLayerOrder(): string
+    {
+        return '<style id="ui-kernel-layer-order">'."\n".CascadeLayerOrder::declaration()."\n".'</style>';
     }
 
     public function renderCss(?string $themeId = null): string

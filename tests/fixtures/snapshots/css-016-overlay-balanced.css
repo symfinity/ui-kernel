@@ -1,3 +1,4 @@
+@layer kernel.tokens {
 /* ui-kernel schema:2.0 profile:ui-kernel-default */
 [data-theme="default"] {
   color-scheme: light;
@@ -205,6 +206,8 @@
     --ui-color-focus: oklch(0.4955 0.1403 250);
   }
 }
+}
+@layer kernel.profile {
 :root {
   --ui-z-dropdown: 1000;
   --ui-z-sticky: 1020;
@@ -292,4 +295,5 @@
   --ui-shadow-lg: var(--ui-physics-shadow-elevated);
   --ui-radius-xs: 0;
   --ui-radius-sm: 0;
+}
 }

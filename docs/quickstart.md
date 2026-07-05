@@ -12,7 +12,7 @@ The Flex recipe registers the bundle and copies a minimal app config file.
 
 ## 1. Include kernel head partial
 
-In your base layout `<head>`, emit the boot script and generated CSS **in this order** (boot script first avoids a flash of wrong theme):
+In your base layout `<head>`, emit the boot script, cascade layer order, and generated CSS **in this order** (boot script first avoids a flash of wrong theme):
 
 ```twig
 {# templates/base.html.twig #}
@@ -22,6 +22,7 @@ In your base layout `<head>`, emit the boot script and generated CSS **in this o
     <meta charset="UTF-8">
     <title>{% block title %}My app{% endblock %}</title>
     {{ ui_kernel_theme_boot_script() }}
+    {{ ui_kernel_layer_order()|raw }}
     {{ ui_kernel_css()|raw }}
     {% block stylesheets %}{% endblock %}
 </head>
@@ -31,7 +32,7 @@ In your base layout `<head>`, emit the boot script and generated CSS **in this o
 </html>
 ```
 
-The bundle also ships `@UiKernel/_head.html.twig` with the same two calls if you prefer an include:
+The bundle also ships `@UiKernel/_head.html.twig` with the same three calls if you prefer an include:
 
 ```twig
 {% include '@UiKernel/_head.html.twig' %}
@@ -74,6 +75,7 @@ symfinity_ui_kernel:
 <html lang="en">
 <head>
     {{ ui_kernel_theme_boot_script() }}
+    {{ ui_kernel_layer_order()|raw }}
     {{ ui_kernel_css()|raw }}
 </head>
 <body>

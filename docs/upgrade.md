@@ -1,5 +1,19 @@
 # Upgrade and migration
 
+## 0.2.4
+
+Patch release after [v0.2.3](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.3). CSS cascade layers and handbook updates — no semantic-colour, physics-axis, or DTCG file changes.
+
+```bash
+composer update symfinity/ui-kernel
+```
+
+After upgrade:
+
+1. If your base layout calls `ui_kernel_css()` manually, add `{{ ui_kernel_layer_order()|raw }}` **before** theme CSS (after `ui_kernel_theme_boot_script()`), or replace both with `{% include '@UiKernel/_head.html.twig' %}`.
+2. Re-check CSS snapshots or visual baselines that assert exact generated theme CSS strings — output now includes `@layer kernel.tokens` and `@layer kernel.profile` wrappers.
+3. When pairing with `symfinity/font-manager`, enable `ui_kernel_bridge: true` and call `font_manager_ui_kernel_bridge()` after kernel CSS — see [Font Manager pairing](font-manager-pairing.md).
+
 ## 0.2.3
 
 Patch release after [v0.2.2](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.2). Split mirror CI only — no theme runtime or API changes.

@@ -20,8 +20,21 @@ Built-in themes ship inside the bundle under `Resources/themes/`. Consumer apps 
 |------|------|
 | Bundle | `src/UiKernelBundle.php` |
 | CSS generation | `src/Css/CssGenerator.php` |
+| Cascade layers | `src/Css/CascadeLayerOrder.php`, `src/Css/CascadeLayerWrap.php` |
 | Theme resolution | `src/Theme/RegistryThemeResolver.php` |
 | Profiler collector | `src/DataCollector/UiKernelDataCollector.php` |
+
+## Twig helpers
+
+| Function | Role |
+|----------|------|
+| `ui_kernel_theme_boot_script()` | Inline script — active theme before paint |
+| `ui_kernel_layer_order()` | `@layer` declaration for the platform stack |
+| `ui_kernel_css()` | Generated theme + profile CSS |
+| `ui_kernel_active_theme_id()` | Active built-in theme id |
+| `ui_kernel_theme_shell()` | Theme shell markup for layout chrome |
+
+Prefer `{% include '@UiKernel/_head.html.twig' %}` in `<head>` when you do not customize the call order.
 
 ## Semantic tokens (schema 2.0)
 
