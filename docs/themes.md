@@ -96,11 +96,115 @@ Built-in themes map to one of two rhythm profiles:
 
 Radius, shadow, and motion character follow the active **physics** profile (default `flat`). DTCG theme layers still define per-lineage appearance tokens until authors opt into non-flat physics via `data-ui-physics`.
 
+## Theme engine milestones (0.3.x) {#theme-engine-milestones}
+
+Public **0.3.x** line — runtime switching, overlays, and documented capability ids. Theme YAML stays on `schema_version: '2.0'` until a later release explicitly versions it.
+
+| Theme-engine capability | v0.3.0 | Later 0.3.x |
+|-------------------------|--------|-------------|
+| Runtime switching (boot script, cookies, scheme API) | **v0.3.0** | — |
+| Theme overlays (`user_tokens`, app DTCG overrides) | **v0.3.0** | — |
+| Session preview overlay (preview hosts only) | **v0.3.0** | — |
+| Theme capabilities vocabulary (documented ids) | **v0.3.0** | — |
+| Runtime capability probe (`ui_kernel_theme_capabilities()`) | **v0.3.0** | — |
+| Theme composition (author graphs) | Boundary documented | ui-themer + future kernel hooks |
+| Nested themes | — | 0.3.1+ |
+| Theme inheritance (multi-hop) | — | 0.3.1+ |
+
+**v0.3.0** ships `runtime_switch`, `user_token_overlay`, `session_preview_overlay`, and `app_dtcg_override`, plus the runtime probe (`ui_kernel_theme_capabilities()`) — see [Theme capabilities](#theme-capabilities-v03). Nested theme ids, multi-hop inheritance resolver, composition graph UI, and `schema_version: '3.0'` follow in later **0.3.x** patches.
+
+## Runtime theme switching {#runtime-theme-switching}
+
+**Capability id:** `runtime_switch` — see [Theme capabilities](#theme-capabilities-v03) and [Theme engine milestones](#theme-engine-milestones).
+
+### Boot script and paint order
+
+Include `ui_kernel_theme_boot_script()` in `<head>` **before** theme CSS so `document.documentElement.dataset.theme` is set before the first paint. Prefer the bundle head partial:
+
+```twig
+{% include '@UiKernel/_head.html.twig' %}
+```
+
+Manual order when not using the partial:
+
+```twig
+{{ ui_kernel_theme_boot_script() }}
+{{ ui_kernel_layer_order()|raw }}
+{{ ui_kernel_css()|raw }}
+```
+
+The inline script reads preference cookies, resolves light/dark variant ids per lineage, and sets `root.dataset.theme` plus `root.style.colorScheme`.
+
+### Preference cookies
+
+| Cookie | Purpose |
+|--------|---------|
+| `symfinity_ui_kernel_lineage` | Active lineage (`default`, `semantic`, `utility`, …) |
+| `symfinity_ui_kernel_scheme` | `auto`, `light`, or `dark` |
+
+Unknown or removed lineage values fall back to `default_theme` from config. Invalid scheme values fall back to `auto`. Cookies are `HttpOnly`, `SameSite=Lax`, one-year TTL.
+
+Set cookies via the scheme API, theme shell presenter, or your own controller using the same keys — do not invent parallel preference storage.
+
+### Scheme API
+
+When `scheme` is `auto`, the boot script may `PATCH` the kernel scheme endpoint (same route as `ui_kernel_theme_shell()`) with optional `systemPrefersDark` from `matchMedia('(prefers-color-scheme: dark)')` when the Client Hint header is absent. The JSON response carries resolved `themeId`, `colorScheme`, and refreshed CSS for `#ui-kernel-theme-css`.
+
+Without a scheme endpoint, `auto` resolves client-side from `prefers-color-scheme` using the configured lineage pair (`semantic` / `semantic-dark`, etc.).
+
+### Adaptive pairs
+
+Each built-in lineage exposes a light/dark variant pair. With `scheme: auto` and no stored cookie override, the active variant follows OS dark preference for that lineage.
+
+### Unknown variant ids
+
+Markup or query `?theme=` with an unknown id throws in PHP paths that validate against `ThemeRegistry`. The boot script falls back to the config default variant id when lineage resolution fails. After upgrades, stale cookies for removed lineages reset to the configured default lineage.
+
+## Theme capabilities (v0.3) {#theme-capabilities-v03}
+
+Shared vocabulary for apps, dogfood labs, and optional packages:
+
+| Capability id | Meaning | Consumer entry point |
+|---------------|---------|----------------------|
+| `runtime_switch` | User or OS changes variant without redeploy | Boot script, cookies, scheme API, `ui_kernel_theme_shell()` |
+| `user_token_overlay` | Config `user_tokens` merge atop registry theme | `symfinity_ui_kernel.user_tokens` in YAML |
+| `session_preview_overlay` | Ephemeral author draft CSS on preview hosts | `SessionThemeInjectionPort` (ui-themer implements) |
+| `app_dtcg_override` | App `config/themes/{lineage}/` overrides bundle | `themes_directory` + merged `ThemeRegistry` |
+
+**Later 0.3.x** (not v0.3.0): `nested_theme`, `inheritance_chain`.
+
+**Runtime probe (v0.3.0):** `ThemeCapabilityProbe::enabled()` and `ui_kernel_theme_capabilities()` report which capability ids are active in the current app — see [reference.md](reference.md#twig-helpers).
+
+**Consumer checklist**
+
+1. Call `ui_kernel_layer_order()` before theme CSS (**0.2.4+**).
+2. Include `ui_kernel_theme_boot_script()` in `<head>` when using `runtime_switch`.
+3. Document cookie / scheme behaviour for your shell.
+4. Use preview injection only on designated preview routes with a valid session token.
+
+## Theme overlay merge order {#theme-overlay-merge-order}
+
+### Standard consumer page (no preview host)
+
+```text
+1. Built-in or app registry theme (DTCG stack: base ⊕ design_system ⊕ theme)
+2. Config user_tokens overrides on the active variant
+3. Generated --ui-* CSS in @layer ui-kernel-theme
+```
+
+### Preview host with valid session token
+
+```text
+1. Registry baseline (built-in ids unchanged)
+2. Injected preview CSS from SessionThemeInjectionPort (separate stylesheet or inline block)
+3. MUST NOT mutate ThemeRegistry entries
+```
+
+When both `user_tokens` and preview injection apply, preview hosts use the session overlay on top of the registry baseline; config `user_tokens` still apply to generated baseline CSS before preview CSS is injected.
+
 ## Dark mode and `data-theme`
 
-The boot script (`ui_kernel_theme_boot_script()`) sets `document.documentElement.dataset.theme` before CSS paints. Pair light/dark ids per lineage (`default` / `default-dark`, etc.).
-
-For `prefers-color-scheme: auto`, the bundle can sync with a server endpoint when configured. Without it, the client resolves light/dark from system preference using the configured lineage pair.
+Pair light/dark ids per lineage (`default` / `default-dark`, etc.). The boot script and scheme API above are the supported switching path — see [Runtime theme switching](#runtime-theme-switching).
 
 ## Generated CSS scope
 
@@ -162,5 +266,6 @@ Built-in themes use **system font stacks** for `--ui-font-family-sans` and `--ui
 
 ## See also
 
+- [ROADMAP](../ROADMAP.md)
 - [Configuration](configuration.md)
 - [Quick start](quickstart.md)

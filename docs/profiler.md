@@ -12,7 +12,7 @@ When `kernel.debug` is true and `WebProfilerBundle` is present, the toolbar show
 | Conditional registration | `src/DependencyInjection/Compiler/RegisterProfilerCollectorPass.php` |
 | Templates | `templates/Collector/ui_kernel.html.twig`, `icon.svg` |
 
-Collector id: **`ui_kernel`**.
+Collector id: `ui_kernel`.
 
 ## Install
 

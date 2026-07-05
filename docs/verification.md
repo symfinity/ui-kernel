@@ -32,6 +32,20 @@ Or call the helpers in order:
 
 Confirm generated theme CSS variables on `:root` or `[data-theme="…"]` in page source. When `symfinity/ux-blocks-core` is also installed, tier CSS may be injected automatically — kernel head partial is still required for boot script and layer order.
 
+## Runtime switching smoke (optional)
+
+In the Symfinity org checkout, dogfood **ui-lab** exercises `runtime_switch`:
+
+```bash
+make dogfood-serve SLUG=ui-lab
+```
+
+Open the served URL, use the theme shell / scheme controls, and confirm:
+
+1. `<html data-theme="…">` matches the selected variant before paint stabilizes
+2. `<head>` order is boot script → layer order → theme CSS (same as `@UiKernel/_head.html.twig`)
+3. Reload preserves preference cookies when lineage/scheme cookies are set
+
 ## See also
 
 - [Quick start](quickstart.md)

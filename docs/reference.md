@@ -32,9 +32,22 @@ Built-in themes ship inside the bundle under `Resources/themes/`. Consumer apps 
 | `ui_kernel_layer_order()` | `@layer` declaration for the platform stack |
 | `ui_kernel_css()` | Generated theme + profile CSS |
 | `ui_kernel_active_theme_id()` | Active built-in theme id |
+| `ui_kernel_theme_capabilities()` | Enabled theme-engine capability ids for this app runtime |
 | `ui_kernel_theme_shell()` | Theme shell markup for layout chrome |
 
 Prefer `{% include '@UiKernel/_head.html.twig' %}` in `<head>` when you do not customize the call order.
+
+## Theme engine (0.3.x)
+
+| Topic | Handbook |
+|-------|----------|
+| Runtime switching | [themes.md — runtime switching](themes.md#runtime-theme-switching) (boot script, cookies, scheme API) |
+| Capability ids | [themes.md — capabilities](themes.md#theme-capabilities-v03) |
+| Runtime probe | `ui_kernel_theme_capabilities()` and injectable probe service — [Twig helpers](#twig-helpers) below |
+| Overlay merge order | [themes.md — overlays](themes.md#theme-overlay-merge-order) |
+| Public milestone plan | [themes.md — milestones](themes.md#theme-engine-milestones) |
+
+Preview session CSS uses `SessionThemeInjectionPort` on designated hosts — see **symfinity/ui-themer**; the registry is not mutated.
 
 ## Semantic tokens (schema 2.0)
 

@@ -26,4 +26,32 @@ final class ThemePreferenceCookiesTest extends TestCase
             self::assertGreaterThanOrEqual(31536000 - 5, $cookie->getExpiresTime() - $before);
         }
     }
+
+    #[Test]
+    public function itFallsBackToDefaultLineageWhenCookieLineageUnknown(): void
+    {
+        $cookies = new ThemePreferenceCookies();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/');
+        $request->cookies->set(ThemePreferenceCookies::LINEAGE, 'removed-lineage');
+        $request->cookies->set(ThemePreferenceCookies::SCHEME, ThemeColorScheme::Dark->value);
+
+        $preference = $cookies->read($request, 'semantic');
+
+        self::assertSame('semantic', $preference->lineage);
+        self::assertSame(ThemeColorScheme::Dark, $preference->scheme);
+    }
+
+    #[Test]
+    public function itFallsBackToAutoWhenCookieSchemeInvalid(): void
+    {
+        $cookies = new ThemePreferenceCookies();
+        $request = \Symfony\Component\HttpFoundation\Request::create('/');
+        $request->cookies->set(ThemePreferenceCookies::LINEAGE, 'utility');
+        $request->cookies->set(ThemePreferenceCookies::SCHEME, 'not-a-scheme');
+
+        $preference = $cookies->read($request, 'default');
+
+        self::assertSame('utility', $preference->lineage);
+        self::assertSame(ThemeColorScheme::Auto, $preference->scheme);
+    }
 }

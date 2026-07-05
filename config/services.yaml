@@ -32,6 +32,10 @@ services:
     arguments:
       $dtcgCatalog: '@Symfinity\UiKernel\Dtcg\BuiltinDtcgThemeCatalog'
 
+  Symfinity\UiKernel\Theme\ThemeCapabilityProbe:
+    arguments:
+      $sessionThemeInjectionPort: '@?Symfinity\UiKernel\Preview\SessionThemeInjectionPort'
+
   Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry:
     factory: ['Symfinity\UiKernel\Dtcg\DesignSystemLayerRegistry', 'fromDefaultDirectory']
 

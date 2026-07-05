@@ -17,6 +17,8 @@ final class ThemeRegistry
     /** @var array<string, Theme> */
     private array $themes = [];
 
+    private readonly BuiltinDtcgThemeCatalog $dtcgCatalog;
+
     private ThemeDtcgResolver $resolver;
 
     private UserTokenSet $userTokens;
@@ -26,8 +28,8 @@ final class ThemeRegistry
         ?ThemeDtcgResolver $resolver = null,
         ?UserTokenSet $userTokens = null,
     ) {
-        $dtcgCatalog ??= BuiltinDtcgThemeCatalog::fromDefaultDirectory();
-        ThemeCatalog::bindDtcgCatalog($dtcgCatalog);
+        $this->dtcgCatalog = $dtcgCatalog ?? BuiltinDtcgThemeCatalog::fromDefaultDirectory();
+        ThemeCatalog::bindDtcgCatalog($this->dtcgCatalog);
         $this->resolver = $resolver ?? new ThemeDtcgResolver(new LayerStackBuilder(
             new DesignSystemLayerRegistry(DesignSystemLayerRegistry::defaultDirectory()),
         ));
@@ -88,5 +90,16 @@ final class ThemeRegistry
     public function all(): array
     {
         return array_values($this->themes);
+    }
+
+    public function hasAppLineages(): bool
+    {
+        foreach ($this->dtcgCatalog->all() as $variant) {
+            if ($variant->catalogSource() === 'app') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

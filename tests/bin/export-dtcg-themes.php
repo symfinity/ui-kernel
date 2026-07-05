@@ -27,7 +27,8 @@ $designSystemsRoot = $packageRoot . '/config/design-systems';
 const COLOR_ROLE_TO_DTCG = [
     'primary' => 'color.primary',
     'secondary' => 'color.secondary',
-    'tertiary' => 'color.tertiary',
+    'accent' => 'color.accent',
+    'neutral' => 'color.neutral',
     'surface' => 'color.surface.base',
     'surface_elevated' => 'color.surface.elevated',
     'text' => 'color.text.default',
@@ -150,7 +151,7 @@ $symfinityDesignSystem = [
     '$extensions' => [
         'symfinity' => [
             'design_system_id' => 'symfinity',
-            'semantic_colors' => ['primary', 'secondary', 'tertiary', 'success', 'danger', 'info', 'warning', 'ghost'],
+            'semantic_colors' => ['primary', 'secondary', 'accent', 'neutral', 'success', 'danger', 'info', 'warning'],
         ],
     ],
 ];

@@ -1,5 +1,20 @@
 # Upgrade and migration
 
+## 0.3.0
+
+Minor release after **0.2.x**. Opens the **0.3.x theme-engine line** — runtime switching, overlays, and documented capability ids. Safe to adopt; no config migration beyond confirming `<head>` order.
+
+```bash
+composer require symfinity/ui-kernel:^0.3
+```
+
+After upgrade:
+
+1. Confirm `<head>` order: `ui_kernel_theme_boot_script()` → `ui_kernel_layer_order()` → `ui_kernel_css()`, or `{% include '@UiKernel/_head.html.twig' %}` — see [Themes — runtime switching](themes.md#runtime-theme-switching).
+2. Review [Theme capabilities](themes.md#theme-capabilities-v03) and [overlay merge order](themes.md#theme-overlay-merge-order) if you use `user_tokens`, app DTCG overrides, or ui-themer preview hosts.
+3. No `schema_version` change — theme YAML remains `2.0`.
+4. See [CHANGELOG](../CHANGELOG.md#030---2026-07-05) for the full release note.
+
 ## 0.2.5
 
 Patch release after [v0.2.4](https://github.com/symfinity/ui-kernel/releases/tag/v0.2.4). Roadmap, sponsorship docs, and handbook wording — no theme runtime or API changes.
@@ -70,7 +85,7 @@ After upgrade:
 
 1. Set `schema_version: '2.0'` in `config/packages/symfinity_ui_kernel.yaml` (Flex default on fresh copy).
 2. In custom `config/themes/` DTCG files: rename `color.tertiary` → `color.accent`; remove `color.ghost`; add `color.neutral` where you need achromatic chrome.
-3. In Twig or PHP that passed `variant="ghost"` or `variant="tertiary"` to ux-blocks roles: use `variant="neutral"` + `appearance="ghost"` (Button/Link) or `variant="accent"` — requires **`symfinity/ux-blocks-core` `^0.2`**.
+3. In Twig or PHP that passed `variant="ghost"` or `variant="tertiary"` to ux-blocks roles: use `variant="neutral"` + `appearance="ghost"` (Button/Link) or `variant="accent"` — requires `symfinity/ux-blocks-core` `^0.2`.
 4. Optional: set `default_physics` (`flat`, `glass`, `retro`) and expose `data-ui-physics` on your layout root — see [Themes](themes.md#physics-axis-data-ui-physics).
 5. Clear Symfony cache; re-run visual or PHPUnit snapshots that assert exact `--ui-color-*` or `--ui-shadow-*` values.
 

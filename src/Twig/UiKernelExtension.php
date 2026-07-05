@@ -7,6 +7,7 @@ namespace Symfinity\UiKernel\Twig;
 use Symfinity\UiKernel\Css\CascadeLayerOrder;
 use Symfinity\UiKernel\Css\CssGenerator;
 use Symfinity\UiKernel\Theme\ActiveThemeContext;
+use Symfinity\UiKernel\Theme\ThemeCapabilityProbe;
 use Symfinity\UiKernel\Theme\ThemeShellPresenter;
 use Symfinity\UiKernel\Theme\ThemeShellView;
 use Symfinity\UiKernel\Theme\ThemeRegistry;
@@ -24,6 +25,7 @@ final class UiKernelExtension extends AbstractExtension
         private readonly ThemeRegistry $themeRegistry,
         private readonly ActiveThemeContext $activeThemeContext,
         private readonly ThemeShellPresenter $themeShellPresenter,
+        private readonly ThemeCapabilityProbe $themeCapabilityProbe,
         private readonly RequestStack $requestStack,
         private readonly Environment $twig,
     ) {
@@ -36,6 +38,7 @@ final class UiKernelExtension extends AbstractExtension
             new TwigFunction('ui_kernel_css', $this->renderCss(...), ['is_safe' => ['html']]),
             new TwigFunction('ui_kernel_theme_boot_script', $this->renderBootScript(...), ['is_safe' => ['html']]),
             new TwigFunction('ui_kernel_active_theme_id', $this->activeThemeId(...)),
+            new TwigFunction('ui_kernel_theme_capabilities', $this->themeCapabilities(...)),
             new TwigFunction('ui_kernel_theme_shell', $this->themeShell(...)),
         ];
     }
@@ -107,5 +110,13 @@ final class UiKernelExtension extends AbstractExtension
         }
 
         return $this->activeThemeContext->resolvedThemeIdFromRequest($request);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function themeCapabilities(): array
+    {
+        return $this->themeCapabilityProbe->enabledIds();
     }
 }

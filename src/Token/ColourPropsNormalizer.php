@@ -15,8 +15,6 @@ final class ColourPropsNormalizer
         'default' => 'primary',
         'destructive' => 'danger',
         'error' => 'danger',
-        'tertiary' => 'accent',
-        'ghost' => 'neutral',
     ];
 
     /** @var list<string> */
@@ -58,20 +56,6 @@ final class ColourPropsNormalizer
             return [
                 'variant' => $this->vocabulary->defaultName(),
                 'appearance' => $candidate,
-            ];
-        }
-
-        if ($variant === 'ghost') {
-            if ($appearance !== 'solid') {
-                return [
-                    'variant' => 'neutral',
-                    'appearance' => $appearance,
-                ];
-            }
-
-            return [
-                'variant' => 'neutral',
-                'appearance' => 'ghost',
             ];
         }
 

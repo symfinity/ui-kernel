@@ -6,6 +6,10 @@ integration_profile: P2
 
 Consumer handbook for **symfinity/ui-kernel** — design tokens, built-in themes, and generated CSS.
 
+## Roadmap
+
+Public semver milestones: [ROADMAP.md](../ROADMAP.md). **0.3.x** theme-engine detail: [themes.md](themes.md#theme-engine-milestones).
+
 ## Pages
 
 - [Installation](installation.md)

@@ -24,8 +24,8 @@ final class ColourPropsNormalizerTest extends TestCase
         self::assertSame('primary', $this->normalizer->normalize('default'));
         self::assertSame('primary', $this->normalizer->normalize(''));
         self::assertSame('danger', $this->normalizer->normalize('destructive'));
-        self::assertSame('accent', $this->normalizer->normalize('tertiary'));
-        self::assertSame('neutral', $this->normalizer->normalize('ghost'));
+        self::assertSame('primary', $this->normalizer->normalize('tertiary'));
+        self::assertSame('primary', $this->normalizer->normalize('ghost'));
     }
 
     #[Test]
@@ -52,24 +52,6 @@ final class ColourPropsNormalizerTest extends TestCase
 
         self::assertSame('danger', $normalized['variant']);
         self::assertSame('accent', $normalized['submitVariant']);
-    }
-
-    #[Test]
-    public function normalizeButtonColourMapsGhostToNeutralAppearance(): void
-    {
-        $normalized = $this->normalizer->normalizeButtonColour('ghost', 'solid');
-
-        self::assertSame('neutral', $normalized['variant']);
-        self::assertSame('ghost', $normalized['appearance']);
-    }
-
-    #[Test]
-    public function normalizeButtonColourPreservesExplicitAppearanceWhenGhostVariant(): void
-    {
-        $normalized = $this->normalizer->normalizeButtonColour('ghost', 'outline');
-
-        self::assertSame('neutral', $normalized['variant']);
-        self::assertSame('outline', $normalized['appearance']);
     }
 
     #[Test]

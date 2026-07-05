@@ -9,7 +9,7 @@ Values use system stacks until you wire font-manager.
 
 ## Seamless pairing (recommended)
 
-When both packages are installed (use **`symfinity/font-manager` `^0.2.6`** or newer for `ui_kernel_bridge`):
+When both packages are installed (use `symfinity/font-manager` `^0.2.6` or newer for `ui_kernel_bridge`):
 
 1. `composer require symfinity/font-manager` (suggested in `composer.json`)
 2. Enable the bridge in font-manager config:
@@ -31,13 +31,13 @@ symfinity_font_manager:
 {{ font_manager_ui_kernel_bridge()|raw }}
 ```
 
-4. Use **`var(--ui-font-family-sans)`** and **`var(--ui-font-family-mono)`** in app CSS and Twig — not hardcoded family names.
+4. Use `var(--ui-font-family-sans)` and `var(--ui-font-family-mono)` in app CSS and Twig — not hardcoded family names.
 
 Full detail: font-manager [font-manager-kernel-pairing.md](https://github.com/symfinity/font-manager/blob/main/docs/font-manager-kernel-pairing.md).
 
 ### `font_manager()` parameter order
 
-Runtime order is **`monospace` before `display`**:
+Runtime order is `monospace` before `display`:
 
 ```twig
 font_manager(name, weights, styles, monospace, display, provider)
