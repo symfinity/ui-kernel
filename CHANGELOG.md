@@ -19,7 +19,7 @@ Patch release after [v0.3.0](https://github.com/symfinity/ui-kernel/releases/tag
 ### Notes
 
 - Theme YAML stays on `schema_version: '2.0'` — flat themes without `extends` are unchanged
-- Theme composition author UI remains in the ui-designer package, not this release
+- Theme composition author UI ships in **symfinity/ui-designer** v0.1.0 (dev-only; requires ui-kernel ^0.3.1) — not part of this ui-kernel patch
 
 ## [0.3.0] - 2026-07-05
 
@@ -40,7 +40,7 @@ Minor release after [v0.2.5](https://github.com/symfinity/ui-kernel/releases/tag
 
 - Theme YAML stays on `schema_version: '2.0'` — no config migration from 0.2.x beyond confirming `<head>` order: boot script → `ui_kernel_layer_order()` → `ui_kernel_css()`, or `{% include '@UiKernel/_head.html.twig' %}`
 - Session preview overlay remains optional — pair with `symfinity/ui-designer` on designated preview hosts; runtime switching does not require ui-designer
-- Nested themes and a multi-hop inheritance resolver are planned for later **0.3.x** patches, not this release
+- Nested themes and multi-hop inheritance shipped in **v0.3.1** — see [upgrade guide](docs/upgrade.md#031)
 
 ## [0.2.5] - 2026-07-05
 

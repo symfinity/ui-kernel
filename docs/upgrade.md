@@ -14,7 +14,8 @@ After upgrade:
 2. To define a child variant, add `extends: {parent_variant_id}` on the variant entry in `theme.meta.yaml` and supply theme-layer overrides only in the child `.dtcg.yaml` file — see [Themes — inheritance](themes.md#theme-inheritance-v031).
 3. Optional: tune `symfinity_ui_kernel.theme_inheritance.max_depth` (default `8`) when using long chains.
 4. `ui_kernel_theme_capabilities()` may report `nested_theme` and `inheritance_chain` when your catalog uses `extends`.
-5. See [CHANGELOG](../CHANGELOG.md#031---2026-07-05) for the full release note.
+5. Optional: `composer require symfinity/ui-designer --dev` for the theme author studio at `/ui-designer` (ui-designer v0.1.0 targets ui-kernel ^0.3.1).
+6. See [CHANGELOG](../CHANGELOG.md#031---2026-07-05) for the full release note.
 
 ## 0.3.0
 

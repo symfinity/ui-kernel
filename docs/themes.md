@@ -100,18 +100,18 @@ Radius, shadow, and motion character follow the active **physics** profile (defa
 
 Public **0.3.x** line — runtime switching, overlays, and documented capability ids. Theme YAML stays on `schema_version: '2.0'` until a later release explicitly versions it.
 
-| Theme-engine capability | v0.3.0 | v0.3.1 | Later 0.3.x |
-|-------------------------|--------|--------|-------------|
+| Theme-engine capability | ui-kernel v0.3.0 | ui-kernel v0.3.1 | symfinity/ui-designer v0.1.0 |
+|-------------------------|------------------|------------------|------------------------------|
 | Runtime switching (boot script, cookies, scheme API) | **v0.3.0** | — | — |
 | Theme overlays (`user_tokens`, app DTCG overrides) | **v0.3.0** | — | — |
-| Session preview overlay (preview hosts only) | **v0.3.0** | — | — |
+| Session preview overlay (preview hosts only) | **v0.3.0** | — | Studio + session draft |
 | Theme capabilities vocabulary (documented ids) | **v0.3.0** | — | — |
 | Runtime capability probe (`ui_kernel_theme_capabilities()`) | **v0.3.0** | — | — |
-| Nested themes (`extends` single-hop merge) | — | **v0.3.1** | — |
-| Theme inheritance (multi-hop chains) | — | **v0.3.1** | — |
-| Theme composition (author graphs) | Boundary documented | — | ui-designer |
+| Nested themes (`extends` single-hop merge) | — | **v0.3.1** | Uses kernel `extends` |
+| Theme inheritance (multi-hop chains) | — | **v0.3.1** | Uses kernel chains |
+| Theme composition (author graphs) | Kernel ports only | — | **v0.1.0** |
 
-**v0.3.0** ships `runtime_switch`, `user_token_overlay`, `session_preview_overlay`, and `app_dtcg_override`, plus the runtime probe — see [Theme capabilities](#theme-capabilities-v03). **v0.3.1** adds functional `extends` on variant entries and multi-hop theme-layer merge. Composition graph UI and `schema_version: '3.0'` remain later **0.3.x** work.
+**v0.3.0** ships `runtime_switch`, `user_token_overlay`, `session_preview_overlay`, and `app_dtcg_override`, plus the runtime probe — see [Theme capabilities](#theme-capabilities-v03). **v0.3.1** adds functional `extends` on variant entries and multi-hop theme-layer merge. **symfinity/ui-designer** v0.1.0 is the dev-only author product (composition graph, import/export, visual studio at `/ui-designer`) — it requires ui-kernel **^0.3.1** for inheritance; it is not a ui-kernel patch release.
 
 ## Runtime theme switching {#runtime-theme-switching}
 

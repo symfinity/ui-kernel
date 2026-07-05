@@ -29,7 +29,7 @@ W3C design tokens, semantic colour vocabulary, OKLCH palette generation
 
 ### 0.3.x — Theme engine
 
-Runtime switching, overlays, capability probe, nested theme inheritance
+Runtime switching, overlays, capability probe, nested theme inheritance; ui-designer v0.1.0 companion for dev-only theme authoring
 
 ### 0.4.x — Token engine
 
