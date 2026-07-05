@@ -27,7 +27,7 @@ composer require symfinity/ui-kernel:^0.3
 After upgrade:
 
 1. Confirm `<head>` order: `ui_kernel_theme_boot_script()` → `ui_kernel_layer_order()` → `ui_kernel_css()`, or `{% include '@UiKernel/_head.html.twig' %}` — see [Themes — runtime switching](themes.md#runtime-theme-switching).
-2. Review [Theme capabilities](themes.md#theme-capabilities-v03) and [overlay merge order](themes.md#theme-overlay-merge-order) if you use `user_tokens`, app DTCG overrides, or ui-themer preview hosts.
+2. Review [Theme capabilities](themes.md#theme-capabilities-v03) and [overlay merge order](themes.md#theme-overlay-merge-order) if you use `user_tokens`, app DTCG overrides, or ui-designer preview hosts.
 3. No `schema_version` change — theme YAML remains `2.0`.
 4. See [CHANGELOG](../CHANGELOG.md#030---2026-07-05) for the full release note.
 

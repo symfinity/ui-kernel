@@ -4,7 +4,7 @@ UI Kernel does not register standalone Symfony console commands. Theme and CSS b
 
 | Need | Where |
 |------|--------|
-| Import or author theme packs | `symfinity/ui-themer` (`ui-themer:import`, Studio UI) |
+| Import or author theme packs | `symfinity/ui-designer` (`ui-designer:import`, Studio UI) |
 | Clear generated theme CSS in dev | `bin/console cache:clear` after theme file edits |
 | Component role CSS | `symfinity/ux-blocks-*` tier packages (kernel emits tokens only) |
 

@@ -48,7 +48,7 @@ Prefer `{% include '@UiKernel/_head.html.twig' %}` in `<head>` when you do not c
 | Theme inheritance (`extends`) | [themes.md — inheritance](themes.md#theme-inheritance-v031) |
 | Public milestone plan | [themes.md — milestones](themes.md#theme-engine-milestones) |
 
-Preview session CSS uses `SessionThemeInjectionPort` on designated hosts — see **symfinity/ui-themer**; the registry is not mutated.
+Preview session CSS uses `SessionThemeInjectionPort` on designated preview hosts — see **symfinity/ui-designer**; the registry is not mutated.
 
 ## Semantic tokens (schema 2.0)
 
@@ -58,6 +58,6 @@ Eight canonical colours (`accent`, `neutral`, …), appearances (`solid`, `soft`
 
 | Package | Role |
 |---------|------|
-| `symfinity/ui-themer` | Author/import theme packs |
+| `symfinity/ui-designer` | Author/import theme packs |
 | `symfinity/ux-blocks-core` | Role CSS consuming kernel tokens |
 | `symfinity/symfinity-docs` | Public handbook runtime |

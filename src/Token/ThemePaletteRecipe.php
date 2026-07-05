@@ -71,7 +71,7 @@ final class ThemePaletteRecipe
     /**
      * Live OKLCH generation — no stallion-frozen ramp hex overrides.
      *
-     * Used by ui-themer custom packs (061 lift): built-in lineages keep anchors;
+     * Used by ui-designer custom packs (061 lift): built-in lineages keep anchors;
      * author/export paths for brand packs MUST use this recipe shape.
      */
     public function withoutScaleAnchors(): self

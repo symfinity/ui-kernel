@@ -8,7 +8,7 @@ use Symfinity\UiKernel\Theme\LayoutProfile;
 use Symfinity\UiKernel\Theme\PhysicsId;
 
 /**
- * Bespoke theme definition for ui-themer / consumer YAML — not built-in DTCG catalog (077 boundary).
+ * Bespoke theme definition for ui-designer / consumer YAML — not built-in DTCG catalog (077 boundary).
  */
 final class AuthoringThemeConfig
 {

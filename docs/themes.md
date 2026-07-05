@@ -109,7 +109,7 @@ Public **0.3.x** line — runtime switching, overlays, and documented capability
 | Runtime capability probe (`ui_kernel_theme_capabilities()`) | **v0.3.0** | — | — |
 | Nested themes (`extends` single-hop merge) | — | **v0.3.1** | — |
 | Theme inheritance (multi-hop chains) | — | **v0.3.1** | — |
-| Theme composition (author graphs) | Boundary documented | — | ui-themer + future kernel hooks |
+| Theme composition (author graphs) | Boundary documented | — | ui-designer |
 
 **v0.3.0** ships `runtime_switch`, `user_token_overlay`, `session_preview_overlay`, and `app_dtcg_override`, plus the runtime probe — see [Theme capabilities](#theme-capabilities-v03). **v0.3.1** adds functional `extends` on variant entries and multi-hop theme-layer merge. Composition graph UI and `schema_version: '3.0'` remain later **0.3.x** work.
 
@@ -168,7 +168,7 @@ Shared vocabulary for apps, dogfood labs, and optional packages:
 |---------------|---------|----------------------|
 | `runtime_switch` | User or OS changes variant without redeploy | Boot script, cookies, scheme API, `ui_kernel_theme_shell()` |
 | `user_token_overlay` | Config `user_tokens` merge atop registry theme | `symfinity_ui_kernel.user_tokens` in YAML |
-| `session_preview_overlay` | Ephemeral author draft CSS on preview hosts | `SessionThemeInjectionPort` (ui-themer implements) |
+| `session_preview_overlay` | Ephemeral author draft CSS on preview hosts | `SessionThemeInjectionPort` (ui-designer implements) |
 | `app_dtcg_override` | App `config/themes/{lineage}/` overrides bundle | `themes_directory` + merged `ThemeRegistry` |
 | `nested_theme` | Child variant resolves through parent theme layer | `extends` on variant entry in `theme.meta.yaml` |
 | `inheritance_chain` | Multi-hop parent merge (depth limit configurable) | Same as nested; probe true when chain length ≥ 2 hops |

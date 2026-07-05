@@ -13,7 +13,7 @@ use Symfinity\UiKernel\Token\ThemeConfig;
 use Symfinity\UiKernel\Token\ThemePaletteRecipe;
 
 /**
- * Mono tone tints must be perceptible on surface steps (ui-themer canvas, semantic neutrals).
+ * Mono tone tints must be perceptible on surface steps (ui-designer canvas, semantic neutrals).
  */
 final class MonoSpiceChromaVisibilityTest extends TestCase
 {

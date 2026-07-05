@@ -19,7 +19,7 @@ Patch release after [v0.3.0](https://github.com/symfinity/ui-kernel/releases/tag
 ### Notes
 
 - Theme YAML stays on `schema_version: '2.0'` — flat themes without `extends` are unchanged
-- Theme composition author UI remains in ui-themer / ui-designer packages, not this release
+- Theme composition author UI remains in the ui-designer package, not this release
 
 ## [0.3.0] - 2026-07-05
 
@@ -39,7 +39,7 @@ Minor release after [v0.2.5](https://github.com/symfinity/ui-kernel/releases/tag
 ### Notes
 
 - Theme YAML stays on `schema_version: '2.0'` — no config migration from 0.2.x beyond confirming `<head>` order: boot script → `ui_kernel_layer_order()` → `ui_kernel_css()`, or `{% include '@UiKernel/_head.html.twig' %}`
-- Session preview overlay remains optional — pair with `symfinity/ui-themer` on designated preview hosts; runtime switching does not require ui-themer
+- Session preview overlay remains optional — pair with `symfinity/ui-designer` on designated preview hosts; runtime switching does not require ui-designer
 - Nested themes and a multi-hop inheritance resolver are planned for later **0.3.x** patches, not this release
 
 ## [0.2.5] - 2026-07-05
@@ -266,10 +266,10 @@ built-in themes on disk, and slim CSS generation.
   - Industry mono tone ids (`slate`, `stone`, `sage`, `mauve`, `rust`, `neutral`) with per-lineage saturation
   - Warm-hue ramp taper for midtones; improved tinted-neutral visibility on surface steps
   - Live OKLCH for built-in lineages (no frozen anchor-profile hex tables)
-- **Consumer theme authoring** — `AuthoringThemeConfig` + `ThemeTokenResolver` for ui-themer / bespoke YAML (not built-in catalog)
-- **Composition preview** (ui-themer integration)
+- **Consumer theme authoring** — `AuthoringThemeConfig` + `ThemeTokenResolver` for ui-designer / bespoke YAML (not built-in catalog)
+- **Composition preview** (ui-designer integration)
   - `SessionThemeInjectionPort`, `PreviewHostContext`, `InjectedThemeCssProvider` in `Preview/`
-  - Transient draft CSS on preview hosts without `ThemeRegistry` mutation; implemented by `symfinity/ui-themer`
+  - Transient draft CSS on preview hosts without `ThemeRegistry` mutation; implemented by `symfinity/ui-designer`
 - **Symfony integration**
   - Flex recipe `0.1` — bundle registered for all environments; default app config copied from package
   - App config: `default_theme`, `default_variant`, `user_tokens`, `system_profile`
@@ -284,5 +284,5 @@ built-in themes on disk, and slim CSS generation.
 ### Notes
 
 - UI Kernel emits theme tokens and structural profile globals only; component `[data-ui-role]` CSS ships in separate `symfinity/ux-blocks-*` packages.
-- ui-themer consumer themes use the bespoke authoring format via `AuthoringThemeConfig` — not `BuiltinDtcgThemeCatalog`.
+- ui-designer consumer themes use the bespoke authoring format via `AuthoringThemeConfig` — not `BuiltinDtcgThemeCatalog`.
 

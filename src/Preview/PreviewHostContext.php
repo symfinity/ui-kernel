@@ -26,7 +26,7 @@ final readonly class PreviewHostContext
             'theme_id' => $this->resolvedThemeId,
             'polarity' => $this->activePolarity,
             'pack_path' => $this->packPath,
-            'exit_url' => '/ui-themer',
+            'exit_url' => '/ui-designer',
             'expired' => $this->expired,
         ];
     }
