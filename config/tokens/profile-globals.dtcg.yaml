@@ -1,0 +1,98 @@
+zIndex:
+  dropdown:
+    $type: number
+    $value: 1000
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-dropdown
+        emitOn: [root, ui-root]
+  sticky:
+    $type: number
+    $value: 1020
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-sticky
+        emitOn: [root, ui-root]
+  fixed:
+    $type: number
+    $value: 1030
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-fixed
+        emitOn: [root, ui-root]
+  modal-backdrop:
+    $type: number
+    $value: 1040
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-modal-backdrop
+        emitOn: [root, ui-root]
+  modal:
+    $type: number
+    $value: 1050
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-modal
+        emitOn: [root, ui-root]
+  popover:
+    $type: number
+    $value: 1060
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-popover
+        emitOn: [root, ui-root]
+  tooltip:
+    $type: number
+    $value: 1070
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-tooltip
+        emitOn: [root, ui-root]
+  toast:
+    $type: number
+    $value: 1080
+    $extensions:
+      symfinity:
+        cssVar: --ui-z-toast
+        emitOn: [root, ui-root]
+keyframes:
+  ui-shimmer:
+    $type: string
+    $value: ui-shimmer
+    $extensions:
+      symfinity:
+        atRule: keyframes
+        reducedMotion: disable
+        steps:
+          - offset: "0%"
+            properties:
+              background-position: "200% 0"
+          - offset: "100%"
+            properties:
+              background-position: "-200% 0"
+  ui-pulse:
+    $type: string
+    $value: ui-pulse
+    $extensions:
+      symfinity:
+        atRule: keyframes
+        steps:
+          - offset: "0%, 100%"
+            properties:
+              opacity: "1"
+          - offset: "50%"
+            properties:
+              opacity: "0.55"
+  ui-fade-in:
+    $type: string
+    $value: ui-fade-in
+    $extensions:
+      symfinity:
+        atRule: keyframes
+        steps:
+          - offset: from
+            properties:
+              opacity: "0"
+          - offset: to
+            properties:
+              opacity: "1"

@@ -1,0 +1,36 @@
+lineage: default
+design_system_id: symfinity
+physics: flat
+palette:
+  mono_saturation: 7.5
+  hues:
+    red: 25
+    orange: 50
+    amber: 75
+    yellow: 100
+    lime: 115
+    green: 145
+    emerald: 165
+    teal: 185
+    cyan: 205
+    sky: 225
+    blue: 250
+    indigo: 270
+    violet: 290
+    purple: 310
+    fuchsia: 330
+    pink: 345
+    rose: 15
+variants:
+  -
+    id: default
+    layer_file: default.dtcg.yaml
+    label: Balanced
+    tone: slate
+    mode: light
+  -
+    id: default-dark
+    layer_file: default-dark.dtcg.yaml
+    label: 'Balanced dark'
+    tone: slate
+    mode: dark

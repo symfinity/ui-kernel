@@ -1,0 +1,12 @@
+{
+  "color": {
+    "$type": "color",
+    "blue": {
+      "600": { "$value": { "colorSpace": "oklch", "components": [0.55, 0.21, 256] } }
+    },
+    "primary": { "$value": "{color.blue.600}", "$description": "brand colour" }
+  },
+  "space": {
+    "4": { "$type": "dimension", "$value": "1rem" }
+  }
+}

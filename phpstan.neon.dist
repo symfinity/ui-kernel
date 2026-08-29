@@ -1,0 +1,20 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+
+    excludePaths:
+        - tests/bin/*
+
+    reportUnmatchedIgnoredErrors: false
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+
+    ignoreErrors:
+        -
+            path: src/DependencyInjection/Configuration.php
+            message: '#Symfony\\Component\\Config\\Definition\\Builder\\#'

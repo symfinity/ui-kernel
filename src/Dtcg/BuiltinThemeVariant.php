@@ -1,0 +1,141 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Symfinity\UiKernel\Dtcg;
+
+use Symfinity\UiKernel\Theme\LayoutProfile;
+use Symfinity\UiKernel\Theme\PhysicsId;
+use Symfinity\UiKernel\Token\MonoTone;
+use Symfinity\UiKernel\Token\ThemePaletteRecipe;
+
+/**
+ * One registered built-in theme variant loaded from DTCG on-disk layout (077).
+ */
+final readonly class BuiltinThemeVariant
+{
+    /**
+     * @param array{
+     *     hue_base: array<string, float>,
+     *     mono_tones: array<string, array{hue: float, saturation: float}>,
+     *     hue_chroma: array<string, float>,
+     *     scale_anchors: array<string, string>
+     * } $paletteDefinition
+     */
+    public function __construct(
+        private string $id,
+        private string $label,
+        private string $lineage,
+        private string $designSystemId,
+        private LayoutProfile $layout,
+        private MonoTone $tone,
+        private string $layerPath,
+        private array $paletteDefinition,
+        private string $schemaVersion = '2.0',
+        private bool $scrollMotion = false,
+        private string $backdropBlur = '0',
+        private string $mode = 'light',
+        private string $catalogSource = 'kernel',
+        private PhysicsId $physics = PhysicsId::Flat,
+        private ?string $extends = null,
+    ) {
+    }
+
+    public function id(): string
+    {
+        return $this->id;
+    }
+
+    public function label(): string
+    {
+        return $this->label;
+    }
+
+    public function lineage(): string
+    {
+        return $this->lineage;
+    }
+
+    public function designSystemId(): string
+    {
+        return $this->designSystemId;
+    }
+
+    public function layout(): LayoutProfile
+    {
+        return $this->layout;
+    }
+
+    public function tone(): MonoTone
+    {
+        return $this->tone;
+    }
+
+    public function layerPath(): string
+    {
+        return $this->layerPath;
+    }
+
+    public function schemaVersion(): string
+    {
+        return $this->schemaVersion;
+    }
+
+    public function scrollMotion(): bool
+    {
+        return $this->scrollMotion;
+    }
+
+    public function backdropBlur(): string
+    {
+        return $this->backdropBlur;
+    }
+
+    public function paletteRecipe(): ThemePaletteRecipe
+    {
+        return ThemePaletteRecipe::fromPaletteDefinition(
+            $this->paletteDefinition['hue_base'],
+            $this->paletteDefinition['mono_tones'],
+            $this->paletteDefinition['hue_chroma'],
+            $this->paletteDefinition['scale_anchors'],
+        );
+    }
+
+    /**
+     * @return array{
+     *     hue_base: array<string, float>,
+     *     mono_tones: array<string, array{hue: float, saturation: float}>,
+     *     hue_chroma: array<string, float>,
+     *     scale_anchors: array<string, string>
+     * }
+     */
+    public function paletteDefinition(): array
+    {
+        return $this->paletteDefinition;
+    }
+
+    public function mode(): string
+    {
+        return $this->mode;
+    }
+
+    public function catalogSource(): string
+    {
+        return $this->catalogSource;
+    }
+
+    public function physics(): PhysicsId
+    {
+        return $this->physics;
+    }
+
+    public function isDarkVariant(): bool
+    {
+        return $this->mode === 'dark';
+    }
+
+    public function extends(): ?string
+    {
+        return $this->extends;
+    }
+}

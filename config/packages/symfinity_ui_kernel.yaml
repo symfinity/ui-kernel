@@ -1,0 +1,29 @@
+symfinity_ui_kernel:
+  schema_version: '2.0'
+  default_theme: default
+  default_variant: default
+  default_physics: flat
+  themes_directory: '%kernel.project_dir%/config/themes'
+  user_tokens: {}
+  contract:
+    palette:
+      levels: [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950]
+      alpha: [0, 5, 10, 15, 25, 40, 50, 60, 75, 100]
+      hues: [red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, blue, indigo, violet, purple, fuchsia, pink, rose]
+      forbidden_hues: []
+      mono_tones: [slate, stone, sage, mauve, rust]
+  generator:
+    palette:
+      revision: 1
+      mono_hues:
+        slate: 240.0
+        stone: 30.0
+        sage: 120.0
+        mauve: 300.0
+        rust: 0.0
+      pure_l_bounds: [1.0, 0.0]
+      dark_tail_l_end: 0.09
+  dtcg:
+    profile_globals_layer: profile-globals.dtcg.yaml
+  theme_inheritance:
+    max_depth: 8
