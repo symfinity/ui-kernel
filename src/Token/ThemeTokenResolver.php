@@ -60,6 +60,14 @@ final class ThemeTokenResolver
         $merged = [...$merged, ...GlassSurfaceTokens::resolve($merged)];
         $merged = [...$merged, ...(new SemanticColorDerivatives())->derive($merged)];
 
+        if (ThemeTokenSchema::V1_0 === $schemaVersion
+            && (!isset($merged['--ui-color-tertiary']) || '' === $merged['--ui-color-tertiary'])) {
+            $fallback = $merged['--ui-color-accent'] ?? $merged['--ui-color-primary'] ?? null;
+            if (\is_string($fallback) && '' !== $fallback) {
+                $merged['--ui-color-tertiary'] = $fallback;
+            }
+        }
+
         return DesignTokenSet::fromArray($merged, $schemaVersion);
     }
 
