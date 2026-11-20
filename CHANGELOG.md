@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2026-11-20
+
+### Fixed
+
+- Schema 1.0 themes with an empty `--ui-color-tertiary` fall back to `--ui-color-accent`, then `--ui-color-primary`
+- An unknown colour name still falls back to the default, and now logs one warning when a logger is available
+- The profiler collector is registered before Symfony's profiler pass, so a dev kernel compiles with debug turned off
+- PHPUnit bootstrap registers this package's PSR-4 prefixes from `composer.json` after loading the monorepo or package autoload
+
 ## [0.3.1] - 2026-07-05
 
 Patch release after [v0.3.0](https://github.com/symfinity/ui-kernel/releases/tag/v0.3.0). Functional theme inheritance for DTCG variant entries.
